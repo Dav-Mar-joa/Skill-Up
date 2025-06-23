@@ -77,6 +77,7 @@ app.post('/', async (req, res) => {
         datef: dateF,
         heure: req.body.heure,
         montant: montant, // Ajouter le montant au document
+        taux: req.body.taux,
         heuref: req.body.heuref,
         heureTravail: heureTravail,
         description: req.body.description,
@@ -124,14 +125,14 @@ app.get('/', async (req, res) => {
 
         // console.log('Today:', today);
         // console.log('Tomorrow:', tomorrow);
-
+        let salaire = 0;
         const collection = db.collection(process.env.MONGODB_COLLECTION);
         const collectionCourses = db.collection('Courses');
-        const tasks = await collection.find({}).sort({ date: -1 }).toArray();
+        const tasks = await collection.find({}).sort({ date: 1 }).toArray();
         const courses = await collectionCourses.find({}).toArray();
         tasks.forEach(task => {
         //   console.log('Original Date:', task.date.toString().slice(0, 10));
-          
+          salaire = salaire + task.montant; // Calcul du salaire total
         });
 
         res.render('index', { 
@@ -140,6 +141,7 @@ app.get('/', async (req, res) => {
             tasks: tasks || [], 
             courses: courses || [],
             successCourse,
+            salaire,
             success 
         });
     } catch (err) {
