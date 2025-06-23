@@ -114,7 +114,7 @@ html(lang="en")
 
       .task, .purchase-item {
         background-color: #1f1f2f;
-        border-left: 5px solid var(--accent);
+        border-left: 10px solid var(--accent);
         border-top: 1px solid var(--accent);
         border-right: 1px solid var(--accent);
         border-bottom: 1px solid var(--accent);
@@ -191,6 +191,10 @@ html(lang="en")
         text-align: center;
       }
 
+      .input-task {
+        width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
@@ -221,18 +225,29 @@ html(lang="en")
               #heure 
           .formDate
             .date-time
-              p Salaire 1000    
+              p Salaire 1000 €   
  
         p.titre Skill Up
         
 
         form(action="/" method="post")
           label(for="task") Tâches :
-          input(type="text" id="task" name="task" required)
+          //- input(type="text" id="task" name="task" required)
+          .dateInput
+            input(type="text" id="task" name="task" class ="input-task" required)
+            //- input(type="number" id="taux" name="taux")
+            select(id="taux" name="taux")
+              option(value="10") 10€/h
+              option(value="12") 12€/h
+              option(value="13") 13€/h
+              option(value="14") 14€/h
+              option(value="15") 15€/h
+              option(value="16") 16€/h
+
           
           label(for="date") Date et Heure début:
           .dateInput
-            input(type="date" id="date" name="date")
+            input(type="date" id="date" name="date" class ="input-task")
             select(id="heure" name="heure")
               option(value="00:00") 00h
               option(value="01:00") 01h
@@ -291,7 +306,7 @@ html(lang="en")
 
           label(for="datef") Date et heure de fin :
           .dateInput
-            input(type="date" id="datef" name="datef")
+            input(type="date" id="datef" name="datef" class ="input-task")
             select(id="heuref" name="heuref")
               option(value="00:00") 00h
               option(value="01:00") 01h
@@ -331,7 +346,7 @@ html(lang="en")
         each task in tasks
           .task(data-task-id=task._id)(class=task.priority)
                 .task-header
-                h3.nomTache #{task.name}
+                h3.nomTache #{task.name} 
                 if task.qui
                   div.nomQui
                     P Chef d'équipe : #{task.qui}
@@ -344,7 +359,7 @@ html(lang="en")
                 if task.description
                   p.taskDescritption Commentaires : #{task.description}
                 .heureTravail
-                  .test Heures de travail : #{task.heureTravail}
+                  .test Résumé : #{task.heureTravail}h ( #{task.montant}€ )
                 button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
 
     script(src="/js/script.js")

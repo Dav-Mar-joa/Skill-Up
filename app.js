@@ -68,11 +68,15 @@ app.post('/', async (req, res) => {
            heureTravail = (24 - parseInt(heureDebut[0])) + parseInt(heureFin[0]);
            console.log("Heures de travail:", heureTravail);
         }
+        const taux = parseInt(req.body.taux) 
+        const montant = heureTravail * taux; // Calcul du montant total
+        console.log("montant",montant)
     const task = {
         name: req.body.task,
         date: dateJ,
         datef: dateF,
         heure: req.body.heure,
+        montant: montant, // Ajouter le montant au document
         heuref: req.body.heuref,
         heureTravail: heureTravail,
         description: req.body.description,
