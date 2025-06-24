@@ -15,11 +15,28 @@ const dbName = process.env.MONGODB_DBNAME;
 
 let db;
 
+// async function connectDB() {
+//     try {
+//         await client.connect();
+//         db = client.db(dbName);
+//         console.log('Connecté à la base de données MongoDB');
+//     } catch (err) {
+//         console.error('Erreur de connexion à la base de données :', err);
+//     }
+// }
+
 async function connectDB() {
     try {
         await client.connect();
         db = client.db(dbName);
         console.log('Connecté à la base de données MongoDB');
+
+        // ✅ Démarrer le serveur ici
+        const PORT = process.env.PORT || 4000;
+        app.listen(PORT, () => {
+            console.log(`Serveur démarré sur le port ${PORT}`);
+        });
+
     } catch (err) {
         console.error('Erreur de connexion à la base de données :', err);
     }
@@ -172,7 +189,7 @@ app.delete('/delete-course/:id', async (req, res) => {
     }
 })
 // Démarrer le serveur sur le port spécifié dans .env ou sur 4000 par défaut
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    console.log(`Serveur démarré sur le port ${PORT}`);
-});
+// const PORT = process.env.PORT || 4000;
+// app.listen(PORT, () => {
+//     console.log(`Serveur démarré sur le port ${PORT}`);
+// });
