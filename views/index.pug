@@ -163,7 +163,7 @@ html(lang="en")
         color: var(--accent);
       }
       .nomTache {
-        border : 1px solid var(--accent);
+        border : 2px solid var(--accent);
         padding: 10px;
         border-radius: 10px;
         margin-right:2rem;
@@ -361,6 +361,7 @@ html(lang="en")
           
 
       .tasks-container
+
         each task in tasks
           .task(data-task-id=task._id)(class=task.priority)
                 .task-header
