@@ -50,6 +50,12 @@ html(lang="en")
         overflow: visible;
       }
 
+      .salaire {
+        color:gold;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+
       .titre {
         text-align: center;
         font-size: 3rem;
@@ -231,7 +237,7 @@ html(lang="en")
               #heure 
           .formDate
             .date-time
-              p Salaire : #{salaire} €   
+              p.salaire Salaire : #{salaire} €   
  
         p.titre Skill Up
         
@@ -250,7 +256,9 @@ html(lang="en")
               option(value="15") 15€/h
               option(value="16") 16€/h
 
-          
+          label(for="qui" class="qui") Chef de mission :
+          textarea(id="qui" name="qui" rows="1") 
+
           label(for="date") Début (Date et heure) :
           .dateInput
             input(type="date" id="date" name="date" class ="input-task")
@@ -340,10 +348,7 @@ html(lang="en")
               option(value="23:00") 23h
           
           label(for="description") Commentaires :
-          textarea(id="description" name="description" rows="1")
-
-          label(for="qui" class="qui") Chef de mission :
-          textarea(id="qui" name="qui" rows="1") 
+          textarea(id="description" name="description" rows="1" )
 
           button(type="submit" class="button-submit-taches") Ajouter
           
@@ -353,7 +358,7 @@ html(lang="en")
           .task(data-task-id=task._id)(class=task.priority)
                 .task-header
                 h3.nomTache #{task.name} 
-                if task.qui
+                if task.qui && task.qui.trim() !== ''
                   div.nomQui
                     P Chef d'équipe : #{task.qui}
                 p.nomTacheHeure Début de mission :
