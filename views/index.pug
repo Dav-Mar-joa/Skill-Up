@@ -247,7 +247,7 @@ html(lang="en")
               option(value="16") 16€/h
 
           
-          label(for="date") Date et Heure début:
+          label(for="date") Début (Date et Heure) :
           .dateInput
             input(type="date" id="date" name="date" class ="input-task")
             select(id="heure" name="heure")
@@ -306,7 +306,7 @@ html(lang="en")
           //-     option(value="22:00") 22h
           //-     option(value="23:00") 23h
 
-          label(for="datef") Date et heure de fin :
+          label(for="datef") Fin (Date et heure) :
           .dateInput
             input(type="date" id="datef" name="datef" class ="input-task")
             select(id="heuref" name="heuref")
@@ -335,10 +335,10 @@ html(lang="en")
               option(value="22:00") 22h
               option(value="23:00") 23h
           
-          label(for="description") Descriptions :
+          label(for="description") Commentaires :
           textarea(id="description" name="description" rows="1")
 
-          label(for="qui" class="qui") Chef de mission
+          label(for="qui" class="qui") Chef de mission :
           textarea(id="qui" name="qui" rows="1") 
 
           button(type="submit" class="button-submit-taches") Ajouter
