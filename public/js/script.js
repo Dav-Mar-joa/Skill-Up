@@ -39,18 +39,48 @@ setInterval(() => {affichageHeure(); }, 1000)
 
 // affichageHeure()
 
+// function deleteTask(button) {
+//     const taskElement = button.closest('.task');
+//     const taskId = taskElement.getAttribute('data-task-id');
+    
+//     fetch(`/delete-task/${taskId}`, {
+//         method: 'DELETE'
+//     }).then(response => {
+//         if (response.ok) {
+//             taskElement.remove();  // Suppression de l'élément DOM après suppression réussie
+//         }
+//     }).catch(error => console.error('Erreur lors de la suppression de la tâche :', error));
+// }
+
 function deleteTask(button) {
     const taskElement = button.closest('.task');
     const taskId = taskElement.getAttribute('data-task-id');
-    
+    const montantElement = taskElement.querySelector('.heureTravail .test');
+
+    // Récupère le montant (en €) de la tâche supprimée
+    const montantMatch = montantElement?.innerText.match(/(\d+)\s?€/);
+    const montant = montantMatch ? parseInt(montantMatch[1]) : 0;
+
     fetch(`/delete-task/${taskId}`, {
         method: 'DELETE'
     }).then(response => {
         if (response.ok) {
-            taskElement.remove();  // Suppression de l'élément DOM après suppression réussie
+            taskElement.remove();
+
+            // Mettre à jour le salaire affiché
+            const salaireText = document.querySelector('.formDate p');
+            if (salaireText && montant) {
+                const salaireMatch = salaireText.innerText.match(/(\d+)\s?€/);
+                if (salaireMatch) {
+                    let currentSalaire = parseInt(salaireMatch[1]);
+                    let nouveauSalaire = currentSalaire - montant;
+                    salaireText.innerText = `Salaire : ${nouveauSalaire} €`;
+                }
+            }
         }
     }).catch(error => console.error('Erreur lors de la suppression de la tâche :', error));
 }
+
 function deleteCourse(button) {
     const courseElement = button.closest('.purchase-item');
     const courseId = courseElement.getAttribute('data-course-id');
