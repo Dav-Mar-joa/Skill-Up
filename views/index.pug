@@ -200,6 +200,14 @@ html(lang="en")
         font-family: 'Press Start 2P', monospace;
       }
 
+      br.small-br {
+        line-height: 0.7;  /* réduit l'espace vertical */
+        content: "";       /* pas obligatoire mais parfois utile */
+        margin: 2px 0;     /* tu peux ajuster la marge aussi */
+        display: block;    /* forcer le saut en bloc */
+        height: 6px;       /* hauteur personnalisée */
+      }
+
       .heureTravail {
         background-color: var(--accent2);
         font-weight: bold;
@@ -265,8 +273,8 @@ html(lang="en")
               option(value="16") 16€/h
 
           label(for="qui" class="qui") Chef de mission :
-          textarea(id="qui" name="qui" rows="1") 
-
+          textarea(id="qui" name="qui" rows="1" class="margin-bottom-10px")  
+          br.small-br
           label(for="date") Début (Date et heure) :
           .dateInput
             input(type="date" id="date" name="date" class ="input-task")
