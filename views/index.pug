@@ -114,6 +114,30 @@ html(lang="en")
         color: #000;
       }
 
+      .button-historique {
+        display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-bottom:10px;
+      }
+
+      .button-historique {
+        background-color: var(--accent2);
+        color:black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-historique:hover {
+        background-color: var(--accent);
+        color: var(--accent2);
+      }
+
       .button-delete {
         background-color: var(--danger);
         color: white;
@@ -218,7 +242,9 @@ html(lang="en")
         border-radius: 10px;
         text-align: center;
       }
-
+      .historique {
+        display: none
+      }
       .input-task {
         width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
@@ -366,29 +392,31 @@ html(lang="en")
           //- label(for="description") Commentaires :
           //- textarea(id="description" name="description" rows="1" )
 
-          button(type="submit" class="button-submit-taches") Ajouter
           
-
+          
+       
       .tasks-container
-
-        each task in tasks
-          .task(data-task-id=task._id)(class=task.priority)
-                .task-header
-                h3.nomTache #{task.name} 
-                if task.qui && task.qui.trim() !== ''
-                  div.nomQui
-                    P Chef d'équipe : #{task.qui}
-                p.nomTacheHeure Début de mission :
-                .dateFormat 
-                  p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
-                p.nomTacheHeure Fin de mission :
-                .dateFormat     
-                  p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
-                if task.description
-                  p.taskDescritption Commentaires : #{task.description}
-                .heureTravail
-                  .test Résumé : #{task.heureTravail}h #{task.montant}€ (#{task.taux}€/h)
-                button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
+        button.button-historique(type="button" id="toggleHistorique") Historique
+        div.historique(id="historique")
+          each task in tasks
+            .task(data-task-id=task._id)(class=task.priority)
+              
+                  .task-header
+                  h3.nomTache #{task.name} 
+                  if task.qui && task.qui.trim() !== ''
+                    div.nomQui
+                      P Chef d'équipe : #{task.qui}
+                  p.nomTacheHeure Début de mission :
+                  .dateFormat 
+                    p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
+                  p.nomTacheHeure Fin de mission :
+                  .dateFormat     
+                    p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
+                  if task.description
+                    p.taskDescritption Commentaires : #{task.description}
+                  .heureTravail
+                    .test Résumé : #{task.heureTravail}h #{task.montant}€ (#{task.taux}€/h)
+                  button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
 
     script(src="/js/script.js")
     script.

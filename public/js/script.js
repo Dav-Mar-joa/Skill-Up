@@ -1,4 +1,13 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("toggleHistorique");
+    const historique = document.getElementById("historique");
 
+    if (btn && historique) {
+      btn.addEventListener("click", () => {
+        historique.style.display = (historique.style.display === "none" || historique.style.display === "") ? "block" : "none";
+      });
+    }
+  });
 
 function affichageHeure(){
     let jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -51,6 +60,8 @@ setInterval(() => {affichageHeure(); }, 1000)
 //         }
 //     }).catch(error => console.error('Erreur lors de la suppression de la tâche :', error));
 // }
+
+
 
 function deleteTask(button) {
     const taskElement = button.closest('.task');
