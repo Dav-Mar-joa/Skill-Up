@@ -58,12 +58,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Route pour soumettre des tâches
 app.post('/', async (req, res) => {
+    // const dateJ = req.body.date 
+    //     ? moment.tz(req.body.date, "Europe/Paris").toDate() 
+    //     : moment.tz(new Date(), "Europe/Paris").toDate();
+    // const dateF = req.body.datef
+    //     ? moment.tz(req.body.datef, "Europe/Paris").toDate() 
+    //     : moment.tz(new Date(), "Europe/Paris").toDate(); 
     const dateJ = req.body.date 
-        ? moment.tz(req.body.date, "Europe/Paris").toDate() 
-        : moment.tz(new Date(), "Europe/Paris").toDate();
-    const dateF = req.body.datef
-        ? moment.tz(req.body.datef, "Europe/Paris").toDate() 
-        : moment.tz(new Date(), "Europe/Paris").toDate(); 
+        ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
+        : moment.tz('Europe/Paris').startOf('day').toDate();
+
+    const dateF = req.body.datef 
+        ? moment.tz(req.body.datef + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
+        : moment.tz('Europe/Paris').startOf('day').toDate();
         const dateSimple= moment.tz(dateJ, "Europe/Paris").format('YYYY-MM-DD'); 
         console.log("dateSimple:", dateSimple); 
         const dateSimpleFin= moment.tz(dateF, "Europe/Paris").format('YYYY-MM-DD'); 
