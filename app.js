@@ -97,8 +97,8 @@ app.post('/', async (req, res) => {
         console.log("montant",montant)
     const task = {
         name: req.body.task,
-        date: dateJ,
-        datef: dateF,
+        date: dateSimple,
+        datef: dateSimpleFin,
         heure: req.body.heure,
         montant: montant, // Ajouter le montant au document
         taux: req.body.taux,
