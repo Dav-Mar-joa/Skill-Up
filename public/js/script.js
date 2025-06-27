@@ -9,6 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("toggleTache");
+    const tache= document.getElementById("tache");
+
+    if (btn && tache) {
+      btn.addEventListener("click", () => {
+        tache.style.display = (tache.style.display === "none" || tache.style.display === "") ? "block" : "none";
+      });
+    }
+  });
+
 function affichageHeure(){
     let jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
     let mois = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];

@@ -289,22 +289,12 @@ html(lang="en")
             .date-time
               p.salaire Salaire : #{salaire} €   
  
-        p.titre Skil Up
+        p.titre Skill Up
         
 
         form(action="/" method="post")
-          label(for="task") Mission et heures de pauses:
-          .dateInput
-            input(type="text" id="pauseText" name="pauseText" class ="input-task" required)
-            //- input(type="number" id="taux" name="taux")
-            select(id="pause" name="pause")
-              option(value="0") 0h
-              option(value="1") 1h
-              option(value="2") 2h
+          label(for="task") Mission :
           //- input(type="text" id="task" name="task" required)
-          
-
-          label(for="qui" class="qui") Chef de mission :
           .dateInput
             input(type="text" id="task" name="task" class ="input-task" required)
             //- input(type="number" id="taux" name="taux")
@@ -315,7 +305,9 @@ html(lang="en")
               option(value="14") 14€/h
               option(value="15") 15€/h
               option(value="16") 16€/h
-           
+
+          label(for="qui" class="qui") Chef de mission :
+          textarea(id="qui" name="qui" rows="1" class="margin-bottom-10px")  
           br.small-br
           label(for="date") Début (Date et heure) :
           .dateInput
@@ -344,7 +336,7 @@ html(lang="en")
               option(value="20:00") 20h
               option(value="21:00") 21h
               option(value="22:00") 22h
-              option(value="23:00") 23h     
+              option(value="23:00") 23h
 
           //- label(for="dateOnly") Date :
           //- input(type="date" id="dateOnly" name="dateOnly")

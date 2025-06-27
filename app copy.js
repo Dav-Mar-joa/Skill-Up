@@ -14,6 +14,17 @@ const client = new MongoClient(connectionString);
 const dbName = process.env.MONGODB_DBNAME;
 
 let db;
+
+// async function connectDB() {
+//     try {
+//         await client.connect();
+//         db = client.db(dbName);
+//         console.log('Connecté à la base de données MongoDB');
+//     } catch (err) {
+//         console.error('Erreur de connexion à la base de données :', err);
+//     }
+// }
+
 async function connectDB() {
     try {
         await client.connect();
@@ -46,7 +57,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Route pour soumettre des tâches
-app.post('/login', async (req, res) => {
+app.post('/', async (req, res) => {
+    // const dateJ = req.body.date 
+    //     ? moment.tz(req.body.date, "Europe/Paris").toDate() 
+    //     : moment.tz(new Date(), "Europe/Paris").toDate();
+    // const dateF = req.body.datef
+    //     ? moment.tz(req.body.datef, "Europe/Paris").toDate() 
+    //     : moment.tz(new Date(), "Europe/Paris").toDate(); 
     const dateJ = req.body.date 
         ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
         : moment.tz('Europe/Paris').startOf('day').toDate();
@@ -55,9 +72,12 @@ app.post('/login', async (req, res) => {
         ? moment.tz(req.body.datef + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
         : moment.tz('Europe/Paris').startOf('day').toDate();
         const dateSimple= moment.tz(dateJ, "Europe/Paris").format('YYYY-MM-DD'); 
+        console.log("dateSimple:", dateSimple); 
         const dateSimpleFin= moment.tz(dateF, "Europe/Paris").format('YYYY-MM-DD'); 
+        console.log("dateSimpleFin:", dateSimpleFin); 
         let heureTravail = 0; // Initialiser heureTravail à 0
         const pause = parseInt(req.body.pause);
+        console.log("Pause:", pause); // Afficher la pause pour le débogage
     // Vérifier si la date de fin est le même jour que la date de début
         if(dateSimpleFin === dateSimple) {
         //    const heureTravail=req.body.heuref - req.body.heure; 
@@ -101,6 +121,21 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.post('/Courses', async (req, res) => {
+    const course = {
+        name: req.body.buy,
+        priority2: req.body.priority2
+    };
+
+    try {
+        const collection = db.collection('Courses'); // Utiliser la collection "courses"
+        await collection.insertOne(course);
+        res.redirect('/?successCourse=true'); // Redirection avec un paramètre de succès pour les courses
+    } catch (err) {
+        console.error('Erreur lors de l\'ajout de la course :', err);
+        res.status(500).send('Erreur lors de l\'ajout de la course');
+    }
+});
 
 // Route pour la page d'accueil
 app.get('/', async (req, res) => {
@@ -113,6 +148,9 @@ app.get('/', async (req, res) => {
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
+
+        // console.log('Today:', today);
+        // console.log('Tomorrow:', tomorrow);
         let salaire = 0;
         const collection = db.collection(process.env.MONGODB_COLLECTION);
         const collectionCourses = db.collection('Courses');
@@ -148,3 +186,19 @@ app.delete('/delete-task/:id', async (req, res) => {
         res.status(500).send('Erreur lors de la suppression de la tâche');
     }
 });
+app.delete('/delete-course/:id', async (req, res) => {
+    const courseId = req.params.id;
+    try {
+        const collection = db.collection('Courses');
+        await collection.deleteOne({ _id: new ObjectId(courseId) });
+        res.status(200).send('Course supprimée avec succès');
+    } catch (err) {
+        console.error('Erreur lors de la suppression de la course :', err);
+        res.status(500).send('Erreur lors de la suppression de la course');
+    }
+})
+// Démarrer le serveur sur le port spécifié dans .env ou sur 4000 par défaut
+// const PORT = process.env.PORT || 4000;
+// app.listen(PORT, () => {
+//     console.log(`Serveur démarré sur le port ${PORT}`);
+// });
