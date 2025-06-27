@@ -3,7 +3,7 @@
     "short_name": "Skill Up",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#333333",
+    "background_color": "#2c2c3a",
     "theme_color": "#007bff",
     "description": "Une brève description de ton application",
     "icons": [
