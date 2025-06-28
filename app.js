@@ -55,13 +55,13 @@ async function connectDB() {
 //   next();
 // });
 
-app.use((req, res, next) => {
-  const allowedPaths = ['/login', '/createUser','/', '/manifest.json', '/service-worker.js'];
-  if (!req.session.user && !allowedPaths.includes(req.path)) {
-    return res.redirect('/login');
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   const allowedPaths = ['/login', '/createUser','/', '/manifest.json', '/service-worker.js'];
+//   if (!req.session.user && !allowedPaths.includes(req.path)) {
+//     return res.redirect('/login');
+//   }
+//   next();
+// });
 
 connectDB();
 
