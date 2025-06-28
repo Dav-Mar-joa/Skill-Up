@@ -7,6 +7,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
+const bcrypt = require('bcryptjs');
 
 
 const app = express()
@@ -100,10 +101,10 @@ app.post('/login', async (req, res) => {
         req.session.user = {
             _id: userLogged._id,
             username: userLogged.username,
-            firstname: userLogged.firstname,
-            lastname: userLogged.lastname,
-            email: userLogged.email,
-            avatar: userLogged.avatar
+            // firstname: userLogged.firstname,
+            // lastname: userLogged.lastname,
+            // email: userLogged.email,
+            // avatar: userLogged.avatar
         };
 
         // Redirection selon le rôle de l'utilisateur
@@ -119,6 +120,41 @@ app.post('/login', async (req, res) => {
         res.status(500).send("Erreur lors de la connexion");
     }
 });
+
+app.get('/createUser', async (req, res) => {
+
+    res.render('createUser');  } )
+
+app.post('/createUser', async (req, res) => {
+  const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
+    console.log("Username:", username);
+    console.log("Password:", password);  
+    console.log("secret-question", secretQuestion);                   
+  try {
+    const usersCollection = db.collection('Users');
+    const existingUser = await usersCollection.findOne({ username });
+
+    if (existingUser) {
+      // On renvoie la page avec un message d'erreur
+      return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = {
+      username,
+      password: hashedPassword,
+      secretQuestion,
+    };
+
+    await usersCollection.insertOne(user);
+
+    res.redirect('/login'); // ou vers la page principale directement
+  } catch (err) {
+    console.error('Erreur lors de la création de l\'utilisateur :', err);
+    res.status(500).send('Erreur lors de la création de l\'utilisateur');
+  }
+}); 
 
 // Route pour soumettre des tâches
 app.post('/', async (req, res) => {
@@ -175,7 +211,6 @@ app.post('/', async (req, res) => {
         res.status(500).send('Erreur lors de l\'ajout de la tâche');
     }
 });
-
 
 // Route pour la page d'accueil
 app.get('/', async (req, res) => {
