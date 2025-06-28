@@ -284,21 +284,19 @@ html(lang="en")
           .formDate
             .date-time
               #dateJour 
-              #heure 
-   
+              #heure    
  
         p.titre Skil Up
         form(action="/login" method="post")
-          label(for="username") Login
-          input(type="text" id="username" name="username" class ="input-task" required)
+          label(for="login") Login
+
+          input(type="text" id="login" name="login" class ="input-task" required)
  
 
-          label(for="password" class="qui") Mot de passe :
-          input(type="text" id="password" name="password" class ="input-task" required)
+          label(for="mdp" class="qui") Mot de passe :
+          input(type="text" id="mdp" name="mdp" class ="input-task" required)
 
-          button(type="submit" class="button-submit-taches") Connection
-        form(action="/createUser" method="get")  
-          button(type="submit" class="button-historique") Créer un compte
+          button(type="submit" class="button-submit-taches") Connection 
           
     script(src="/js/script.js")
     script.
