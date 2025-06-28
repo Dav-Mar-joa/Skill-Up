@@ -155,6 +155,18 @@ html(lang="en")
       .button-delete:hover {
         background-color: #c0392b;
       }
+      .button-logout {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+        margin-top: 0px;
+        margin-bottom : 25px;
+        padding: 12px;
+      }
+
+      .button-logout:hover {
+        background-color: #c0392b;
+      }
 
       .task, .purchase-item {
         background-color: #1f1f2f;
@@ -433,7 +445,9 @@ html(lang="en")
                   .heureTravail
                     .test Résumé : #{task.heureTravail}h #{task.montant}€ (#{task.taux}€/h)
                   button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
-
+      
+      form(action="/logout" method="get")
+        button(type="submit" class="button-delete") Déconnexion
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
