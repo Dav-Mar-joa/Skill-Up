@@ -17,7 +17,7 @@ const sessionMiddleware = session({
     saveUninitialized: false,
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI,
-        dbName: 'SkillUp', // Nom de la base de données
+        dbName: 'SkilUp', // Nom de la base de données
         collectionName: 'production', // Nom de la collection pour les sessions
     }),
     cookie: {
