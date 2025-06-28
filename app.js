@@ -90,21 +90,24 @@ app.get('/login', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-
+    console.log("username:", username);
     try {
         const collection = db.collection('Users');
         const userLogged = await collection.findOne({ username });
+        // console.log('collection:', collection);
+        console.log('userLogged:', userLogged);
 
         // Vérifier si l'utilisateur existe
         if (!userLogged) {
             return res.render('login', { message: "Login ou mot de passe erroné !" });
         }
-        if (userLogged.isLoggedIn) {
-            return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
-        }
+        // if (userLogged.isLoggedIn) {
+        //     return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
+        // }
 
         // Vérifier si le mot de passe correspond au hash stocké
         const isMatch = await bcrypt.compare(password, userLogged.password);
+        console.log("isMatch:", isMatch);
         if (!isMatch) {
             return res.render('login', { message: "Login ou mot de passe erroné !" });
         }
@@ -118,10 +121,6 @@ app.post('/login', async (req, res) => {
         req.session.user = {
             _id: userLogged._id,
             username: userLogged.username,
-            // firstname: userLogged.firstname,
-            // lastname: userLogged.lastname,
-            // email: userLogged.email,
-            // avatar: userLogged.avatar
         };
 
         // Redirection selon le rôle de l'utilisateur
@@ -130,8 +129,9 @@ app.post('/login', async (req, res) => {
             return res.redirect('/admin');
         } else {
             console.log("Utilisateur connecté :", req.session.user.username);
-            return res.redirect('/chat');
-        }
+            console.log("Session utilisateur :", req.session.user);
+            return res.redirect('/');
+                    }
     } catch (err) {
         console.error("Erreur lors de la connexion :", err);
         res.status(500).send("Erreur lors de la connexion");

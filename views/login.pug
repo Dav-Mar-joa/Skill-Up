@@ -290,11 +290,11 @@ html(lang="en")
         form(action="/login" method="post")
           label(for="login") Login
 
-          input(type="text" id="login" name="login" class ="input-task" required)
+          input(type="text" id="username" name="username" class ="input-task" required)
  
 
           label(for="mdp" class="qui") Mot de passe :
-          input(type="text" id="mdp" name="mdp" class ="input-task" required)
+          input(type="text" id="password" name="password" class ="input-task" required)
 
           button(type="submit" class="button-submit-taches") Connection 
         form(action="/createUser" method="get")  
