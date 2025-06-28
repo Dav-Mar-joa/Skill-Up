@@ -56,7 +56,7 @@ async function connectDB() {
 // });
 
 app.use((req, res, next) => {
-  const allowedPaths = ['/login', '/createUser', '/manifest.json', '/service-worker.js'];
+  const allowedPaths = ['/login', '/createUser','/', '/manifest.json', '/service-worker.js'];
   if (!req.session.user && !allowedPaths.includes(req.path)) {
     return res.redirect('/login');
   }
