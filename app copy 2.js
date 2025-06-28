@@ -53,13 +53,6 @@ async function connectDB() {
     }
 }
 
-app.use((req, res, next) => {
-  if (!req.session.user && req.path !== '/login' && req.path !== '/createUser') {
-    return res.redirect('/login');
-  }
-  next();
-});
-
 connectDB();
 
 // Définir Pug comme moteur de vues
@@ -74,17 +67,35 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware pour parser les données du formulaire
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use((req, res, next) => {
+  const isAuth = !!req.session.user;
+  const openPaths = ['/login', '/createUser'];
+
+  // Si l'utilisateur est connecté ET qu'il veut aller sur /login ou /createUser → on le redirige vers /
+  if (isAuth && openPaths.includes(req.path)) {
+    return res.redirect('/');
+  }
+
+  // Si l'utilisateur N'EST PAS connecté ET qu'il essaie d'aller sur une route protégée → redirection vers /login
+  if (!isAuth && !openPaths.includes(req.path) && !req.path.startsWith('/public')) {
+    return res.redirect('/login');
+  }
+
+  next();
+});
+
 app.get('/login', async (req, res) => {
         res.render('login');
 });
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log("Username:", username);
-    console .log("Password:", password);
+    console.log("username:", username);
     try {
         const collection = db.collection('Users');
         const userLogged = await collection.findOne({ username });
+        // console.log('collection:', collection);
+        console.log('userLogged:', userLogged);
 
         // Vérifier si l'utilisateur existe
         if (!userLogged) {
@@ -96,18 +107,20 @@ app.post('/login', async (req, res) => {
 
         // Vérifier si le mot de passe correspond au hash stocké
         const isMatch = await bcrypt.compare(password, userLogged.password);
+        console.log("isMatch:", isMatch);
         if (!isMatch) {
             return res.render('login', { message: "Login ou mot de passe erroné !" });
         }
+
+        await collection.updateOne(
+            { _id: userLogged._id },
+            { $set: { isLoggedIn: true } }
+        );
 
         // Création de la session utilisateur après authentification réussie
         req.session.user = {
             _id: userLogged._id,
             username: userLogged.username,
-            // firstname: userLogged.firstname,
-            // lastname: userLogged.lastname,
-            // email: userLogged.email,
-            // avatar: userLogged.avatar
         };
 
         // Redirection selon le rôle de l'utilisateur
@@ -116,8 +129,9 @@ app.post('/login', async (req, res) => {
             return res.redirect('/admin');
         } else {
             console.log("Utilisateur connecté :", req.session.user.username);
+            console.log("Session utilisateur :", req.session.user);
             return res.redirect('/');
-        }
+                    }
     } catch (err) {
         console.error("Erreur lors de la connexion :", err);
         res.status(500).send("Erreur lors de la connexion");
@@ -157,12 +171,10 @@ app.post('/createUser', async (req, res) => {
     console.error('Erreur lors de la création de l\'utilisateur :', err);
     res.status(500).send('Erreur lors de la création de l\'utilisateur');
   }
-});   
+}); 
 
 // Route pour soumettre des tâches
 app.post('/', async (req, res) => {
-    console.log("userId:", req.session.user?._id);
-    console.log("username:", req.session.user?.username);
     const dateJ = req.body.date 
         ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
         : moment.tz('Europe/Paris').startOf('day').toDate();
@@ -174,127 +186,84 @@ app.post('/', async (req, res) => {
         const dateSimpleFin= moment.tz(dateF, "Europe/Paris").format('YYYY-MM-DD'); 
         let heureTravail = 0; // Initialiser heureTravail à 0
         const pause = parseInt(req.body.pause);
-
-        if (dateSimpleFin === dateSimple) {
-            const heureDebut = req.body.heure.split(':');
-            const heureFin = req.body.heuref.split(':');
-            heureTravail = (heureFin[0] - heureDebut[0] - pause);
-        } else {
-            const heureDebut = req.body.heure.split(':');
-            const heureFin = req.body.heuref.split(':');
-            heureTravail = (24 - parseInt(heureDebut[0])) + parseInt(heureFin[0] - pause);
+    // Vérifier si la date de fin est le même jour que la date de début
+        if(dateSimpleFin === dateSimple) {
+        //    const heureTravail=req.body.heuref - req.body.heure; 
+           const heureDebut=req.body.heure.split(':');
+           const heureFin=req.body.heuref.split(':');
+           heureTravail = (heureFin[0] - heureDebut[0]-pause); // Calculer la différence d'heures
+        //    console.log("type of heure debut:", typeof (req.body.heure));
+        //    console.log("heure fin:", req.body.heuref);
+           console.log("Heures de travail:", heureTravail);
         }
-
-        const taux = parseInt(req.body.taux);
-        const montant = heureTravail * taux;
-
-        const task = {
-            name: req.body.task,
-            date: dateSimple,
-            datef: dateSimpleFin,
-            heure: req.body.heure,
-            heuref: req.body.heuref,
-            heureTravail: heureTravail,
-            montant: montant,
-            taux: req.body.taux,
-            description: req.body.description,
-            priority: req.body.priority,
-            qui: req.body.qui
-        };
-
-        try {
-            const collection = db.collection('Users');
-            await collection.updateOne(
-            { _id: new ObjectId(req.session.user._id) },
-            { $push: { tasks: task } }
-            );
-            res.redirect('/?success=true');
-        } catch (err) {
-            console.error('Erreur lors de l\'ajout de la tâche :', err);
-            res.status(500).send('Erreur lors de l\'ajout de la tâche');
+        else{
+           const heureDebut=req.body.heure.split(':');
+           const heureFin=req.body.heuref.split(':');
+           heureTravail = (24 - parseInt(heureDebut[0])) + parseInt(heureFin[0]-pause); // Calculer la différence d'heures
+           console.log("Heures de travail:", heureTravail);
         }
-        });
+        const taux = parseInt(req.body.taux) 
+        const montant = heureTravail * taux; // Calcul du montant total
+        console.log("montant",montant)
+    const task = {
+        name: req.body.task,
+        date: dateSimple,
+        datef: dateSimpleFin,
+        heure: req.body.heure,
+        montant: montant, // Ajouter le montant au document
+        taux: req.body.taux,
+        heuref: req.body.heuref,
+        heureTravail: heureTravail,
+        description: req.body.description,
+        priority: req.body.priority,
+        qui: req.body.qui
+    };
 
+    try {
+        const collection = db.collection(process.env.MONGODB_COLLECTION);
+        await collection.insertOne(task);
+        res.redirect('/?success=true'); // Redirection avec un paramètre de succès
+    } catch (err) {
+        console.error('Erreur lors de l\'ajout de la tâche :', err);
+        res.status(500).send('Erreur lors de l\'ajout de la tâche');
+    }
+});
 
 // Route pour la page d'accueil
-// app.get('/', async (req, res) => {
-//     const success = req.query.success === 'true'; // Vérification du paramètre de succès
-//     const successCourse = req.query.successCourse === 'true';
-//      console.log("userId:", req.session.user?._id);
-//     console.log("username:", req.session.user?.username);
-
-//     try {
-//         const today = new Date();
-//         today.setHours(0, 0, 0, 0);
-//         const tomorrow = new Date(today);
-//         tomorrow.setDate(today.getDate() + 1);
-//         let salaire = 0;
-//         const collection = db.collection(process.env.MONGODB_COLLECTION);
-//         const collectionCourses = db.collection('Courses');
-//         const tasks = await collection.find({ userId: req.session.user?._id }).sort({ date: 1 }).toArray();
-//         const courses = await collectionCourses.find({}).toArray();
-//         tasks.forEach(task => {
-//         //   console.log('Original Date:', task.date.toString().slice(0, 10));
-//           salaire = salaire + task.montant; // Calcul du salaire total
-//         });
-
-//         res.render('index', { 
-//             title: 'Mon site', 
-//             message: 'Bienvenue sur ma montre digitale', 
-//             tasks: tasks || [], 
-//             courses: courses || [],
-//             successCourse,
-//             salaire,
-//             success 
-//         });
-//     } catch (err) {
-//         console.error('Erreur lors de la récupération des tâches :', err);
-//         res.status(500).send('Erreur lors de la récupération des tâches');
-//     }
-// });
 app.get('/', async (req, res) => {
-  const success = req.query.success === 'true';
-  const successCourse = req.query.successCourse === 'true';
+    const success = req.query.success === 'true'; // Vérification du paramètre de succès
+    const successCourse = req.query.successCourse === 'true';
+     
 
-  try {
-    const collection = db.collection('Users');
-    const user = await collection.findOne({ _id: new ObjectId(req.session.user._id) });
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        let salaire = 0;
+        const collection = db.collection(process.env.MONGODB_COLLECTION);
+        const collectionCourses = db.collection('Courses');
+        const tasks = await collection.find({}).sort({ date: 1 }).toArray();
+        const courses = await collectionCourses.find({}).toArray();
+        tasks.forEach(task => {
+        //   console.log('Original Date:', task.date.toString().slice(0, 10));
+          salaire = salaire + task.montant; // Calcul du salaire total
+        });
 
-    const tasks = user?.tasks || [];
-
-    let salaire = 0;
-    tasks.forEach(task => {
-      salaire += task.montant;
-    });
-
-    const collectionCourses = db.collection('Courses');
-    const courses = await collectionCourses.find({}).toArray();
-
-    res.render('index', {
-      tasks: tasks,
-      courses: courses,
-      salaire: salaire,
-      success: success,
-      successCourse: successCourse
-    });
-
-  } catch (err) {
-    console.error('Erreur lors de la récupération des tâches :', err);
-    res.status(500).send('Erreur lors de la récupération des tâches');
-  }
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      console.error('Erreur déconnexion:', err);
-      return res.status(500).send('Erreur lors de la déconnexion');
+        res.render('index', { 
+            title: 'Mon site', 
+            message: 'Bienvenue sur ma montre digitale', 
+            tasks: tasks || [], 
+            courses: courses || [],
+            successCourse,
+            salaire,
+            success 
+        });
+    } catch (err) {
+        console.error('Erreur lors de la récupération des tâches :', err);
+        res.status(500).send('Erreur lors de la récupération des tâches');
     }
-    res.clearCookie('connect.sid'); // supprimer cookie session
-    res.redirect('/login');
-  });
 });
-
 app.delete('/delete-task/:id', async (req, res) => {
     const taskId = req.params.id;
     try {

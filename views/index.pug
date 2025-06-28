@@ -411,28 +411,28 @@ html(lang="en")
           
           
        
-      //- .tasks-container
-      //-   button.button-historique(type="button" id="toggleHistorique") Historique
-      //-   div.historique(id="historique")
-      //-     each task in tasks
-      //-       .task(data-task-id=task._id)(class=task.priority)
+      .tasks-container
+        button.button-historique(type="button" id="toggleHistorique") Historique
+        div.historique(id="historique")
+          each task in tasks
+            .task(data-task-id=task._id)(class=task.priority)
               
-      //-             .task-header
-      //-             h3.nomTache #{task.name} 
-      //-             if task.qui && task.qui.trim() !== ''
-      //-               div.nomQui
-      //-                 P Chef d'équipe : #{task.qui}
-      //-             p.nomTacheHeure Début de mission :
-      //-             .dateFormat 
-      //-               p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
-      //-             p.nomTacheHeure Fin de mission :
-      //-             .dateFormat     
-      //-               p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
-      //-             if task.description
-      //-               p.taskDescritption Commentaires : #{task.description}
-      //-             .heureTravail
-      //-               .test Résumé : #{task.heureTravail}h #{task.montant}€ (#{task.taux}€/h)
-      //-             button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
+                  .task-header
+                  h3.nomTache #{task.name} 
+                  if task.qui && task.qui.trim() !== ''
+                    div.nomQui
+                      P Chef d'équipe : #{task.qui}
+                  p.nomTacheHeure Début de mission :
+                  .dateFormat 
+                    p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
+                  p.nomTacheHeure Fin de mission :
+                  .dateFormat     
+                    p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
+                  if task.description
+                    p.taskDescritption Commentaires : #{task.description}
+                  .heureTravail
+                    .test Résumé : #{task.heureTravail}h #{task.montant}€ (#{task.taux}€/h)
+                  button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
 
     script(src="/js/script.js")
     script.
