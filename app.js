@@ -47,9 +47,17 @@ async function connectDB() {
   }
 }
 
-// Middleware de protection des routes (hors login et createUser)
+// // Middleware de protection des routes (hors login et createUser)
+// app.use((req, res, next) => {
+//   if (!req.session.user && !['/login', '/createUser'].includes(req.path)) {
+//     return res.redirect('/login');
+//   }
+//   next();
+// });
+
 app.use((req, res, next) => {
-  if (!req.session.user && !['/login', '/createUser'].includes(req.path)) {
+  const allowedPaths = ['/login', '/createUser', '/manifest.json', '/service-worker.js'];
+  if (!req.session.user && !allowedPaths.includes(req.path)) {
     return res.redirect('/login');
   }
   next();
