@@ -42,7 +42,7 @@ app.use(session({
   },
   rolling: true                 // <–– renouvelle maxAge à chaque requête
 }));
-app.use(sessionMiddleware);
+// app.use(sessionMiddleware);
 
 // Connexion à MongoDB
 // const connectionString = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`;
