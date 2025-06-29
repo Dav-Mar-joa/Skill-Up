@@ -1,5 +1,5 @@
 {
-    "name": "Skill Up",
+    "name": "Skil Up",
     "short_name": "Skill Up",
     "start_url": "/",
     "display": "standalone",
@@ -8,13 +8,13 @@
     "description": "Une brève description de ton application",
     "icons": [
       {
-        "src": "/assets/icons/icon192.JPG",
-        "type": "image/JPG",
+        "src": "/assets/icons/icon192.png",
+        "type": "image/png",
         "sizes": "192x192"
       },
       {
-        "src": "/assets/icons/icon512.JPG",
-        "type": "image/JPG",
+        "src": "/assets/icons/icon512.png",
+        "type": "image/png",
         "sizes": "512x512"
       }
     ]
