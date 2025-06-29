@@ -12,21 +12,36 @@ const bcrypt = require('bcryptjs');
 
 const app = express()
 app.use(cookieParser());
-const sessionMiddleware = session({
-    secret: process.env.JWT_SECRET || 'default-secret',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI,
-        dbName: 'SkilUp', // Nom de la base de données
-        collectionName: 'production', // Nom de la collection pour les sessions
-    }),
-    cookie: {
-        secure: false, // Mettre true en production avec HTTPS
-        maxAge: 30*24 * 60 * 60 * 1000, // Durée de vie des cookies (30 jour ici)
-    },
-});;
-
+// const sessionMiddleware = session({
+//     secret: process.env.JWT_SECRET || 'default-secret',
+//     resave: false,
+//     saveUninitialized: false,
+//     store: MongoStore.create({
+//         mongoUrl: process.env.MONGODB_URI,
+//         dbName: 'SkilUp', // Nom de la base de données
+//         collectionName: 'production', // Nom de la collection pour les sessions
+//     }),
+//     cookie: {
+//         secure: false, // Mettre true en production avec HTTPS
+//         maxAge: 30*24 * 60 * 60 * 1000, // Durée de vie des cookies (30 jour ici)
+//     },
+// });;
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'default-secret',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    dbName: 'SkilUp',
+    collectionName: 'production',
+  }),
+  cookie: {
+    secure: false,              // true si HTTPS
+    httpOnly: true,             // interdit l'accès JS au cookie
+    maxAge: 30 * 24 * 60 * 60 * 1000  // 30 jours
+  },
+  rolling: true                 // <–– renouvelle maxAge à chaque requête
+}));
 app.use(sessionMiddleware);
 
 // Connexion à MongoDB
