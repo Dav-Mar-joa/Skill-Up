@@ -8,13 +8,13 @@
     "description": "Une brève description de ton application",
     "icons": [
       {
-        "src": "/assets/icons/icon192.png",
-        "type": "image/png",
+        "src": "/assets/icons/icon192.jg",
+        "type": "image/jpg",
         "sizes": "192x192"
       },
       {
-        "src": "/assets/icons/icon512.png",
-        "type": "image/png",
+        "src": "/assets/icons/icon512.jpg",
+        "type": "image/jpg",
         "sizes": "512x512"
       }
     ]
