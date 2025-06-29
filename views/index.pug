@@ -431,7 +431,7 @@ html(lang="en")
                   if task.description
                     p.taskDescritption Commentaires : #{task.description}
                   .heureTravail
-                    .test #{task.heureTravail}h = #{task.montant}€ (#{task.taux}€/h - #{task.pause}h de pause)
+                    .test #{task.montant} : €#{task.heureTravail}h (#{task.taux}€/h - #{task.pause}h de pause)
                   button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
       form(action="/logout" method="get")
         button(type="submit" class="button-delete") Déconnexion
