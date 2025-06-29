@@ -420,6 +420,7 @@ app.post('/', async (req, res) => {
     datef: dateSimpleFin,
     heure: req.body.heure,
     heuref: req.body.heuref,
+    pause:pause,
     heureTravail,
     montant,
     taux,
