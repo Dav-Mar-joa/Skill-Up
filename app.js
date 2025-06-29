@@ -233,7 +233,7 @@ app.post('/createUser', async (req, res) => {
 //     }
 // });
 
-// // Route pour la page d'accueil
+// // // Route pour la page d'accueil
 // app.get('/', async (req, res) => {
 //     const success = req.query.success === 'true'; // Vérification du paramètre de succès
 //     const successCourse = req.query.successCourse === 'true';
@@ -268,12 +268,124 @@ app.post('/createUser', async (req, res) => {
 //         res.status(500).send('Erreur lors de la récupération des tâches');
 //     }
 // });
-// ROUTE POUR SOUMETTRE DES TÂCHES
-app.post('/', async (req, res) => {
-  const user = req.session.user || "";
-  if (!user) {
-    return res.redirect('/login'); // Redirection si l'utilisateur n'est pas connecté
+// // ROUTE POUR SOUMETTRE DES TÂCHES
+// app.post('/', async (req, res) => {
+//   const user = req.session.user || "";
+//   if (!user) {
+//     return res.redirect('/login'); // Redirection si l'utilisateur n'est pas connecté
+//   }
+
+//   const dateJ = req.body.date
+//     ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
+//     : moment.tz('Europe/Paris').startOf('day').toDate();
+
+//   const dateF = req.body.datef
+//     ? moment.tz(req.body.datef + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
+//     : moment.tz('Europe/Paris').startOf('day').toDate();
+
+//   const dateSimple = moment.tz(dateJ, "Europe/Paris").format('YYYY-MM-DD');
+//   const dateSimpleFin = moment.tz(dateF, "Europe/Paris").format('YYYY-MM-DD');
+
+//   let heureTravail = 0; // Initialiser heureTravail à 0
+//   const pause = parseInt(req.body.pause) || 0;
+
+//   if (dateSimpleFin === dateSimple) {
+//     const heureDebut = req.body.heure.split(':');
+//     const heureFin = req.body.heuref.split(':');
+//     heureTravail = (parseInt(heureFin[0]) - parseInt(heureDebut[0]) - pause);
+//     console.log("Heures de travail (même jour):", heureTravail);
+//   } else {
+//     const heureDebut = req.body.heure.split(':');
+//     const heureFin = req.body.heuref.split(':');
+//     heureTravail = (24 - parseInt(heureDebut[0])) + parseInt(heureFin[0]) - pause;
+//     console.log("Heures de travail (jours différents):", heureTravail);
+//   }
+
+//   const taux = parseInt(req.body.taux) || 0;
+//   const montant = heureTravail * taux;
+
+//   console.log("Montant calculé :", montant);
+
+//   const task = {
+//     user: user, // ✅ Association de l'utilisateur
+//     name: req.body.task,
+//     date: dateSimple,
+//     datef: dateSimpleFin,
+//     heure: req.body.heure,
+//     montant: montant,
+//     taux: req.body.taux,
+//     heuref: req.body.heuref,
+//     heureTravail: heureTravail,
+//     description: req.body.description,
+//     priority: req.body.priority,
+//     qui: req.body.qui
+//   };
+
+//   try {
+//     const collection = db.collection('Users');
+//                 await collection.updateOne(
+//                 { _id: new ObjectId(req.session.user._id) },
+//                 { $push: { tasks: task } }
+//                 );
+//                 res.redirect('/?success=true');
+//             } catch (err) {
+//                 console.error('Erreur lors de l\'ajout de la tâche :', err);
+//                 res.status(500).send('Erreur lors de l\'ajout de la tâche');
+//             }
+// });
+
+// const { ObjectId } = require('mongodb');
+
+// ROUTE GET /
+app.get('/', async (req, res) => {
+  const success = req.query.success === 'true';
+  const successCourse = req.query.successCourse === 'true';
+
+  if (!req.session.user) {
+    return res.redirect('/login');
   }
+
+  try {
+    const userId = new ObjectId(req.session.user._id);
+
+    const collection = db.collection('Users');
+    const user = await collection.findOne({ _id: userId });
+
+    if (!user) {
+      return res.redirect('/login');
+    }
+
+    const tasks = user.tasks || [];
+    let salaire = 0;
+    tasks.forEach(task => {
+      salaire += task.montant;
+    });
+
+    const collectionCourses = db.collection('Courses');
+    const courses = await collectionCourses.find({}).toArray();
+
+    res.render('index', {
+      title: 'Mon site',
+      message: 'Bienvenue sur ma montre digitale',
+      tasks,
+      courses: courses || [],
+      successCourse,
+      salaire,
+      success
+    });
+  } catch (err) {
+    console.error('Erreur lors de la récupération des tâches :', err);
+    res.status(500).send('Erreur lors de la récupération des tâches');
+  }
+});
+
+// ROUTE POST /
+app.post('/', async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  const userId = new ObjectId(req.session.user._id);
 
   const dateJ = req.body.date
     ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
@@ -286,45 +398,45 @@ app.post('/', async (req, res) => {
   const dateSimple = moment.tz(dateJ, "Europe/Paris").format('YYYY-MM-DD');
   const dateSimpleFin = moment.tz(dateF, "Europe/Paris").format('YYYY-MM-DD');
 
-  let heureTravail = 0; // Initialiser heureTravail à 0
+  let heureTravail = 0;
   const pause = parseInt(req.body.pause) || 0;
 
   if (dateSimpleFin === dateSimple) {
     const heureDebut = req.body.heure.split(':');
     const heureFin = req.body.heuref.split(':');
     heureTravail = (parseInt(heureFin[0]) - parseInt(heureDebut[0]) - pause);
-    console.log("Heures de travail (même jour):", heureTravail);
   } else {
     const heureDebut = req.body.heure.split(':');
     const heureFin = req.body.heuref.split(':');
     heureTravail = (24 - parseInt(heureDebut[0])) + parseInt(heureFin[0]) - pause;
-    console.log("Heures de travail (jours différents):", heureTravail);
   }
 
   const taux = parseInt(req.body.taux) || 0;
   const montant = heureTravail * taux;
 
-  console.log("Montant calculé :", montant);
-
   const task = {
-    user: user, // ✅ Association de l'utilisateur
     name: req.body.task,
     date: dateSimple,
     datef: dateSimpleFin,
     heure: req.body.heure,
-    montant: montant,
-    taux: req.body.taux,
     heuref: req.body.heuref,
-    heureTravail: heureTravail,
+    heureTravail,
+    montant,
+    taux,
     description: req.body.description,
     priority: req.body.priority,
     qui: req.body.qui
   };
 
   try {
-    const collection = db.collection(process.env.MONGODB_COLLECTION);
-    await collection.insertOne(task);
-    res.redirect('/?success=true'); // Redirection avec un paramètre de succès
+    const collection = db.collection('Users');
+
+    await collection.updateOne(
+      { _id: userId },
+      { $push: { tasks: task } }
+    );
+
+    res.redirect('/?success=true');
   } catch (err) {
     console.error('Erreur lors de l\'ajout de la tâche :', err);
     res.status(500).send('Erreur lors de l\'ajout de la tâche');
@@ -332,45 +444,46 @@ app.post('/', async (req, res) => {
 });
 
 
-// ROUTE POUR LA PAGE D'ACCUEIL
-app.get('/', async (req, res) => {
-  const user = req.session.user || "";
-  if (!user) {
-    return res.redirect('/login'); // Redirection si non connecté
-  }
 
-  const success = req.query.success === 'true';
-  const successCourse = req.query.successCourse === 'true';
+// // ROUTE POUR LA PAGE D'ACCUEIL
+// app.get('/', async (req, res) => {
+//   const user = req.session.user || "";
+//   if (!user) {
+//     return res.redirect('/login'); // Redirection si non connecté
+//   }
 
-  try {
-    let salaire = 0;
+//   const success = req.query.success === 'true';
+//   const successCourse = req.query.successCourse === 'true';
 
-    const collection = db.collection(process.env.MONGODB_COLLECTION);
-    const collectionCourses = db.collection('Courses');
+//   try {
+//     let salaire = 0;
 
-    // ✅ Filtrer les tâches PAR UTILISATEUR
-    const tasks = await collection.find({ user: user }).sort({ date: 1 }).toArray();
+//     const collection = db.collection(process.env.MONGODB_COLLECTION);
+//     const collectionCourses = db.collection('Courses');
 
-    const courses = await collectionCourses.find({}).toArray();
-    tasks.forEach(task => {
-      salaire += task.montant || 0;
-    });
+//     // ✅ Filtrer les tâches PAR UTILISATEUR
+//     const tasks = await collection.find({ user: user }).sort({ date: 1 }).toArray();
 
-    res.render('index', {
-      title: 'Mon site',
-      message: 'Bienvenue sur ma montre digitale',
-      tasks: tasks || [],
-      courses: courses || [],
-      successCourse,
-      salaire,
-      success
-    });
+//     const courses = await collectionCourses.find({}).toArray();
+//     tasks.forEach(task => {
+//       salaire += task.montant || 0;
+//     });
 
-  } catch (err) {
-    console.error('Erreur lors de la récupération des tâches :', err);
-    res.status(500).send('Erreur lors de la récupération des tâches');
-  }
-});
+//     res.render('index', {
+//       title: 'Mon site',
+//       message: 'Bienvenue sur ma montre digitale',
+//       tasks: tasks || [],
+//       courses: courses || [],
+//       successCourse,
+//       salaire,
+//       success
+//     });
+
+//   } catch (err) {
+//     console.error('Erreur lors de la récupération des tâches :', err);
+//     res.status(500).send('Erreur lors de la récupération des tâches');
+//   }
+// });
 
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
