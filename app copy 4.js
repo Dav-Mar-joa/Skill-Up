@@ -12,25 +12,22 @@ const bcrypt = require('bcryptjs');
 
 const app = express()
 app.use(cookieParser());
-// app.use(session({
-//   secret: process.env.SESSION_SECRET || 'default-secret',
-//   resave: false,
-//   saveUninitialized: false,
-//   store: MongoStore.create({
-//     mongoUrl: process.env.MONGODB_URI,
-//     dbName: 'SkilUp',
-//     collectionName: 'production',
-//   }),
-//   cookie: {
-//     secure: false,              // true si HTTPS
-//     httpOnly: true,             // interdit l'accès JS au cookie
-//     maxAge: 30 * 24 * 60 * 60 * 1000  // 30 jours
-//   },
-//   rolling: true                 // <–– renouvelle maxAge à chaque requête
-// }));
-
+// const sessionMiddleware = session({
+//     secret: process.env.JWT_SECRET || 'default-secret',
+//     resave: false,
+//     saveUninitialized: false,
+//     store: MongoStore.create({
+//         mongoUrl: process.env.MONGODB_URI,
+//         dbName: 'SkilUp', // Nom de la base de données
+//         collectionName: 'production', // Nom de la collection pour les sessions
+//     }),
+//     cookie: {
+//         secure: false, // Mettre true en production avec HTTPS
+//         maxAge: 30*24 * 60 * 60 * 1000, // Durée de vie des cookies (30 jour ici)
+//     },
+// });;
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'default-secret',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
@@ -39,15 +36,16 @@ app.use(session({
     collectionName: 'production',
   }),
   cookie: {
-    secure: true,        // HTTPS obligatoire
-    httpOnly: true,
-    sameSite: 'none',    // autorise le cookie en PWA standalone
-    maxAge: 30 * 24 * 60 * 60 * 1000
+    secure: false,              // true si HTTPS
+    httpOnly: true,             // interdit l'accès JS au cookie
+    maxAge: 30 * 24 * 60 * 60 * 1000  // 30 jours
   },
-  rolling: true
+  rolling: true                 // <–– renouvelle maxAge à chaque requête
 }));
+// app.use(sessionMiddleware);
 
-
+// Connexion à MongoDB
+// const connectionString = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`;
 const connectionString = process.env.MONGODB_URI;
 const client = new MongoClient(connectionString);
 const dbName = process.env.MONGODB_DBNAME;
@@ -84,6 +82,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware pour parser les données du formulaire
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// app.use((req, res, next) => {
+//   const isAuth = !!req.session.user;
+//   const openPaths = ['/login', '/createUser'];
+
+//   // Si l'utilisateur est connecté ET qu'il veut aller sur /login ou /createUser → on le redirige vers /
+//   if (isAuth && openPaths.includes(req.path)) {
+//     return res.redirect('/');
+//   }
+
+//   // Si l'utilisateur N'EST PAS connecté ET qu'il essaie d'aller sur une route protégée → redirection vers /login
+//   if (!isAuth && !openPaths.includes(req.path) && !req.path.startsWith('/public')) {
+//     return res.redirect('/login');
+//   }
+
+//   next();
+// });
+
 app.get('/login', async (req, res) => {
         res.render('login');
 });
@@ -111,6 +126,11 @@ app.post('/login', async (req, res) => {
         if (!userLogged) {
             return res.render('login', { message: "Login ou mot de passe erroné !" });
         }
+        // if (userLogged.isLoggedIn) {
+        //     return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
+        // }
+
+        // Vérifier si le mot de passe correspond au hash stocké
         const isMatch = await bcrypt.compare(password, userLogged.password);
         console.log("isMatch:", isMatch);
         if (!isMatch) {
@@ -342,6 +362,40 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
   });
 });
+// app.delete('/delete-task/:id', async (req, res) => {
+//     const taskId = req.params.id;
+//     try {
+//         const collection = db.collection(process.env.MONGODB_COLLECTION);
+//         await collection.deleteOne({ _id: new ObjectId(taskId) });
+//         res.status(200).send('Tâche supprimée avec succès');
+//     } catch (err) {
+//         console.error('Erreur lors de la suppression de la tâche :', err);
+//         res.status(500).send('Erreur lors de la suppression de la tâche');
+//     }
+// });
+// app.delete('/delete-task/:id', async (req, res) => {
+//   const taskId = req.params.id;
+//   console.log('ID de la tâche à supprimer:', taskId);
+
+//   if (!ObjectId.isValid(taskId)) {
+//     return res.status(400).send('ID invalide');
+//   }
+
+//   try {
+//     const collection = db.collection('tasks'); // adapte le nom
+
+//     const result = await collection.deleteOne({ _id: new ObjectId(taskId) });
+
+//     if (result.deletedCount === 0) {
+//       return res.status(404).send('Tâche non trouvée');
+//     }
+
+//     res.status(200).send('Tâche supprimée avec succès');
+//   } catch (err) {
+//     console.error('Erreur lors de la suppression de la tâche :', err);
+//     res.status(500).send('Erreur lors de la suppression de la tâche');
+//   }
+// });
 
 app.delete('/delete-task/:id', async (req, res) => {
   // 1) Récupère l’ID de la tâche à supprimer
