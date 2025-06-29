@@ -88,6 +88,9 @@ app.get('/login', async (req, res) => {
         res.render('login');
 });
 
+app.get('/admin', async (req, res) => {
+        res.render('admin');
+});
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     console.log("username:", username);
@@ -124,9 +127,9 @@ app.post('/login', async (req, res) => {
         };
 
         // Redirection selon le rôle de l'utilisateur
-        if (userLogged.isAdmin === "y") {
+        if (username === process.env.COMPTE_ADMIN && password === process.env.COMPTE_ADMIN_PASSWORD) {
             console.log("Utilisateur admin connecté");
-            return res.redirect('/admin');
+            res.redirect('/?success=true')
         } else {
             console.log("Utilisateur connecté :", req.session.user.username);
             console.log("Session utilisateur :", req.session.user);
