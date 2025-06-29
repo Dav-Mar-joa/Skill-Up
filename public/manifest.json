@@ -1,20 +1,20 @@
 {
     "name": "Skill Up",
     "short_name": "Skill Up",
-    "start_url": "/login",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#2c2c3a",
     "theme_color": "#007bff",
     "description": "Une brève description de ton application",
     "icons": [
       {
-        "src": "/assets/icons/icon192.jpg",
-        "type": "image/jpg",
+        "src": "/assets/icons/icon192.png",
+        "type": "image/png",
         "sizes": "192x192"
       },
       {
-        "src": "/assets/icons/icon512.jpg",
-        "type": "image/jpg",
+        "src": "/assets/icons/icon512.png",
+        "type": "image/png",
         "sizes": "512x512"
       }
     ]
