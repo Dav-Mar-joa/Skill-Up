@@ -1,6 +1,6 @@
 {
     "name": "Skil Up",
-    "short_name": "Skill Up",
+    "short_name": "Skil Up",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#2c2c3a",
