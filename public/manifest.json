@@ -1,11 +1,7 @@
 {
     "name": "Skil Up",
     "short_name": "Skil Up",
-<<<<<<< HEAD
-    "start_url": "/",
-=======
     "start_url": "/login",
->>>>>>> 37084d82c816e2242474cce7c715c521b2243fd3
     "display": "standalone",
     "background_color": "#2c2c3a",
     "theme_color": "#007bff",
