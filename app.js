@@ -175,6 +175,10 @@ app.post('/createUser', async (req, res) => {
 
 // Route pour soumettre des tâches
 app.post('/', async (req, res) => {
+  const user = req.session.user || "";
+  if (!user) {
+            return res.redirect('/login'); // Redirection si l'utilisateur n'est pas connecté
+        }
     const dateJ = req.body.date 
         ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
         : moment.tz('Europe/Paris').startOf('day').toDate();
