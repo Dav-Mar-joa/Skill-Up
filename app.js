@@ -183,8 +183,6 @@ app.get('/', async (req, res) => {
   const success = req.query.success === 'true';
   const successCourse = req.query.successCourse === 'true';
 
-
-
   if (!req.session.user) {
     return res.redirect('/login');
   }
