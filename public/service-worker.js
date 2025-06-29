@@ -12,10 +12,16 @@ self.addEventListener('install', function(event) {
     );
   });
 self.addEventListener('fetch', function(event) {
+  if (event.request.method !== 'GET') {
+    // Laisse passer tout ce qui n'est pas GET (POST, PUT, DELETE...)
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request, { redirect: 'follow' });
+      return response || fetch(event.request);
     })
   );
 });
+
   
