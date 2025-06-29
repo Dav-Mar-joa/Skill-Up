@@ -67,22 +67,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware pour parser les données du formulaire
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use((req, res, next) => {
-  const isAuth = !!req.session.user;
-  const openPaths = ['/login', '/createUser'];
+// app.use((req, res, next) => {
+//   const isAuth = !!req.session.user;
+//   const openPaths = ['/login', '/createUser'];
 
-  // Si l'utilisateur est connecté ET qu'il veut aller sur /login ou /createUser → on le redirige vers /
-  if (isAuth && openPaths.includes(req.path)) {
-    return res.redirect('/');
-  }
+//   // Si l'utilisateur est connecté ET qu'il veut aller sur /login ou /createUser → on le redirige vers /
+//   if (isAuth && openPaths.includes(req.path)) {
+//     return res.redirect('/');
+//   }
 
-  // Si l'utilisateur N'EST PAS connecté ET qu'il essaie d'aller sur une route protégée → redirection vers /login
-  if (!isAuth && !openPaths.includes(req.path) && !req.path.startsWith('/public')) {
-    return res.redirect('/login');
-  }
+//   // Si l'utilisateur N'EST PAS connecté ET qu'il essaie d'aller sur une route protégée → redirection vers /login
+//   if (!isAuth && !openPaths.includes(req.path) && !req.path.startsWith('/public')) {
+//     return res.redirect('/login');
+//   }
 
-  next();
-});
+//   next();
+// });
 
 app.get('/login', async (req, res) => {
         res.render('login');
