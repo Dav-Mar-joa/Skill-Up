@@ -149,7 +149,7 @@ app.post('/login', async (req, res) => {
         };
 
         // Redirection selon le rôle de l'utilisateur
-        if (username === process.env.COMPTE_ADMIN) {
+        if (userLogged.isAdmin === "y") {
             console.log("Utilisateur admin connecté");
             res.redirect("/admin")
         } else {
@@ -187,6 +187,7 @@ app.post('/createUser', async (req, res) => {
       username,
       password: hashedPassword,
       secretQuestion,
+      isAdmin:'n'
     };
 
     await usersCollection.insertOne(user);
