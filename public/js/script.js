@@ -74,34 +74,115 @@ setInterval(() => {affichageHeure(); }, 1000)
 
 
 
-function deleteTask(button) {
-    const taskElement = button.closest('.task');
-    const taskId = taskElement.getAttribute('data-task-id');
-    const montantElement = taskElement.querySelector('.heureTravail .test');
+// function deleteTask(button) {
+//     const taskElement = button.closest('.task');
+//     const taskId = taskElement.getAttribute('data-task-id');
+//     const montantElement = taskElement.querySelector('.heureTravail .test');
 
-    // Récupère le montant (en €) de la tâche supprimée
-    const montantMatch = montantElement?.innerText.match(/(\d+)\s?€/);
-    const montant = montantMatch ? parseInt(montantMatch[1]) : 0;
+//     // Récupère le montant (en €) de la tâche supprimée
+//     const montantMatch = montantElement?.innerText.match(/(\d+)\s?€/);
+//     const montant = montantMatch ? parseInt(montantMatch[1]) : 0;
 
-    fetch(`/delete-task/${taskId}`, {
-        method: 'DELETE'
-    }).then(response => {
-        if (response.ok) {
-            taskElement.remove();
+//     fetch(`/delete-task/${taskId}`, {
+//         method: 'DELETE'
+//     }).then(response => {
+//         if (response.ok) {
+//             taskElement.remove();
 
-            // Mettre à jour le salaire affiché
-            const salaireText = document.querySelector('.formDate p');
-            if (salaireText && montant) {
-                const salaireMatch = salaireText.innerText.match(/(\d+)\s?€/);
-                if (salaireMatch) {
-                    let currentSalaire = parseInt(salaireMatch[1]);
-                    let nouveauSalaire = currentSalaire - montant;
-                    salaireText.innerText = `Salaire : ${nouveauSalaire} €`;
-                }
-            }
+//             // Mettre à jour le salaire affiché
+//             const salaireText = document.querySelector('.formDate p');
+//             if (salaireText && montant) {
+//                 const salaireMatch = salaireText.innerText.match(/(\d+)\s?€/);
+//                 if (salaireMatch) {
+//                     let currentSalaire = parseInt(salaireMatch[1]);
+//                     let nouveauSalaire = currentSalaire - montant;
+//                     salaireText.innerText = `Salaire : ${nouveauSalaire} €`;
+//                 }
+//             }
+//         }
+//     }).catch(error => console.error('Erreur lors de la suppression de la tâche :', error));
+// }
+
+// async function deleteTask(button) {
+//   // Récupérer l'élément task parent qui contient l'attribut data-task-id
+//   const taskElement = button.closest('.task');
+//   const taskId = taskElement.getAttribute('data-task-id');
+
+//   if (!taskId) {
+//     alert("ID de la tâche introuvable !");
+//     return;
+//   }
+
+//   // // Confirmation avant suppression
+//   // if (!confirm("Voulez-vous vraiment supprimer cette tâche ?")) {
+//   //   return;
+//   // }
+
+//   try {
+//     const response = await fetch(`/delete-task/${taskId}`, {
+//       method: 'DELETE',
+//     });
+
+//     if (response.ok) {
+//       // Supprimer l'élément de la page sans recharger
+//       taskElement.remove();
+//       // alert("Tâche supprimée avec succès");
+//     } else {
+//       const text = await response.text();
+//       // alert("Erreur lors de la suppression : " + text);
+//     }
+//   } catch (error) {
+//     alert("Erreur réseau ou serveur : " + error.message);
+//   }
+// }
+
+async function deleteTask(button) {
+  // Récupérer l'élément task parent qui contient l'attribut data-task-id
+  const taskElement = button.closest('.task');
+  const taskId = taskElement.getAttribute('data-task-id');
+
+  if (!taskId) {
+    alert("ID de la tâche introuvable !");
+    return;
+  }
+
+  // Récupérer le montant (en €) de la tâche supprimée
+  // On part du principe que ton montant est dans .heureTravail .test au format "123€"
+  const montantElement = taskElement.querySelector('.heureTravail .test');
+  const montantMatch = montantElement?.innerText.match(/(\d+)\s?€/);
+  const montant = montantMatch ? parseInt(montantMatch[1], 10) : 0;
+
+  try {
+    const response = await fetch(`/delete-task/${taskId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      // 1) Supprimer la tâche du DOM
+      taskElement.remove();
+
+      // 2) Mettre à jour le salaire affiché
+      // On suppose que le salaire est dans un paragraphe par exemple <p class="salaire">Salaire : 400 €</p>
+      const salaireTextElement = document.querySelector('.salaire');
+      if (salaireTextElement && montant) {
+        const salaireMatch = salaireTextElement.innerText.match(/(\d+)\s?€/);
+        if (salaireMatch) {
+          let currentSalaire = parseInt(salaireMatch[1], 10);
+          const nouveauSalaire = currentSalaire - montant;
+          salaireTextElement.innerText = `Salaire : ${nouveauSalaire} €`;
         }
-    }).catch(error => console.error('Erreur lors de la suppression de la tâche :', error));
+      }
+
+    } else {
+      const text = await response.text();
+      alert("Erreur lors de la suppression : " + text);
+    }
+  } catch (error) {
+    alert("Erreur réseau ou serveur : " + error.message);
+  }
 }
+
+
 
 function deleteCourse(button) {
     const courseElement = button.closest('.purchase-item');
