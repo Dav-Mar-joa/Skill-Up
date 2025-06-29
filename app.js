@@ -102,6 +102,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/login', async (req, res) => {
         res.render('login');
 });
+app.get('/createChantier', async (req, res) => {
+        res.render('createChantier');
+});
+app.post('/createChantier', async (req, res) => {
+        res.render('createChantier');
+});
 
 app.get('/admin', async (req, res) => {
         res.render('admin');
@@ -109,6 +115,7 @@ app.get('/admin', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     console.log("username:", username);
+      console.log("req.session.user:", req.session.user);
     try {
         const collection = db.collection('Users');
         const userLogged = await collection.findOne({ username });
@@ -142,9 +149,9 @@ app.post('/login', async (req, res) => {
         };
 
         // Redirection selon le rôle de l'utilisateur
-        if (username === process.env.COMPTE_ADMIN && password === process.env.COMPTE_ADMIN_PASSWORD) {
+        if (username === process.env.COMPTE_ADMIN) {
             console.log("Utilisateur admin connecté");
-            res.redirect('/?success=true')
+            res.redirect("/admin")
         } else {
             console.log("Utilisateur connecté :", req.session.user.username);
             console.log("Session utilisateur :", req.session.user);
@@ -195,6 +202,8 @@ app.get('/', async (req, res) => {
   const success = req.query.success === 'true';
   const successCourse = req.query.successCourse === 'true';
 
+
+
   if (!req.session.user) {
     return res.redirect('/login');
   }
@@ -240,7 +249,7 @@ app.post('/', async (req, res) => {
   }
   console.log("qui :", req.body.qui);
   console.log("req.body:", req.body);
-  const userId = new ObjectId(req.session.user._id);
+  const userId = new ObjectId(req.session.user._id)
 
   const dateJ = req.body.date
     ? moment.tz(req.body.date + ' 00:00', 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate()
