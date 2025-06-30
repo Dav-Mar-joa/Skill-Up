@@ -181,9 +181,22 @@ app.get('/createUser', async (req, res) => {
 
     res.render('createUser');  } )
 
+// Affiche l'historique de TOUS les UsersAdmin
 app.get('/historiqueOuvrier', async (req, res) => {
-
-    res.render('historiqueOuvrier');  } )    
+  try {
+    // 1) Lire tous les UsersAdmin avec leurs tâches
+    const usersAdmin = await db
+      .collection('UsersAdmin')
+      .find({})
+      .toArray();
+    console.log('usersAdmin:', usersAdmin);
+    // 2) Rendre la vue en passant la liste
+    res.render('historiqueOuvrier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur récupération historique ouvriers :', err);
+    res.status(500).send('Erreur serveur');
+  }
+}); 
 
 app.get('/createOuvrier', async (req, res) => {
 

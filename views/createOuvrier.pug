@@ -273,6 +273,16 @@ html(lang="en")
         border-color: var(--accent2);
       }
 
+      .sousTitre{
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
@@ -303,6 +313,7 @@ html(lang="en")
             #heure    
 
       p.titre Skil Up
+      p.sousTitre Création d'un ouvrier
 
       // Affichage du message d'erreur
       //- if errorMessage
@@ -320,7 +331,11 @@ html(lang="en")
           option(value="20") 20 €/h
           option(value="25") 25 €/h                      
 
-        button(type="submit" class="button-submit-taches") Création de compte 
+        button(type="submit" class="button-submit-taches") Ajout nouvel ouvrier
+      form(action="/admin" method="get")
+        button(type="submit" class="button-historique") Acceuil               
+      form(action="/logout" method="get")
+        button(type="submit" class="button-delete") Déconnexion   
           
     script(src="/js/script.js")
     script.

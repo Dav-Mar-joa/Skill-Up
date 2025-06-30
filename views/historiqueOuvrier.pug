@@ -283,6 +283,16 @@ html(lang="en")
         width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
+      .sousTitre{
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
@@ -313,110 +323,27 @@ html(lang="en")
               #heure    
  
         p.titre Skil Up 
-        //- p.sousTitre Création de chantier
-        //- form(action="/createChantier" method="post")
-        //-   label(for="task") Mission et heures de pauses :
-        //-   .dateInput
-        //-     input(type="text" id="task" name="task" class ="input-task" required)
-        //-     //- input(type="number" id="taux" name="taux")
-        //-     select(id="pause" name="pause")
-        //-       option(value="0") 0h
-        //-       option(value="1") 1h
-        //-       option(value="2") 2h
-        //-   //- input(type="text" id="task" name="task" required)
-        //-   label(for="qui") Chef d'équipe de mission :
-        //-   .dateInput
-        //-     select(name="qui" id="qui" required)
-        //-       option(value="" disabled selected) -- Choisissez un chef --
-        //-       each user in usersAdmin
-        //-         option(value=user.username)= user.username
-      
-        //-   label(for="ouvriers") Ouvriers dans la mission :
-        //-   .dateInput
-        //-     select(name="ouvriers[]" id="ouvriers" multiple size=5 required)
-        //-       option(value="" disabled selected) -- Ouvriers Actifs --
-        //-       each user in usersAdmin
-        //-         option(value=user.username)= user.username
+        p.sousTitre Historique des ouvriers
 
-        //-   label(for="date") Début (Date et heure) :
-        //-   .dateInput
-        //-     input(type="date" id="date" name="date" class ="input-task")
-        //-     select(id="heure" name="heure")
-        //-       option(value="00:00") 00h
-        //-       option(value="01:00") 01h
-        //-       option(value="02:00") 02h
-        //-       option(value="03:00") 03h
-        //-       option(value="04:00") 04h
-        //-       option(value="05:00") 05h
-        //-       option(value="06:00") 06h
-        //-       option(value="07:00") 07h
-        //-       option(value="08:00") 08h
-        //-       option(value="09:00") 09h
-        //-       option(value="10:00") 10h
-        //-       option(value="11:00") 11h
-        //-       option(value="12:00") 12h
-        //-       option(value="13:00") 13h
-        //-       option(value="14:00") 14h
-        //-       option(value="15:00") 15h
-        //-       option(value="16:00") 16h
-        //-       option(value="17:00") 17h
-        //-       option(value="18:00") 18h
-        //-       option(value="19:00") 19h
-        //-       option(value="20:00") 20h
-        //-       option(value="21:00") 21h
-        //-       option(value="22:00") 22h
-        //-       option(value="23:00") 23h     
-
-        //-   label(for="datef") Fin (Date et heure) :
-        //-   .dateInput
-        //-     input(type="date" id="datef" name="datef" class ="input-task")
-        //-     select(id="heuref" name="heuref")
-        //-       option(value="00:00") 00h
-        //-       option(value="01:00") 01h
-        //-       option(value="02:00") 02h
-        //-       option(value="03:00") 03h
-        //-       option(value="04:00") 04h
-        //-       option(value="05:00") 05h
-        //-       option(value="06:00") 06h
-        //-       option(value="07:00") 07h
-        //-       option(value="08:00") 08h
-        //-       option(value="09:00") 09h
-        //-       option(value="10:00") 10h
-        //-       option(value="11:00") 11h
-        //-       option(value="12:00") 12h
-        //-       option(value="13:00") 13h
-        //-       option(value="14:00") 14h
-        //-       option(value="15:00") 15h
-        //-       option(value="16:00") 16h
-        //-       option(value="17:00") 17h
-        //-       option(value="18:00") 18h
-        //-       option(value="19:00") 19h
-        //-       option(value="20:00") 20h
-        //-       option(value="21:00") 21h
-        //-       option(value="22:00") 22h
-        //-       option(value="23:00") 23h
-            
-        //-     //- label(for="description") Commentaires :
-        //-     //- textarea(id="description" name="description" rows="1" )
-        //-   button(type="submit" class="button-submit-taches") Ajouter
-            
-        //-   //- form(action="/login" method="post")
-        //-   //-   label(for="login") Login
-
-        //-   //-   input(type="text" id="username" name="username" class ="input-task" required)
-  
-
-        //-   //-   label(for="mdp" class="qui") Mot de passe :
-        //-   //-   input(type="text" id="password" name="password" class ="input-task" required)
-
-        //-   //-   button(type="submit" class="button-submit-taches") Connection 
-        //-   //- form(action="/createUser" method="get")  
-        //-   //-   button(type="submit" class="button-historique") Creér un compte
-          
-        //- form(action="/admin" method="get")
-        //-   button(type="submit" class="button-historique") Acceuil  
-        //- form(action="/logout" method="get")
-        //-   button(type="submit" class="button-delete") Déconnexion           
+        // Si la liste est vide
+        if !usersAdmin || usersAdmin.length === 0
+          p Aucun ouvrier trouvé.
+        ul.user-list
+          each user in usersAdmin
+            li.user-item
+              h2= user.username
+              p Taux horaire : #{user.taux} €/h
+              if user.tasks && user.tasks.length
+                p Nombre de tâches : #{user.tasks.length}
+                ul.task-list
+                  each t in user.tasks
+                    li
+                      | #{t.name || t.task} — 
+                      | #{t.heureTravail} h, montant : #{t.montant} €
+        form(action="/admin" method="get")
+          button(type="submit" class="button-historique") Acceuil               
+        form(action="/logout" method="get")
+          button(type="submit" class="button-delete") Déconnexion           
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
