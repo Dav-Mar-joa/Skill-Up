@@ -315,7 +315,7 @@ html(lang="en")
         p.titre Skil Up 
         //- p.sousTitre Création de chantier
         form(action="/createChantier" method="post")
-          label(for="task") Mission et heures de pauses:
+          label(for="task") Mission et heures de pauses :
           .dateInput
             input(type="text" id="task" name="task" class ="input-task" required)
             //- input(type="number" id="taux" name="taux")
@@ -324,14 +324,23 @@ html(lang="en")
               option(value="1") 1h
               option(value="2") 2h
           //- input(type="text" id="task" name="task" required)
+          label(for="qui") Chef d'équipe de mission :
+          .dateInput
+            select(name="qui" id="qui" required)
+              option(value="" disabled selected) -- Choisissez un chef --
+              each user in usersAdmin
+                option(value=user.username)= user.username
             
-          label(for="qui" class="qui") Chef d'équipe de mission :
-            br.small-br
-            input(type="text" id="qui" name="qui" class ="input-task2" required)
+          //- label(for="qui" class="qui") Chef d'équipe de mission :
+          //-   br.small-br
+          //-   input(type="text" id="qui" name="qui" class ="input-task2" required)
       
-          label(for="qui" class="qui") Ouvriers dans la mission :
-            br.small-br
-            input(type="text" id="qui" name="qui" class ="input-task2" required)
+          label(for="ouvriers") Ouvriers dans la mission :
+          .dateInput
+            select(name="ouvriers[]" id="ouvriers" multiple size=5 required)
+              option(value="" disabled selected) -- Ouvriers Actifs --
+              each user in usersAdmin
+                option(value=user.username)= user.username
 
           label(for="date") Début (Date et heure) :
           .dateInput

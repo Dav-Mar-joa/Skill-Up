@@ -102,8 +102,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/login', async (req, res) => {
         res.render('login');
 });
+// Affichage du form de création de chantier
 app.get('/createChantier', async (req, res) => {
-        res.render('createChantier');
+  try {
+    // Récupère tous les ouvriers/admin de ta collection UsersAdmin
+    const usersAdmin = await db
+      .collection('UsersAdmin')
+      .find({})
+      .sort({ username: 1 })
+      .toArray();
+
+    // Envoie-les à Pug
+    res.render('createChantier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur en récupérant UsersAdmin :', err);
+    res.status(500).send('Erreur serveur');
+  }
 });
 app.post('/createChantier', async (req, res) => {
         res.render('createChantier');
