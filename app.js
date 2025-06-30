@@ -103,25 +103,25 @@ app.get('/login', async (req, res) => {
         res.render('login');
 });
 // Affichage du form de création de chantier
-app.get('/createChantier', async (req, res) => {
-  try {
-    // Récupère tous les ouvriers/admin de ta collection UsersAdmin
-    const usersAdmin = await db
-      .collection('UsersAdmin')
-      .find({})
-      .sort({ username: 1 })
-      .toArray();
+// app.get('/createChantier', async (req, res) => {
+//   try {
+//     // Récupère tous les ouvriers/admin de ta collection UsersAdmin
+//     const usersAdmin = await db
+//       .collection('UsersAdmin')
+//       .find({})
+//       .sort({ username: 1 })
+//       .toArray();
 
-    // Envoie-les à Pug
-    res.render('createChantier', { usersAdmin });
-  } catch (err) {
-    console.error('Erreur en récupérant UsersAdmin :', err);
-    res.status(500).send('Erreur serveur');
-  }
-});
-app.post('/createChantier', async (req, res) => {
-        res.render('createChantier');
-});
+//     // Envoie-les à Pug
+//     res.render('createChantier', { usersAdmin });
+//   } catch (err) {
+//     console.error('Erreur en récupérant UsersAdmin :', err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
+// app.post('/createChantier', async (req, res) => {
+//         res.render('createChantier');
+// });
 
 app.get('/admin', async (req, res) => {
         res.render('admin');
@@ -181,39 +181,120 @@ app.get('/createUser', async (req, res) => {
 
     res.render('createUser');  } )
 
+app.get('/historiqueOuvrier', async (req, res) => {
+
+    res.render('historiqueOuvrier');  } )    
+
 app.get('/createOuvrier', async (req, res) => {
 
     res.render('createOuvrier');  } ) 
 
-app.post('/createOuvrier', async (req, res) => {
-  const { username, taux } = req.body;
-    console.log("Username:", username); 
-    console.log("taux", taux);                 
+// app.post('/createOuvrier', async (req, res) => {
+//   const { username, taux } = req.body;
+//     console.log("Username:", username); 
+//     console.log("taux", taux);                 
+//   try {
+//     const usersCollection = db.collection('UsersAdmin');
+//     // const existingUser = await usersCollection.findOne({ username });
+
+//     // if (existingUser) {
+//     //   // On renvoie la page avec un message d'erreur
+//     //   return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
+//     // }
+
+//     // const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const user = {
+//       username,
+//       taux
+//     };
+
+//     await usersCollection.insertOne(user);
+
+//     res.redirect('/admin'); // ou vers la page principale directement
+//   } catch (err) {
+//     console.error('Erreur lors de la création de l\'utilisateur :', err);
+//     res.status(500).send('Erreur lors de la création de l\'utilisateur');
+//   }
+// }); 
+   
+app.get('/createChantier', async (req, res) => {
   try {
-    const usersCollection = db.collection('UsersAdmin');
-    // const existingUser = await usersCollection.findOne({ username });
+    // Va chercher tous les admins (chefs + ouvriers)
+    const usersAdmin = await db
+      .collection('UsersAdmin')
+      .find({})
+      .toArray();
 
-    // if (existingUser) {
-    //   // On renvoie la page avec un message d'erreur
-    //   return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
-    // }
-
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = {
-      username,
-      taux
-    };
-
-    await usersCollection.insertOne(user);
-
-    res.redirect('/admin'); // ou vers la page principale directement
+    // Passe-les à la vue
+    res.render('createChantier', { usersAdmin, success: req.query.success });
   } catch (err) {
-    console.error('Erreur lors de la création de l\'utilisateur :', err);
-    res.status(500).send('Erreur lors de la création de l\'utilisateur');
+    console.error('Erreur lors du chargement des utilisateurs admin :', err);
+    res.status(500).send('Erreur serveur');
   }
-}); 
-    
+});
+
+app.post('/createChantier', async (req, res) => {
+  try {
+    // 1) Récupération des champs du formulaire
+    const { task, pause, date, heure, datef, heuref, qui: chefUsername } = req.body;
+    let ouvriers = req.body['ouvriers[]'] || req.body.ouvriers; 
+    // si un seul ouvrier, Express renvoie une string, sinon un tableau
+    if (!Array.isArray(ouvriers)) ouvriers = [ouvriers];
+
+    // 2) Calcul des dates
+    const dateJ = moment.tz(date + ' ' + heure, 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate();
+    const dateF = moment.tz(datef + ' ' + heuref, 'YYYY-MM-DD HH:mm', 'Europe/Paris').toDate();
+    const start = moment(dateJ), end = moment(dateF);
+    // 3) Différence en heures – pause
+    let diffHours = end.diff(start, 'hours');
+    diffHours = diffHours < 0 ? diffHours + 24 : diffHours;  // si tranche sur nuit
+    diffHours -= parseInt(pause) || 0;
+
+    // 4) Récupérer en base le chef + ouvriers pour connaître leurs taux
+    const col = db.collection('UsersAdmin');
+    const participants = await col.find({
+      username: { $in: [chefUsername, ...ouvriers] }
+    }).toArray();
+
+    // 5) Construire et injecter une tâche dans chaque document
+    const ops = participants.map(u => {
+      const montant = diffHours * (u.taux || 0);
+      const t = {
+        _id: new ObjectId(),    // id unique pour la sous‑tâche
+        task,
+        date: dateJ,
+        datef: dateF,
+        heure,
+        heuref,
+        pause: parseInt(pause) || 0,
+        heureTravail: diffHours,
+        montant,
+        taux: u.taux,
+        role: u.username === chefUsername ? 'chef' : 'ouvrier'
+      };
+      return {
+        updateOne: {
+          filter: { _id: u._id },
+          update:  { $push: { tasks: t } }
+        }
+      };
+    });
+
+    // 6) Exécuter les mises à jour en bulk
+    if (ops.length) {
+      await col.bulkWrite(ops);
+    }
+
+    // 7) Redirection
+    res.redirect('/createChantier?success=true');
+
+  } catch (err) {
+    console.error('Erreur création chantier & tâches :', err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
 app.post('/createUser', async (req, res) => {
   const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
     console.log("Username:", username);
