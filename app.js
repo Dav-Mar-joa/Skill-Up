@@ -200,7 +200,6 @@ app.post('/createOuvrier', async (req, res) => {
   }
 }); 
     
-
 app.post('/createUser', async (req, res) => {
   const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
     console.log("Username:", username);
@@ -343,48 +342,6 @@ app.post('/', async (req, res) => {
     res.status(500).send('Erreur lors de l\'ajout de la tâche');
   }
 });
-
-
-
-// // ROUTE POUR LA PAGE D'ACCUEIL
-// app.get('/', async (req, res) => {
-//   const user = req.session.user || "";
-//   if (!user) {
-//     return res.redirect('/login'); // Redirection si non connecté
-//   }
-
-//   const success = req.query.success === 'true';
-//   const successCourse = req.query.successCourse === 'true';
-
-//   try {
-//     let salaire = 0;
-
-//     const collection = db.collection(process.env.MONGODB_COLLECTION);
-//     const collectionCourses = db.collection('Courses');
-
-//     // ✅ Filtrer les tâches PAR UTILISATEUR
-//     const tasks = await collection.find({ user: user }).sort({ date: 1 }).toArray();
-
-//     const courses = await collectionCourses.find({}).toArray();
-//     tasks.forEach(task => {
-//       salaire += task.montant || 0;
-//     });
-
-//     res.render('index', {
-//       title: 'Mon site',
-//       message: 'Bienvenue sur ma montre digitale',
-//       tasks: tasks || [],
-//       courses: courses || [],
-//       successCourse,
-//       salaire,
-//       success
-//     });
-
-//   } catch (err) {
-//     console.error('Erreur lors de la récupération des tâches :', err);
-//     res.status(500).send('Erreur lors de la récupération des tâches');
-//   }
-// });
 
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
