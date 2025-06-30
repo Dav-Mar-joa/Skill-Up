@@ -167,6 +167,40 @@ app.get('/createUser', async (req, res) => {
 
     res.render('createUser');  } )
 
+app.get('/createOuvrier', async (req, res) => {
+
+    res.render('createOuvrier');  } ) 
+
+app.post('/createOuvrier', async (req, res) => {
+  const { username, taux } = req.body;
+    console.log("Username:", username); 
+    console.log("taux", taux);                 
+  try {
+    const usersCollection = db.collection('UsersAdmin');
+    // const existingUser = await usersCollection.findOne({ username });
+
+    // if (existingUser) {
+    //   // On renvoie la page avec un message d'erreur
+    //   return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
+    // }
+
+    // const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = {
+      username,
+      taux
+    };
+
+    await usersCollection.insertOne(user);
+
+    res.redirect('/admin'); // ou vers la page principale directement
+  } catch (err) {
+    console.error('Erreur lors de la création de l\'utilisateur :', err);
+    res.status(500).send('Erreur lors de la création de l\'utilisateur');
+  }
+}); 
+    
+
 app.post('/createUser', async (req, res) => {
   const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
     console.log("Username:", username);

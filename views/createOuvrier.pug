@@ -73,26 +73,16 @@ html(lang="en")
         margin-bottom: 1rem;
       }
 
-      .sousTitre{
-        text-align: center;
-        font-size: 1.5rem;
-        color: var(--accent2);
-        font-family: 'Orbitron', sans-serif;
-        text-shadow: 0 0 5px var(--accent2);
-        margin-top:1rem;
-        margin-bottom: 1rem;
-      }
-
       form {
         display: flex;
         flex-direction: column;
-        gap: 0.1rem
+        gap: 5px;
       }
 
       label {
         font-weight: bold;
         color: var(--accent2);
-        margin-bottom: 0px;
+        MARGIN-BOTTOM: 5px;
       }
 
       input, textarea {
@@ -216,9 +206,6 @@ html(lang="en")
         margin-top: 20px;
         color: var(--text);
       }
-      .qui{
-        margin-bottom:10px;
-      }
 
       .priority-qui-container {
         display: flex;
@@ -243,7 +230,6 @@ html(lang="en")
         padding: 0.5rem;
         font-size: 1rem;
         font-family: 'Press Start 2P', monospace;
-        margin-top:15px;
       }
 
       br.small-br {
@@ -267,20 +253,24 @@ html(lang="en")
       .historique {
         display: none
       }
-      br.small-br {
-        line-height: 0.7;  /* réduit l'espace vertical */
-        content: "";       /* pas obligatoire mais parfois utile */
-        margin: 2px 0;     /* tu peux ajuster la marge aussi */
-        display: block;    /* forcer le saut en bloc */
-        height: 6px;       /* hauteur personnalisée */
-      }
       .input-task {
-        margin-top:15px;
-        width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
-      }
-      .input-task2 {
-        margin-top:15px;
         width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
+      }
+
+      select.input-task {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+        appearance: none; /* enlève le style natif pour plus de cohérence */
+      }
+
+      select.input-task:focus {
+        outline: none;
+        border-color: var(--accent2);
       }
 
       /* Priorités */
@@ -304,114 +294,34 @@ html(lang="en")
       }
 
   body
-    .container
-      .form-container 
-        .head
-          .formDate
-            .date-time
-              #dateJour 
-              #heure    
- 
-        p.titre Skil Up 
-        //- p.sousTitre Création de chantier
-        form(action="/createChantier" method="post")
-          label(for="task") Mission et heures de pauses:
-          .dateInput
-            input(type="text" id="task" name="task" class ="input-task" required)
-            //- input(type="number" id="taux" name="taux")
-            select(id="pause" name="pause")
-              option(value="0") 0h
-              option(value="1") 1h
-              option(value="2") 2h
-          //- input(type="text" id="task" name="task" required)
-            
-          label(for="qui" class="qui") Chef d'équipe de mission :
-            br.small-br
-            input(type="text" id="qui" name="qui" class ="input-task2" required)
-      
-          label(for="qui" class="qui") Ouvriers dans la mission :
-            br.small-br
-            input(type="text" id="qui" name="qui" class ="input-task2" required)
+  .container
+    .form-container 
+      .head
+        .formDate
+          .date-time
+            #dateJour 
+            #heure    
 
-          label(for="date") Début (Date et heure) :
-          .dateInput
-            input(type="date" id="date" name="date" class ="input-task")
-            select(id="heure" name="heure")
-              option(value="00:00") 00h
-              option(value="01:00") 01h
-              option(value="02:00") 02h
-              option(value="03:00") 03h
-              option(value="04:00") 04h
-              option(value="05:00") 05h
-              option(value="06:00") 06h
-              option(value="07:00") 07h
-              option(value="08:00") 08h
-              option(value="09:00") 09h
-              option(value="10:00") 10h
-              option(value="11:00") 11h
-              option(value="12:00") 12h
-              option(value="13:00") 13h
-              option(value="14:00") 14h
-              option(value="15:00") 15h
-              option(value="16:00") 16h
-              option(value="17:00") 17h
-              option(value="18:00") 18h
-              option(value="19:00") 19h
-              option(value="20:00") 20h
-              option(value="21:00") 21h
-              option(value="22:00") 22h
-              option(value="23:00") 23h     
+      p.titre Skil Up
 
-          label(for="datef") Fin (Date et heure) :
-          .dateInput
-            input(type="date" id="datef" name="datef" class ="input-task")
-            select(id="heuref" name="heuref")
-              option(value="00:00") 00h
-              option(value="01:00") 01h
-              option(value="02:00") 02h
-              option(value="03:00") 03h
-              option(value="04:00") 04h
-              option(value="05:00") 05h
-              option(value="06:00") 06h
-              option(value="07:00") 07h
-              option(value="08:00") 08h
-              option(value="09:00") 09h
-              option(value="10:00") 10h
-              option(value="11:00") 11h
-              option(value="12:00") 12h
-              option(value="13:00") 13h
-              option(value="14:00") 14h
-              option(value="15:00") 15h
-              option(value="16:00") 16h
-              option(value="17:00") 17h
-              option(value="18:00") 18h
-              option(value="19:00") 19h
-              option(value="20:00") 20h
-              option(value="21:00") 21h
-              option(value="22:00") 22h
-              option(value="23:00") 23h
-            
-            //- label(for="description") Commentaires :
-            //- textarea(id="description" name="description" rows="1" )
-          button(type="submit" class="button-submit-taches") Ajouter
-            
-          //- form(action="/login" method="post")
-          //-   label(for="login") Login
+      // Affichage du message d'erreur
+      //- if errorMessage
+      //-   p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
 
-          //-   input(type="text" id="username" name="username" class ="input-task" required)
-  
+      form(action="/createOuvrier" method="post")
+        label(for="username") Ouvrier :
+        input(type="text" id="username" name="username" class="input-task" required placeholder="Entrez le nom de l'ouvrier")
 
-          //-   label(for="mdp" class="qui") Mot de passe :
-          //-   input(type="text" id="password" name="password" class ="input-task" required)
+        label(for="taux") Taux horaire :
+        select(name="taux" id="taux" class="input-task" required placeholder="Sélectionnez le taux horaire") 
+          option(value="10") 10 €/h
+          option(value="12") 12 €/h
+          option(value="15") 15 €/h  
+          option(value="20") 20 €/h
+          option(value="25") 25 €/h                      
 
-          //-   button(type="submit" class="button-submit-taches") Connection 
-          //- form(action="/createUser" method="get")  
-          //-   button(type="submit" class="button-historique") Creér un compte
+        button(type="submit" class="button-submit-taches") Création de compte 
           
-        form(action="/admin" method="get")
-          button(type="submit" class="button-historique") Acceuil  
-        form(action="/logout" method="get")
-          button(type="submit" class="button-delete") Déconnexion           
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
@@ -423,3 +333,4 @@ html(lang="en")
           });
         });
       }
+

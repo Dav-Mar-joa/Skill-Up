@@ -142,7 +142,7 @@ html(lang="en")
         cursor: pointer;
         transition: background 0.3s ease;
         font-size: 1rem;
-        margin-bottom:25px;
+        margin-bottom:5px;
       }
 
       .button-historique {
@@ -313,7 +313,9 @@ html(lang="en")
         form(action="/createChantier" method="get")
           button(type="submit" class="button-historique") Creation Chantier
         form(action="/historiqueOuvrier" method="get")
-          button(type="submit" class="button-historique") Historique  
+          button(type="submit" class="button-historique") Historique
+        form(action="/createOuvrier" method="get")
+          button(type="submit" class="button-historique") + 👷 
         form(action="/logout" method="get")
           button(type="submit" class="button-delete") Déconnexion          
     script(src="/js/script.js")
