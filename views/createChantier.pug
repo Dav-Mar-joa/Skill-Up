@@ -2,6 +2,8 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     title Tâches du jour
     link(rel="manifest" href="/manifest.json")
     style.
@@ -327,14 +329,14 @@ html(lang="en")
           label(for="qui") Chef d'équipe de mission :
           .dateInput
             select(name="qui" id="qui" required)
-              option(value="" disabled selected) -- Choisissez un chef --
+              option(value="" disabled selected) -- Chef d'équipe --
               each user in usersAdmin
                 option(value=user.username)= user.username
       
-          label(for="ouvriers") Ouvriers dans la mission :
+          label(for="ouvriers") Chef d'équipe et ouvriers dans la mission :
           .dateInput
             select(name="ouvriers[]" id="ouvriers" multiple size=5 required)
-              option(value="" disabled selected) -- Ouvriers Actifs --
+              option(value="" disabled selected) -- Présent sur le chantier --
               each user in usersAdmin
                 option(value=user.username)= user.username
 
@@ -398,7 +400,10 @@ html(lang="en")
             
             //- label(for="description") Commentaires :
             //- textarea(id="description" name="description" rows="1" )
-          button(type="submit" class="button-submit-taches") Ajouter
+          //- button(type="submit" class="button-submit-taches") Ajouter
+          button(type="submit" class="button-submit-taches")
+            i(class="fas fa-hard-hat")
+            |  Ajouter chantier
             
           //- form(action="/login" method="post")
           //-   label(for="login") Login
@@ -414,9 +419,13 @@ html(lang="en")
           //-   button(type="submit" class="button-historique") Creér un compte
           
         form(action="/admin" method="get")
-          button(type="submit" class="button-historique") Acceuil  
+          button(type="submit" class="button-historique")
+            i(class="fas fa-home")
+            |  Accueil 
         form(action="/logout" method="get")
-          button(type="submit" class="button-delete") Déconnexion           
+          button(type="submit" class="button-delete")
+            i(class="fas fa-sign-out-alt")
+            |  Déconnexion          
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

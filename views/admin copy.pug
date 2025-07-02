@@ -313,33 +313,15 @@ html(lang="en")
         //- form(action="/createUser" method="get")  
         //-   button(type="submit" class="button-historique") Creér un compte
         form(action="/createChantier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-hammer") 
-            |  Création chantier
-        //- form(action="/historiqueOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") Historique
+          button(type="submit" class="button-historique") Creation chantier
         form(action="/historiqueOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-history")
-            |  Historique
-        //- form(action="/createOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") + Ajout d'ouvrier 
+          button(type="submit" class="button-historique") Historique
         form(action="/createOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-user-plus")
-            |  Ajout d'ouvrier
-        //- form(action="/updateOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
+          button(type="submit" class="button-historique") + Ajout d'ouvrier 
         form(action="/updateOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-dollar-sign")
-            |  Modification €/h d'ouvrier 
-        //- form(action="/logout" method="get")
-        //-   button(type="submit" class="button-delete") Déconnexion 
+          button(type="submit" class="button-historique") Modification €/h d'ouvrier  
         form(action="/logout" method="get")
-          button(type="submit" class="button-delete")
-            i(class="fas fa-sign-out-alt")
-            |  Déconnexion         
+          button(type="submit" class="button-delete") Déconnexion          
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

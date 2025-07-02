@@ -4,6 +4,8 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Tâches du jour
     link(rel="manifest" href="/manifest.json")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     style.
       :root {
         --fond: #1e1e2f;
@@ -328,22 +330,27 @@ html(lang="en")
         // Si la liste est vide
         if !usersAdmin || usersAdmin.length === 0
           p Aucun ouvrier trouvé.
-        ul.user-list
+        user-list
           each user in usersAdmin
-            li.user-item
-              h2= user.username
-              p Taux horaire : #{user.taux} €/h
-              if user.tasks && user.tasks.length
-                p Nombre de tâches : #{user.tasks.length}
-                ul.task-list
-                  each t in user.tasks
-                    li
-                      | #{t.name || t.task} — 
-                      | #{t.heureTravail} h, montant : #{t.montant} €
+            if user.username !="Admin"
+              li.user-item
+                h2= user.username
+                p Taux horaire actuel: #{user.taux} €/h
+                if user.tasks && user.tasks.length
+                  p Nombre de missions : #{user.tasks.length}
+                  ul.task-list
+                    each t in user.tasks
+                      li
+                        | #{t.name || t.task} — 
+                        | #{t.heureTravail} h — #{t.montant} € (#{t.taux} €/h — #{t.pause}h de pause)
         form(action="/admin" method="get")
-          button(type="submit" class="button-historique") Acceuil               
+          button(type="submit" class="button-historique")
+            i(class="fas fa-home")
+            |  Accueil               
         form(action="/logout" method="get")
-          button(type="submit" class="button-delete") Déconnexion           
+          button(type="submit" class="button-delete")
+            i(class="fas fa-sign-out-alt")
+            |  Déconnexion           
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

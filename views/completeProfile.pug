@@ -4,8 +4,6 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Tâches du jour
     link(rel="manifest" href="/manifest.json")
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     style.
       :root {
         --fond: #1e1e2f;
@@ -75,16 +73,6 @@ html(lang="en")
         margin-bottom: 1rem;
       }
 
-      .sousTitre{
-        text-align: center;
-        font-size: 1.5rem;
-        color: var(--accent2);
-        font-family: 'Orbitron', sans-serif;
-        text-shadow: 0 0 5px var(--accent2);
-        margin-top:1rem;
-        margin-bottom: 1rem;
-      }
-
       form {
         display: flex;
         flex-direction: column;
@@ -144,7 +132,7 @@ html(lang="en")
         cursor: pointer;
         transition: background 0.3s ease;
         font-size: 1rem;
-        margin-bottom:5px;
+        margin-bottom:25px;
       }
 
       .button-historique {
@@ -269,6 +257,22 @@ html(lang="en")
         width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
+      select.input-task {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+        appearance: none; /* enlève le style natif pour plus de cohérence */
+      }
+
+      select.input-task:focus {
+        outline: none;
+        border-color: var(--accent2);
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
@@ -290,56 +294,38 @@ html(lang="en")
       }
 
   body
-    .container
-      .form-container 
-        .head
-          .formDate
-            .date-time
-              #dateJour 
-              #heure    
- 
-        p.titre Skil Up
-        p.sousTitre Admin
-        //- form(action="/login" method="post")
-        //-   label(for="login") Login
+  .container
+    .form-container 
+      .head
+        .formDate
+          .date-time
+            #dateJour 
+            #heure    
 
-        //-   input(type="text" id="username" name="username" class ="input-task" required)
- 
+      p.titre Skil Up
 
-        //-   label(for="mdp" class="qui") Mot de passe :
-        //-   input(type="text" id="password" name="password" class ="input-task" required)
+      // Affichage du message d'erreur
+      //- if errorMessage
+      //-   p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
 
-        //-   button(type="submit" class="button-submit-taches") Connection 
-        //- form(action="/createUser" method="get")  
-        //-   button(type="submit" class="button-historique") Creér un compte
-        form(action="/createChantier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-hammer") 
-            |  Création chantier
-        //- form(action="/historiqueOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") Historique
-        form(action="/historiqueOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-history")
-            |  Historique
-        //- form(action="/createOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") + Ajout d'ouvrier 
-        form(action="/createOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-user-plus")
-            |  Ajout d'ouvrier
-        //- form(action="/updateOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
-        form(action="/updateOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-dollar-sign")
-            |  Modification €/h d'ouvrier 
-        //- form(action="/logout" method="get")
-        //-   button(type="submit" class="button-delete") Déconnexion 
-        form(action="/logout" method="get")
-          button(type="submit" class="button-delete")
-            i(class="fas fa-sign-out-alt")
-            |  Déconnexion         
+      form(action="/completeProfile" method="post")
+        label(for="username") Login :
+        input(type="text" id="username" name="username" class="input-task" required)
+
+        label(for="secret-question") Question secrète :
+        select(name="secret-question" id="secret-question" class="input-task" required)
+          option(value="" disabled selected) Choisissez une question
+          option(value="Quel est le nom de votre premier animal ?") Quel est le nom de votre premier animal ?
+          option(value="Quel est le nom de votre meilleur ami ?") Quel est le nom de votre meilleur ami ?
+          option(value="Quel est le nom de votre ville natale ?") Quel est le nom de votre ville natale ?
+
+        label(for="mdp" class="qui") Mot de passe :
+        input(type="text" id="mdp" name="mdp" class="input-task" required)
+
+        button(type="submit" class="button-submit-taches") Création de compte
+      form(action="/login" method="get")  
+        button(type="submit" class="button-historique") J'ai déjà un compte 
+          
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
@@ -351,3 +337,4 @@ html(lang="en")
           });
         });
       }
+

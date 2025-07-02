@@ -129,12 +129,20 @@ app.get('/admin', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     console.log("username:", username);
-      console.log("req.session.user:", req.session.user);
+    console.log("req.session.user:", req.session.user);
+  //   if (!req.session.user) {
+  //   return res.redirect('/login');
+  // }
+      
     try {
-        const collection = db.collection('Users');
+        const collection = db.collection('UsersAdmin');
         const userLogged = await collection.findOne({ username });
         // console.log('collection:', collection);
         console.log('userLogged:', userLogged);
+
+        if(userLogged.secretQuestion===""){
+            res.redirect("/login") 
+        }
 
         // Vérifier si l'utilisateur existe
         if (!userLogged) {
@@ -181,6 +189,10 @@ app.get('/createUser', async (req, res) => {
 
     res.render('createUser');  } )
 
+app.get('/completeProfile', async (req, res) => { 
+
+  res.render('completeProfile');
+});
 // Affiche l'historique de TOUS les UsersAdmin
 app.get('/historiqueOuvrier', async (req, res) => {
   try {
@@ -202,34 +214,82 @@ app.get('/createOuvrier', async (req, res) => {
 
     res.render('createOuvrier');  } ) 
 
-// app.post('/createOuvrier', async (req, res) => {
-//   const { username, taux } = req.body;
-//     console.log("Username:", username); 
-//     console.log("taux", taux);                 
-//   try {
-//     const usersCollection = db.collection('UsersAdmin');
-//     // const existingUser = await usersCollection.findOne({ username });
+app.post('/createOuvrier', async (req, res) => {
+  const { username, taux } = req.body;
+    console.log("Username:", username); 
+    console.log("taux", taux);                 
+  try {
+    const usersCollection = db.collection('UsersAdmin');
+    // const existingUser = await usersCollection.findOne({ username });
 
-//     // if (existingUser) {
-//     //   // On renvoie la page avec un message d'erreur
-//     //   return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
-//     // }
+    // if (existingUser) {
+    //   // On renvoie la page avec un message d'erreur
+    //   return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
+    // }
 
-//     // const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
-//     const user = {
-//       username,
-//       taux
-//     };
+    const user = {
+      username,
+      taux
+    };
 
-//     await usersCollection.insertOne(user);
+    await usersCollection.insertOne(user);
 
-//     res.redirect('/admin'); // ou vers la page principale directement
-//   } catch (err) {
-//     console.error('Erreur lors de la création de l\'utilisateur :', err);
-//     res.status(500).send('Erreur lors de la création de l\'utilisateur');
-//   }
-// }); 
+    res.redirect('/admin'); // ou vers la page principale directement
+  } catch (err) {
+    console.error('Erreur lors de la création de l\'utilisateur :', err);
+    res.status(500).send('Erreur lors de la création de l\'utilisateur');
+  }
+}); 
+
+app.get('/updateOuvrier', async (req, res) => {
+
+    try {
+    // 1) Lire tous les UsersAdmin avec leurs tâches
+    const usersAdmin = await db
+      .collection('UsersAdmin')
+      .find({})
+      .toArray();
+    console.log('usersAdmin:', usersAdmin);
+    // 2) Rendre la vue en passant la liste
+    res.render('updateOuvrier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur récupération historique ouvriers :', err);
+    res.status(500).send('Erreur serveur');
+  }  } ) 
+
+app.post('/updateOuvrier', async (req, res) => {
+  const { username, taux } = req.body;
+    console.log("Username:", username); 
+    console.log("taux", taux);                 
+  try {
+    const usersCollection = db.collection('UsersAdmin');
+    // const existingUser = await usersCollection.findOne({ username });
+
+    // if (existingUser) {
+    //   // On renvoie la page avec un message d'erreur
+    //   return res.render('createUser', { errorMessage: 'Nom d\'utilisateur déjà utilisé.' });
+    // }
+
+    // const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = {
+      username,
+      taux
+    };
+
+    await usersCollection.updateOne(
+      { username: username },
+      { $set: { taux: taux } }
+    );
+
+    res.redirect('/admin'); // ou vers la page principale directement
+  } catch (err) {
+    console.error('Erreur lors de la création de l\'utilisateur :', err);
+    res.status(500).send('Erreur lors de la création de l\'utilisateur');
+  }
+});
    
 app.get('/createChantier', async (req, res) => {
   try {
@@ -263,7 +323,7 @@ app.post('/createChantier', async (req, res) => {
     let diffHours = end.diff(start, 'hours');
     diffHours = diffHours < 0 ? diffHours + 24 : diffHours;  // si tranche sur nuit
     diffHours -= parseInt(pause) || 0;
-
+    const id_Chantier = new ObjectId(); // id unique pour le chantier
     // 4) Récupérer en base le chef + ouvriers pour connaître leurs taux
     const col = db.collection('UsersAdmin');
     const participants = await col.find({
@@ -275,6 +335,7 @@ app.post('/createChantier', async (req, res) => {
       const montant = diffHours * (u.taux || 0);
       const t = {
         _id: new ObjectId(),    // id unique pour la sous‑tâche
+        id_Chantier : id_Chantier, // lien vers le chantier
         task,
         date: dateJ,
         datef: dateF,
@@ -300,7 +361,7 @@ app.post('/createChantier', async (req, res) => {
     }
 
     // 7) Redirection
-    res.redirect('/createChantier?success=true');
+    res.redirect('/admin');
 
   } catch (err) {
     console.error('Erreur création chantier & tâches :', err);
@@ -308,13 +369,43 @@ app.post('/createChantier', async (req, res) => {
   }
 });
 
+app.post('/completeProfile', async (req, res) => {
+  const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
+
+  try {
+    const col = db.collection('UsersAdmin');
+    const user = await col.findOne({ username });
+
+    if (!user) {
+      return res.render('completeProfile', { errorMessage: 'Nom d\'utilisateur introuvable.' });
+    }
+
+    if (user.password) {
+      return res.render('completeProfile', { errorMessage: 'Profil déjà complété.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await col.updateOne(
+      { username },
+      { $set: { password: hashedPassword, secretQuestion } }
+    );
+
+    res.redirect('/login');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur lors de la complétion du profil');
+  }
+});
+
+
 app.post('/createUser', async (req, res) => {
   const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
     console.log("Username:", username);
     console.log("Password:", password);  
     console.log("secret-question", secretQuestion);                   
   try {
-    const usersCollection = db.collection('Users');
+    const usersCollection = db.collection('UsersAdmin');
     const existingUser = await usersCollection.findOne({ username });
 
     if (existingUser) {
@@ -353,7 +444,7 @@ app.get('/', async (req, res) => {
   try {
     const userId = new ObjectId(req.session.user._id);
 
-    const collection = db.collection('Users');
+    const collection = db.collection('UsersAdmin');
     const user = await collection.findOne({ _id: userId });
 
     if (!user) {
@@ -437,7 +528,7 @@ app.post('/', async (req, res) => {
   };
 
   try {
-    const collection = db.collection('Users');
+    const collection = db.collection('UsersAdmin');
 
     await collection.updateOne(
       { _id: userId },
@@ -510,7 +601,7 @@ app.delete('/delete-task/:id', async (req, res) => {
   const userId = new ObjectId(req.session.user._id);
 
   try {
-    const users = db.collection('Users');
+    const users = db.collection('UsersAdmin');
 
     // 3) Utilise $pull pour retirer la tâche du tableau
     const result = await users.updateOne(
