@@ -2,7 +2,7 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Tâches du jour
+    title Skil Up
     link(rel="manifest" href="/manifest.json")
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -329,7 +329,7 @@ html(lang="en")
                 option(value="" disabled selected) -- Nom ouvrier --
                 each user in usersAdmin
                   if user.username !="Admin"
-                    option(value=user.username)= user.username + ' - ' + user.taux + ' €/h'
+                    option(value=user.username)= user.username + ' (' + user.taux + ' €/h)'
 
         label(for="taux") Nouveau taux horaire :
         select(name="taux" id="taux" class="input-task" required placeholder="Sélectionnez le taux horaire") 
