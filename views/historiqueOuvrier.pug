@@ -158,6 +158,30 @@ html(lang="en")
         color: black;
       }
 
+      .button-reinitialze {
+        display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-bottom:25px;
+      }
+
+      .button-reinitialze {
+        background-color: var(--accent);
+        color:black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-reinitialze:hover {
+        background-color: var(--accent);
+        color: black;
+      }
+
       .button-delete {
         background-color: var(--danger);
         color: white;
@@ -247,6 +271,18 @@ html(lang="en")
         font-family: 'Press Start 2P', monospace;
         margin-top:15px;
       }
+      .dateInput input[type="month"]{
+        background-color: #444;
+        color: #f0f0f0;
+        border: 2px solid var(--accent);
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top:15px;
+        margin-left: 10px;
+        margin-right: 10px;
+        font-size: 1rem;
+        font-family: 'Press Start 2P', monospace;
+      }
 
       br.small-br {
         line-height: 0.7;  /* réduit l'espace vertical */
@@ -294,6 +330,33 @@ html(lang="en")
         margin-top:1rem;
         margin-bottom: 1rem;
       }
+      li .item {
+        background-color:rgb(116, 116, 119);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: var(--ombre);
+      }
+
+      li.user-item {
+        list-style-type: none;
+      }
+
+      .boutonFiltre-reinitialise {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      ul.task-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      p.item-text {
+        font-size: 1rem;
+        color: var(--texte);
+        margin-bottom: 5px;
+      }
 
       /* Priorités */
       .faible {
@@ -327,6 +390,25 @@ html(lang="en")
         p.titre Skil Up 
         p.sousTitre Historique des ouvriers
 
+        form(action="/historiqueOuvrier" method="POST")
+          label(for="username") Filtres (Ouvrier et Mois) :
+          //- input(type="text" name="username" placeholder="Nom utilisateur")
+          .boutonFiltre-reinitialise
+
+            .dateInput
+              select(name="username" id="username")
+                option(value="" disabled selected) Ouvrier
+                each user in usersAdmin
+                  option(value=user.username)= user.username
+    
+            .dateInput
+              input(type="month" name="mois" id="mois" placeholder="Mois")      
+
+          .boutonFiltre-reinitialise
+            button(type="submit" class="button-historique") Filtrer
+            a(href="/historiqueOuvrier") 
+              button(type="button" class="button-reinitialze") Réinitialiser
+
         // Si la liste est vide
         if !usersAdmin || usersAdmin.length === 0
           p Aucun ouvrier trouvé.
@@ -335,14 +417,17 @@ html(lang="en")
             if user.username !="Admin"
               li.user-item
                 h2= user.username
-                p Taux horaire actuel: #{user.taux} €/h
+                p Taux horaire actuel : #{user.taux} €/h
                 if user.tasks && user.tasks.length
-                  p Nombre de missions : #{user.tasks.length}
+                  p Nombre de missions : #{user.tasks.length}
                   ul.task-list
                     each t in user.tasks
-                      li
-                        | #{t.name || t.task} — 
-                        | #{t.heureTravail} h — #{t.montant} € (#{t.taux} €/h — #{t.pause}h de pause)
+                      - const dateObj = new Date(t.date)
+                      - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+                      li.item
+                        | #{t.name || t.task} (#{dateFr})
+                        p.item-text #{t.heureTravail} h - #{t.montant} € (#{t.taux} €/h)
+                      //- br.small-br
         form(action="/admin" method="get")
           button(type="submit" class="button-historique")
             i(class="fas fa-home")

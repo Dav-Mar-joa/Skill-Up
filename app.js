@@ -185,69 +185,107 @@ app.get('/admin', async (req, res) => {
 //     }
 // });
 
+// app.post('/login', async (req, res) => {
+//   const { username, password } = req.body;
+
+//   console.log("username:", username);
+//   console.log("req.session.user:", req.session.user);
+
+//   try {
+//     const collection = db.collection('UsersAdmin');
+//     const userLogged = await collection.findOne({ username });
+
+//     console.log('userLogged:', userLogged);
+
+//     // Vérifier si l'utilisateur existe
+//     if (!userLogged) {
+//       return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
+//     }
+
+//     // Vérifier la question secrète (exemple, sinon ajuste selon ton besoin)
+//     if (userLogged.secretQuestion === "") {
+//       return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
+//     }
+
+//     // Vérifier le mot de passe
+//     const isMatch = await bcrypt.compare(password, userLogged.password);
+//     console.log("isMatch:", isMatch);
+
+//     if (!isMatch) {
+//       return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
+//     }
+
+//     // Vérifier si déjà connecté ailleurs (si tu veux garder ça)
+//     // if (userLogged.isLoggedIn) {
+//     //   return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
+//     // }
+
+//     // Mettre à jour le statut
+//     await collection.updateOne(
+//       { _id: userLogged._id },
+//       { $set: { isLoggedIn: true } }
+//     );
+
+//     // Créer la session
+//     req.session.user = {
+//       _id: userLogged._id,
+//       username: userLogged.username,
+//     };
+
+//     // Rediriger selon le rôle
+//     if (userLogged.isAdmin === "y") {
+//       console.log("Utilisateur admin connecté");
+//       return res.redirect("/admin");
+//     } else {
+//       console.log("Utilisateur connecté :", req.session.user.username);
+//       console.log("Session utilisateur :", req.session.user);
+//       return res.redirect('/?success=true');
+//     }
+
+//   } catch (err) {
+//     console.error("Erreur lors de la connexion :", err);
+//     res.status(500).send("Erreur lors de la connexion");
+//   }
+// });
+
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
-  console.log("username:", username);
-  console.log("req.session.user:", req.session.user);
 
   try {
     const collection = db.collection('UsersAdmin');
     const userLogged = await collection.findOne({ username });
 
-    console.log('userLogged:', userLogged);
-
-    // Vérifier si l'utilisateur existe
     if (!userLogged) {
       return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
     }
 
-    // Vérifier la question secrète (exemple, sinon ajuste selon ton besoin)
-    if (userLogged.secretQuestion === "") {
-      return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
+    // Si pas encore de mdp, rediriger vers la complétion du profil
+    if (!userLogged.password) {
+      // Passe username dans query pour que le formulaire soit pré-rempli
+      return res.redirect(`/completeProfile?username=${encodeURIComponent(username)}`);
     }
 
-    // Vérifier le mot de passe
+    // Vérifier mdp classique
     const isMatch = await bcrypt.compare(password, userLogged.password);
-    console.log("isMatch:", isMatch);
 
     if (!isMatch) {
       return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
     }
 
-    // Vérifier si déjà connecté ailleurs (si tu veux garder ça)
-    // if (userLogged.isLoggedIn) {
-    //   return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
-    // }
+    await collection.updateOne({ _id: userLogged._id }, { $set: { isLoggedIn: true } });
 
-    // Mettre à jour le statut
-    await collection.updateOne(
-      { _id: userLogged._id },
-      { $set: { isLoggedIn: true } }
-    );
+    req.session.user = { _id: userLogged._id, username: userLogged.username };
 
-    // Créer la session
-    req.session.user = {
-      _id: userLogged._id,
-      username: userLogged.username,
-    };
-
-    // Rediriger selon le rôle
     if (userLogged.isAdmin === "y") {
-      console.log("Utilisateur admin connecté");
       return res.redirect("/admin");
     } else {
-      console.log("Utilisateur connecté :", req.session.user.username);
-      console.log("Session utilisateur :", req.session.user);
       return res.redirect('/?success=true');
     }
-
   } catch (err) {
     console.error("Erreur lors de la connexion :", err);
     res.status(500).send("Erreur lors de la connexion");
   }
 });
-
 
 app.get('/createUser', async (req, res) => {
 
@@ -264,7 +302,14 @@ app.get('/historiqueOuvrier', async (req, res) => {
     const usersAdmin = await db
       .collection('UsersAdmin')
       .find({})
+      .sort({username: 1}) // Tri par nom d'utilisateur
       .toArray();
+       // Pour chaque user, trier son tableau tasks par date croissante
+      usersAdmin.forEach(user => {
+        if (user.tasks && Array.isArray(user.tasks)) {
+          user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
+      });
     console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
     res.render('historiqueOuvrier', { usersAdmin });
@@ -272,7 +317,153 @@ app.get('/historiqueOuvrier', async (req, res) => {
     console.error('Erreur récupération historique ouvriers :', err);
     res.status(500).send('Erreur serveur');
   }
-}); 
+});
+
+// app.post('/historiqueOuvrier', async (req, res) => {
+//   try {
+//     const { username, mois, jour } = req.body;
+//     console.log("mois :", mois)
+
+//     // Construire le filtre MongoDB
+//     const filter = {};
+
+//     if (username && username.trim() !== '') {
+//       // Chercher exactement le username
+//       filter.username = username.trim();
+//     }
+
+//     if (mois && mois.trim() !== '') {
+//       // mois au format "YYYY-MM"
+//       // On filtre les tâches qui ont une date dans ce mois
+//       const [year, month] = mois.split('-');
+//       const startDate = new Date(year, month - 1, 1);
+//       const endDate = new Date(year, month, 1);
+//       // Filtrer sur les tâches qui ont une date dans cette plage
+//       filter.tasks = {
+//         $elemMatch: {
+//           date: { $gte: startDate.toISOString(), $lt: endDate.toISOString() }
+          
+//         }
+        
+//       };
+//       console.log("filter.tasks ",filter.tasks);
+//     }
+
+//     if (jour && jour.trim() !== '') {
+//       // jour au format "YYYY-MM-DD"
+//       const dayStart = new Date(jour);
+//       const dayEnd = new Date(jour);
+//       dayEnd.setDate(dayEnd.getDate() + 1);
+
+//       filter.tasks = filter.tasks || {};
+//       filter.tasks.$elemMatch = filter.tasks.$elemMatch || {};
+
+//       // Si déjà $elemMatch présent (mois), on doit combiner conditions $and
+//       if (filter.tasks.$elemMatch.date) {
+//         // Combine avec $and
+//         filter.tasks.$elemMatch = {
+//           $and: [
+//             { date: filter.tasks.$elemMatch.date },
+//             { date: { $gte: dayStart.toISOString(), $lt: dayEnd.toISOString() } }
+//           ]
+//         };
+//       } else {
+//         filter.tasks.$elemMatch.date = { $gte: dayStart.toISOString(), $lt: dayEnd.toISOString() };
+//       }
+//     }
+
+//     // Trouver les users selon filtre
+//     const usersAdmin = await db.collection('UsersAdmin')
+//       .find(filter)
+//       .sort({ username: 1 })
+//       .toArray();
+
+//     // Trier les tasks pour chaque user
+//     usersAdmin.forEach(user => {
+//       if (user.tasks && Array.isArray(user.tasks)) {
+//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+//       }
+//     });
+
+//     res.render('historiqueOuvrier', { usersAdmin });
+//   } catch (err) {
+//     console.error('Erreur récupération historique ouvriers :', err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
+
+app.post('/historiqueOuvrier', async (req, res) => {
+  try {
+    const { username, mois, jour } = req.body;
+
+    // Construire le filtre utilisateur de base (username)
+    const userFilter = {};
+    if (username && username.trim() !== '') {
+      userFilter.username = username.trim();
+    }
+
+    // Construire la plage de date en ISODate pour filtrer tasks
+    let startDate, endDate;
+    if (mois && mois.trim() !== '') {
+      const [year, month] = mois.split('-');
+      startDate = new Date(year, month - 1, 1);
+      endDate = new Date(year, month, 1);
+    } else if (jour && jour.trim() !== '') {
+      startDate = new Date(jour);
+      endDate = new Date(jour);
+      endDate.setDate(endDate.getDate() + 1);
+    }
+
+    // Pipeline aggregation
+    const pipeline = [
+      { $match: userFilter }
+    ];
+
+    if (startDate && endDate) {
+      pipeline.push({
+        $addFields: {
+          tasks: {
+            $filter: {
+              input: "$tasks",
+              as: "task",
+              cond: {
+                $and: [
+                  { $gte: ["$$task.date", startDate] },
+                  { $lt: ["$$task.date", endDate] }
+                ]
+              }
+            }
+          }
+        }
+      });
+      // Ne garder que les utilisateurs qui ont au moins une tâche dans cette période
+      pipeline.push({
+        $match: {
+          "tasks.0": { $exists: true }
+        }
+      });
+    }
+
+    // Trier par username
+    pipeline.push({ $sort: { username: 1 } });
+
+    // Exécuter aggregation
+    const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+
+    // Trier les tâches au cas où (pas forcément utile)
+    usersAdmin.forEach(user => {
+      if (user.tasks && Array.isArray(user.tasks)) {
+        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+    });
+
+    res.render('historiqueOuvrier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur récupération historique ouvriers :', err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
 
 app.get('/createOuvrier', async (req, res) => {
 
@@ -462,7 +653,6 @@ app.post('/completeProfile', async (req, res) => {
   }
 });
 
-
 app.post('/createUser', async (req, res) => {
   const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
     console.log("Username:", username);
@@ -520,6 +710,17 @@ app.get('/', async (req, res) => {
     tasks.forEach(task => {
       salaire += task.montant;
     });
+    // usersAdmin.forEach(user => {
+    //     if (user.tasks && Array.isArray(user.tasks)) {
+    //       user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+    //     }
+    //   });
+
+    // usersAdmin.forEach(user => {
+    //     if (user.tasks && Array.isArray(user.tasks)) {
+    //       user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+    //     }
+    //   });
 
     const collectionCourses = db.collection('Courses');
     const courses = await collectionCourses.find({}).toArray();
