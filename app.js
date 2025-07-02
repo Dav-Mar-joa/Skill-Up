@@ -126,64 +126,128 @@ app.get('/login', async (req, res) => {
 app.get('/admin', async (req, res) => {
         res.render('admin');
 });
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    console.log("username:", username);
-    console.log("req.session.user:", req.session.user);
-  //   if (!req.session.user) {
-  //   return res.redirect('/login');
-  // }
+// app.post('/login', async (req, res) => {
+//     const { username, password } = req.body;
+//     console.log("username:", username);
+//     console.log("req.session.user:", req.session.user);
+//   //   if (!req.session.user) {
+//   //   return res.redirect('/login');
+//   // }
       
-    try {
-        const collection = db.collection('UsersAdmin');
-        const userLogged = await collection.findOne({ username });
-        // console.log('collection:', collection);
-        console.log('userLogged:', userLogged);
+//     try {
+//         const collection = db.collection('UsersAdmin');
+//         const userLogged = await collection.findOne({ username });
+//         // console.log('collection:', collection);
+//         console.log('userLogged:', userLogged);
 
-        if(userLogged.secretQuestion===""){
-            res.redirect("/login") 
-        }
+//         if(userLogged.secretQuestion===""){
+//             res.redirect("/login") 
+//         }
 
-        // Vérifier si l'utilisateur existe
-        if (!userLogged) {
-            return res.render('login', { message: "Login ou mot de passe erroné !" });
-        }
-        // if (userLogged.isLoggedIn) {
-        //     return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
-        // }
+//         // Vérifier si l'utilisateur existe
+//         if (!userLogged.username) {
+//             res.redirect("/login") 
+//         }
+//         // if (userLogged.isLoggedIn) {
+//         //     return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
+//         // }
 
-        // Vérifier si le mot de passe correspond au hash stocké
-        const isMatch = await bcrypt.compare(password, userLogged.password);
-        console.log("isMatch:", isMatch);
-        if (!isMatch) {
-            return res.render('login', { message: "Login ou mot de passe erroné !" });
-        }
+//         // Vérifier si le mot de passe correspond au hash stocké
+//         const isMatch = await bcrypt.compare(password, userLogged.password);
+//         console.log("isMatch:", isMatch);
+//         if (!isMatch) {
+//             return res.render('login', { message: "Login ou mot de passe erroné !" });
+//         }
 
-        await collection.updateOne(
-            { _id: userLogged._id },
-            { $set: { isLoggedIn: true } }
-        );
+//         await collection.updateOne(
+//             { _id: userLogged._id },
+//             { $set: { isLoggedIn: true } }
+//         );
 
-        // Création de la session utilisateur après authentification réussie
-        req.session.user = {
-            _id: userLogged._id,
-            username: userLogged.username,
-        };
+//         // Création de la session utilisateur après authentification réussie
+//         req.session.user = {
+//             _id: userLogged._id,
+//             username: userLogged.username,
+//         };
 
-        // Redirection selon le rôle de l'utilisateur
-        if (userLogged.isAdmin === "y") {
-            console.log("Utilisateur admin connecté");
-            res.redirect("/admin")
-        } else {
-            console.log("Utilisateur connecté :", req.session.user.username);
-            console.log("Session utilisateur :", req.session.user);
-            res.redirect('/?success=true');
-                    }
-    } catch (err) {
-        console.error("Erreur lors de la connexion :", err);
-        res.status(500).send("Erreur lors de la connexion");
+//         // Redirection selon le rôle de l'utilisateur
+//         if (userLogged.isAdmin === "y") {
+//             console.log("Utilisateur admin connecté");
+//             res.redirect("/admin")
+//         } else {
+//             console.log("Utilisateur connecté :", req.session.user.username);
+//             console.log("Session utilisateur :", req.session.user);
+//             res.redirect('/?success=true');
+//                     }
+//     } catch (err) {
+//         console.error("Erreur lors de la connexion :", err);
+//         res.status(500).send("Erreur lors de la connexion");
+//     }
+// });
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  console.log("username:", username);
+  console.log("req.session.user:", req.session.user);
+
+  try {
+    const collection = db.collection('UsersAdmin');
+    const userLogged = await collection.findOne({ username });
+
+    console.log('userLogged:', userLogged);
+
+    // Vérifier si l'utilisateur existe
+    if (!userLogged) {
+      return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
     }
+
+    // Vérifier la question secrète (exemple, sinon ajuste selon ton besoin)
+    if (userLogged.secretQuestion === "") {
+      return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
+    }
+
+    // Vérifier le mot de passe
+    const isMatch = await bcrypt.compare(password, userLogged.password);
+    console.log("isMatch:", isMatch);
+
+    if (!isMatch) {
+      return res.render('login', { message: "Nom d'utilisateur ou mot de passe erroné !" });
+    }
+
+    // Vérifier si déjà connecté ailleurs (si tu veux garder ça)
+    // if (userLogged.isLoggedIn) {
+    //   return res.render('login', { message: "Ce compte est déjà connecté ailleurs." });
+    // }
+
+    // Mettre à jour le statut
+    await collection.updateOne(
+      { _id: userLogged._id },
+      { $set: { isLoggedIn: true } }
+    );
+
+    // Créer la session
+    req.session.user = {
+      _id: userLogged._id,
+      username: userLogged.username,
+    };
+
+    // Rediriger selon le rôle
+    if (userLogged.isAdmin === "y") {
+      console.log("Utilisateur admin connecté");
+      return res.redirect("/admin");
+    } else {
+      console.log("Utilisateur connecté :", req.session.user.username);
+      console.log("Session utilisateur :", req.session.user);
+      return res.redirect('/?success=true');
+    }
+
+  } catch (err) {
+    console.error("Erreur lors de la connexion :", err);
+    res.status(500).send("Erreur lors de la connexion");
+  }
 });
+
 
 app.get('/createUser', async (req, res) => {
 

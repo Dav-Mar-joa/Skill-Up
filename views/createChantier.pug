@@ -336,7 +336,7 @@ html(lang="en")
           label(for="ouvriers") Chef d'équipe et ouvriers dans la mission :
           .dateInput
             select(name="ouvriers[]" id="ouvriers" multiple size=5 required)
-              option(value="" disabled selected) -- Présent sur le chantier --
+              option(value="" disabled selected) -- Sur le chantier --
               each user in usersAdmin
                 option(value=user.username)= user.username
 

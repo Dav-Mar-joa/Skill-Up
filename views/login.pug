@@ -261,6 +261,12 @@ html(lang="en")
       .faible {
         border-left-color: green;
       }
+      .message {
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 10px;
+      }
 
       .moyenne {
         border-left-color: orange;
@@ -295,7 +301,8 @@ html(lang="en")
 
           label(for="mdp" class="qui") Mot de passe :
           input(type="text" id="password" name="password" class ="input-task" required)
-
+          if message
+            #message.message #{message}
           button(type="submit" class="button-submit-taches") Connection 
         form(action="/completeProfile" method="get")  
           button(type="submit" class="button-historique") Première connexion
