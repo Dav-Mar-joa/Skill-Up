@@ -33,6 +33,7 @@ html(lang="en")
       }
       h2{
         margin-bottom:10px;
+        margin-top:5px;
       }
 
       .container {
@@ -74,17 +75,17 @@ html(lang="en")
         margin-bottom:0;
       }
 
-      li.user-item:not(:last-child)::after {
+      /*li.user-item:not(:last-child)::after {
         content: "";
         display: block;
         width: 100%;
         border-radius:20px;
         border: 1px solid var(--accent2);
-        height: 5px; /* épaisseur de la ligne */
+        height: 5px; 
         background-color: var(--accent2);
         margin-top: 1rem;
         border-radius: 1px;
-      }
+      }*/
 
       .titre {
         text-align: center;
@@ -133,7 +134,7 @@ html(lang="en")
         border-color: var(--accent2);
       }
 
-      .button-submit-taches, .button-delete {
+      .button-submit-taches, .button-delete,.button-delete-task {
         border: none;
         padding: 12px;
         border-radius: 8px;
@@ -210,6 +211,18 @@ html(lang="en")
       }
 
       .button-delete:hover {
+        background-color: #c0392b;
+      }
+
+      .button-delete-task {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+        float:right;
+        margin-top: 0px;
+      }
+
+      .button-delete-task:hover {
         background-color: #c0392b;
       }
 
@@ -305,12 +318,15 @@ html(lang="en")
         font-family: 'Press Start 2P', monospace;
       }
 
-      br.small-br {
-        line-height: 0.7;  /* réduit l'espace vertical */
+      .small-br {
+        border-radius:20px;
+        border: 1px solid var(--accent2);
+        background-color: var(--accent2);
+        line-height: 0.5;  /* réduit l'espace vertical */
         content: "";       /* pas obligatoire mais parfois utile */
         margin: 2px 0;     /* tu peux ajuster la marge aussi */
         display: block;    /* forcer le saut en bloc */
-        height: 6px;       /* hauteur personnalisée */
+        height: 5px;       /* hauteur personnalisée */
       }
 
       .heureTravail {
@@ -325,13 +341,6 @@ html(lang="en")
       }
       .historique {
         display: none
-      }
-      br.small-br {
-        line-height: 0.7;  /* réduit l'espace vertical */
-        content: "";       /* pas obligatoire mais parfois utile */
-        margin: 2px 0;     /* tu peux ajuster la marge aussi */
-        display: block;    /* forcer le saut en bloc */
-        height: 6px;       /* hauteur personnalisée */
       }
       .input-task {
         margin-top:15px;
@@ -366,7 +375,6 @@ html(lang="en")
       .boutonFiltre-reinitialise {
         display: flex;
         justify-content: space-between;
-        margin-top: 10px;
       }
 
       ul.task-list {
@@ -429,7 +437,7 @@ html(lang="en")
             button(type="submit" class="button-historique") Filtrer
             a(href="/historiqueOuvrier") 
               button(type="button" class="button-reinitialze") Réinitialiser
-
+          div.small-br
         // Si la liste est vide
         if !usersAdmin || usersAdmin.length === 0
           p Aucun ouvrier trouvé.
@@ -437,7 +445,6 @@ html(lang="en")
           each user in usersAdmin
             if user.username != "Admin"
               li.user-item
-                
                 //- p Taux horaire actuel : #{user.taux} €/h
                 if user.tasks && user.tasks.length
                   - var totalMontant = 0
@@ -450,9 +457,12 @@ html(lang="en")
                     each t in user.tasks
                       - const dateObj = new Date(t.date)
                       - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-                      li.item
+                      li.item(data-task-id=t._id.toString())
                         | #{t.name || t.task} (#{dateFr})
                         p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                        button(type="button" onclick="deleteTask(this)" class="button-delete-task")
+                          i(class="fas fa-trash-alt")
+                          //- |  Accueil
                       //- br.small-br
         form(action="/admin" method="get")
           button(type="submit" class="button-historique")

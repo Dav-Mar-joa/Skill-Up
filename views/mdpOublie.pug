@@ -257,15 +257,35 @@ html(lang="en")
         width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
+      .sousTitre{
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+
+      select.input-task {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+        appearance: none; /* enlève le style natif pour plus de cohérence */
+      }
+
+      select.input-task:focus {
+        outline: none;
+        border-color: var(--accent2);
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
-      }
-      .message {
-        color: white;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 10px;
       }
 
       .moyenne {
@@ -284,30 +304,42 @@ html(lang="en")
       }
 
   body
-    .container
-      .form-container 
-        .head
-          .formDate
-            .date-time
-              #dateJour 
-              #heure    
- 
-        p.titre Skil Up
-        form(action="/login" method="post")
-          label(for="login") Login :
+  .container
+    .form-container 
+      .head
+        .formDate
+          .date-time
+            #dateJour 
+            #heure    
 
-          input(type="text" id="username" name="username" class ="input-task" required)
- 
+      p.titre Skil Up
+      p.sousTitre Mot de passe oublié :
 
-          label(for="mdp" class="qui") Mot de passe :
-          input(type="text" id="password" name="password" class ="input-task" required)
-          if message
-            #message.message #{message}
-          button(type="submit" class="button-submit-taches") Connection 
-        form(action="/loginMdpOublie" method="get")  
-          button(type="submit" class="button-historique")  Login ou mot de passe oublié ?   
-        form(action="/completeProfile" method="get")  
-          button(type="submit" class="button-historique") Première connexion
+      // Affichage du message d'erreur
+      if errorMessage
+        p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
+
+      
+      form(action="/mdpOublie" method="post")
+        label(for="username") Login :
+        input(type="text" id="username" name="username" class="input-task" required)
+
+        label(for="secretQuestion") Question secrète :
+        select(name="secretQuestion" id="secretQuestion" class="input-task" required)
+          option(value="" disabled selected) Choisissez une question
+          option(value="Quel est le nom de votre premier animal ?") Quel est le nom de votre premier animal ?
+          option(value="Quel est le nom de votre meilleur ami ?") Quel est le nom de votre meilleur ami ?
+          option(value="Quel est le nom de votre ville natale ?") Quel est le nom de votre ville natale ?
+          
+        label(for="password") Nouveau mot de passe :
+        input(type="text" id="password" name="password" class="input-task" required)
+        label(for="passwordConfirmed") Confirmation mot de passe :
+        input(type="text" id="passwordConfirmed" name="passwordConfirmed" class="input-task" required)
+        if message
+          p.message #{message} 
+        button(type="submit" class="button-historique") Valider 
+      form(action="/login" method="get")  
+        button(type="submit" class="button-historique") Connexion 
           
     script(src="/js/script.js")
     script.
@@ -320,3 +352,4 @@ html(lang="en")
           });
         });
       }
+

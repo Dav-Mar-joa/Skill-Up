@@ -138,7 +138,7 @@ setInterval(() => {affichageHeure(); }, 1000)
 
 async function deleteTask(button) {
   // Récupérer l'élément task parent qui contient l'attribut data-task-id
-  const taskElement = button.closest('.task');
+  const taskElement = button.closest('.item');
   const taskId = taskElement.getAttribute('data-task-id');
 
   if (!taskId) {
@@ -164,6 +164,7 @@ async function deleteTask(button) {
       // 2) Mettre à jour le salaire affiché
       // On suppose que le salaire est dans un paragraphe par exemple <p class="salaire">Salaire : 400 €</p>
       const salaireTextElement = document.querySelector('.salaire');
+      window.location.href = '/historiqueOuvrier';
       if (salaireTextElement && montant) {
         const salaireMatch = salaireTextElement.innerText.match(/(\d+)\s?€/);
         if (salaireMatch) {

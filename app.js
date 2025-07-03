@@ -291,6 +291,116 @@ app.get('/createUser', async (req, res) => {
 
     res.render('createUser');  } )
 
+app.get('/loginMdpOublie', async (req, res) => {
+    res.render('loginMdpOublie');  } )
+
+app.get('/loginOublie', async (req, res) => {
+    res.render('loginOublie');  } )
+
+app.post('/loginOublie', async (req, res) => {
+  const { secretQuestion, password } = req.body;
+  console.log("secretQuestion:", secretQuestion);
+  console.log("password:", password);   
+
+  try {
+    const collection = db.collection('UsersAdmin');
+
+    // Chercher tous les utilisateurs avec cette question secrète
+    const users = await collection.find({ secretQuestion }).toArray();
+
+    if (users.length === 0) {
+      return res.render('loginOublie', { message: `Question secrete ou mot de passe incorrect !` });
+    }
+
+    // Parcourir les utilisateurs pour comparer le mot de passe hashé
+    for (const user of users) {
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        // Mot de passe correct, renvoyer le login
+       return res.render('loginOublie', { message: `Votre login est : ${user.username}` });
+      }
+        
+    }
+    return res.render('loginOublie', { message: `Question secrete ou mot de passe incorrect !` });
+    // // Aucun mot de passe ne correspond
+    // res.status(400).send("Mot de passe incorrect");
+
+  } catch (err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).send("Erreur serveur");
+  }
+});
+
+
+app.get('/mdpOublie', async (req, res) => {
+    res.render('mdpOublie');  } )    
+
+// app.post('/mdpnOublie', async (req, res) => {
+//   const { secretQuestion, password, passwordConfirmed, username} = req.body;
+
+//   if (password !=passwordConfirmed) {
+//       return res.render('mpdOublie', { message: `Mots de passes ne sont pas identiques !` });
+//     }
+//   console.log("secretQuestion:", secretQuestion);
+//   console.log("password:", password); 
+//   console.log("passwordConfirmed:", passwordConfirmed);  
+//   console.log("username:", username);
+//   try {
+//     const collection = db.collection('UsersAdmin');
+
+//     // Chercher tous les utilisateurs avec cette question secrète
+//     const user = await collection.findOne({ username,secretQuestion }).toArray();
+
+//     if (user) {
+//       await collection.updateOne(password, { $set: { password: await bcrypt.hash(password, 10) } });
+//       return res.render('mdpOublie', { message: `Mot de passe changé !` });
+//     }
+
+//   } catch (err) {
+//     console.error("Erreur serveur :", err);
+//     res.status(500).send("Erreur serveur");
+//   }
+// });
+    
+app.post('/mdpOublie', async (req, res) => {
+  const { secretQuestion, password, passwordConfirmed, username } = req.body;
+
+  if (password !== passwordConfirmed) {
+    return res.render('mdpOublie', { message: `Les mots de passe ne sont pas identiques !` });
+  }
+
+  console.log("secretQuestion:", secretQuestion);
+  console.log("password:", password);
+  console.log("passwordConfirmed:", passwordConfirmed);
+  console.log("username:", username);
+
+  try {
+    const collection = db.collection('UsersAdmin');
+
+    // Chercher l'utilisateur unique avec username + question secrète
+    const user = await collection.findOne({ username, secretQuestion });
+
+    if (!user) {
+      return res.render('mdpOublie', { message: `Utilisateur ou question secrète incorrects !` });
+    }
+
+    // Hasher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Mettre à jour
+    await collection.updateOne(
+      { username, secretQuestion },
+      { $set: { password: hashedPassword } }
+    );
+
+    return res.render('mdpOublie', { message: `Mot de passe changé !` });
+
+  } catch (err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).send("Erreur serveur");
+  }
+});
+
 app.get('/completeProfile', async (req, res) => { 
 
   res.render('completeProfile');
@@ -463,7 +573,6 @@ app.post('/historiqueOuvrier', async (req, res) => {
     res.status(500).send('Erreur serveur');
   }
 });
-
 
 app.get('/createOuvrier', async (req, res) => {
 
@@ -852,35 +961,64 @@ app.get('/logout', (req, res) => {
 //   }
 // });
 
+// app.delete('/delete-task/:id', async (req, res) => {
+//   // 1) Récupère l’ID de la tâche à supprimer
+//   const taskId = req.params.id;
+//   if (!ObjectId.isValid(taskId)) {
+//     return res.status(400).send('ID invalide');
+//   }
+
+//   // 2) Récupère l’ID de l’utilisateur connecté
+//   if (!req.session.user) {
+//     return res.status(401).send('Non authentifié');
+//   }
+//   const userId = new ObjectId(req.session.user._id);
+
+//   try {
+//     const users = db.collection('UsersAdmin');
+
+//     // 3) Utilise $pull pour retirer la tâche du tableau
+//     const result = await users.updateOne(
+//       { _id: userId },
+//       { $pull: { tasks: { _id: new ObjectId(taskId) } } }
+//     );
+
+//     if (result.modifiedCount === 0) {
+//       return res.status(404).send('Tâche non trouvée');
+//     }
+
+//     res.status(200).send('Tâche supprimée avec succès');
+//   } catch (err) {
+//     console.error('Erreur lors de la suppression de la tâche :', err);
+//     res.status(500).send('Erreur lors de la suppression de la tâche');
+//   }
+// });
+
 app.delete('/delete-task/:id', async (req, res) => {
-  // 1) Récupère l’ID de la tâche à supprimer
-  const taskId = req.params.id;
-  if (!ObjectId.isValid(taskId)) {
-    return res.status(400).send('ID invalide');
-  }
-
-  // 2) Récupère l’ID de l’utilisateur connecté
-  if (!req.session.user) {
-    return res.status(401).send('Non authentifié');
-  }
-  const userId = new ObjectId(req.session.user._id);
-
   try {
-    const users = db.collection('UsersAdmin');
+    const taskId = req.params.id;
 
-    // 3) Utilise $pull pour retirer la tâche du tableau
-    const result = await users.updateOne(
-      { _id: userId },
-      { $pull: { tasks: { _id: new ObjectId(taskId) } } }
+    // Valide que taskId est bien une chaîne non vide
+    if (!taskId) {
+      return res.status(400).send('ID de tâche manquant');
+    }
+    const ObjectId = require('mongodb').ObjectId;
+    const _id = new ObjectId(taskId);
+
+    // Mise à jour MongoDB : retirer la tâche dans tous les documents users où elle se trouve
+    const result = await db.collection('UsersAdmin').updateOne(
+      { 'tasks._id': _id },
+      { $pull: { tasks: { _id: _id } } }
     );
 
     if (result.modifiedCount === 0) {
       return res.status(404).send('Tâche non trouvée');
     }
 
-    res.status(200).send('Tâche supprimée avec succès');
-  } catch (err) {
-    console.error('Erreur lors de la suppression de la tâche :', err);
-    res.status(500).send('Erreur lors de la suppression de la tâche');
+    // res.status(200).send('Tâche supprimée');
+    res.status(200).send('Tâche supprimée');
+  } catch (error) {
+    console.error('Erreur suppression tâche :', error);
+    res.status(500).send('Erreur serveur lors de la suppression');
   }
 });

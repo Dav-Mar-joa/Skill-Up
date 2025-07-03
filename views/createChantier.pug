@@ -333,7 +333,7 @@ html(lang="en")
               each user in usersAdmin
                 option(value=user.username)= user.username
       
-          label(for="ouvriers") Chef d'équipe et ouvriers dans la mission :
+          label(for="ouvriers") Ouvriers dans le chantier :
           .dateInput
             select(name="ouvriers[]" id="ouvriers" multiple size=5 required)
               option(value="" disabled selected) -- Sur le chantier --
@@ -342,7 +342,7 @@ html(lang="en")
 
           label(for="date") Début (Date et heure) :
           .dateInput
-            input(type="date" id="date" name="date" class ="input-task")
+            input(type="date" id="date" name="date" class ="input-task" required)
             select(id="heure" name="heure")
               option(value="00:00") 00h
               option(value="01:00") 01h
@@ -371,7 +371,7 @@ html(lang="en")
 
           label(for="datef") Fin (Date et heure) :
           .dateInput
-            input(type="date" id="datef" name="datef" class ="input-task")
+            input(type="date" id="datef" name="datef" class ="input-task" required)
             select(id="heuref" name="heuref")
               option(value="00:00") 00h
               option(value="01:00") 01h
