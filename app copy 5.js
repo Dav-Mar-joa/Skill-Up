@@ -99,15 +99,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //   next();
 // });
 
-// app.get('/login', async (req, res) => {
-//         res.render('login');
-// });
-
-app.get('/login', (req, res) => {
-  if (req.session.user && req.session.user.isAdmin === "y") {
-    return res.redirect('/admin');
-  }
-  res.render('login');
+app.get('/login', async (req, res) => {
+        res.render('login');
 });
 // Affichage du form de création de chantier
 // app.get('/createChantier', async (req, res) => {
@@ -130,23 +123,8 @@ app.get('/login', (req, res) => {
 //         res.render('createChantier');
 // });
 
-// app.get('/admin', async (req, res) => {
-//         res.render('admin');
-// });
-
 app.get('/admin', async (req, res) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  const userId = new ObjectId(req.session.user._id);
-  const user = await db.collection('UsersAdmin').findOne({ _id: userId });
-
-  if (!user || user.isAdmin !== "y") {
-    return res.redirect('/');
-  }
-
-  res.render('admin');
+        res.render('admin');
 });
 // app.post('/login', async (req, res) => {
 //     const { username, password } = req.body;
@@ -816,54 +794,11 @@ app.post('/createUser', async (req, res) => {
   }
 }); 
 
-// app.get('/', async (req, res) => {
-//   const success = req.query.success === 'true';
-//   const successCourse = req.query.successCourse === 'true';
-
-
-
-//   if (!req.session.user) {
-//     return res.redirect('/login');
-//   }
-
-//   try {
-//     const userId = new ObjectId(req.session.user._id);
-
-//     const collection = db.collection('UsersAdmin');
-//     const user = await collection.findOne({ _id: userId });
-
-//     if (!user) {
-//       return res.redirect('/login');
-//     }
-
-//     const tasks = user.tasks || [];
-//     let salaire = 0;
-//     tasks.forEach(task => {
-//       salaire += task.montant;
-//     });
-  
-
-//     const collectionCourses = db.collection('Courses');
-//     const courses = await collectionCourses.find({}).toArray();
-
-//     res.render('index', {
-//       title: 'Mon site',
-//       message: 'Bienvenue sur ma montre digitale',
-//       tasks,
-//       courses: courses || [],
-//       successCourse,
-//       salaire,
-//       success
-//     });
-//   } catch (err) {
-//     console.error('Erreur lors de la récupération des tâches :', err);
-//     res.status(500).send('Erreur lors de la récupération des tâches');
-//   }
-// });
-
 app.get('/', async (req, res) => {
   const success = req.query.success === 'true';
   const successCourse = req.query.successCourse === 'true';
+
+
 
   if (!req.session.user) {
     return res.redirect('/login');
@@ -879,17 +814,22 @@ app.get('/', async (req, res) => {
       return res.redirect('/login');
     }
 
-    // ✅ Si c’est un admin → redirige vers /admin
-    if (user.isAdmin === "y") {
-      return res.redirect('/admin');
-    }
-
-    // Sinon → c’est un user normal → on continue à afficher index
     const tasks = user.tasks || [];
     let salaire = 0;
     tasks.forEach(task => {
       salaire += task.montant;
     });
+    // usersAdmin.forEach(user => {
+    //     if (user.tasks && Array.isArray(user.tasks)) {
+    //       user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+    //     }
+    //   });
+
+    // usersAdmin.forEach(user => {
+    //     if (user.tasks && Array.isArray(user.tasks)) {
+    //       user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+    //     }
+    //   });
 
     const collectionCourses = db.collection('Courses');
     const courses = await collectionCourses.find({}).toArray();
@@ -908,7 +848,6 @@ app.get('/', async (req, res) => {
     res.status(500).send('Erreur lors de la récupération des tâches');
   }
 });
-
 
 // ROUTE POST /
 app.post('/', async (req, res) => {
