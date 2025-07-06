@@ -373,6 +373,15 @@ html(lang="en")
         width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
+      .separation{
+        text-align:center;
+        margin:auto;
+        margin-top:0; 
+        margin-bottom:0;
+        padding-top:0;
+        padding-bottom:0;
+      }
+
       .sousTitre{
         text-align: center;
         font-size: 1.5rem;
@@ -388,10 +397,26 @@ html(lang="en")
         padding: 15px;
         margin-bottom: 15px;
         box-shadow: var(--ombre);
+        color:white;
+        //- font-weight: bold;
+        //- font-size : 1rem;
+          
       }
 
       li.user-item {
         list-style-type: none;
+        //- background-color: #444;
+        color: #f0f0f0;
+        border-bottom: 2px solid var(--accent);
+        //- border-radius: 6px;
+        padding: 0.5rem;
+        margin-top:15px;
+        margin-left: 0px; /* a changer*/
+        margin-right: 10px;
+        font-size: 1rem;
+        padding-bottom:20px;
+        font-family: 'Press Start 2P', monospace;
+
       }
 
       .boutonFiltre-reinitialise {
@@ -407,6 +432,7 @@ html(lang="en")
         font-size: 1rem;
         color: var(--texte);
         margin-bottom: 5px;
+        margin-top: 5px;
       }
 
       /* Priorités */
@@ -495,6 +521,7 @@ html(lang="en")
                           i(class="fas fa-trash-alt")
                           //- |  Accueil
                       //- br.small-br
+        
         form(action="/admin" method="get")
           button(type="submit" class="button-historique")
             i(class="fas fa-home")
@@ -545,25 +572,27 @@ html(lang="en")
         user-list
           each user in usersAdmin
             if user.username != "Admin"
-              li.user-item
-                //- p Taux horaire actuel : #{user.taux} €/h
-                if user.tasks && user.tasks.length
-                  - var totalMontant = 0
-                  each t in user.tasks
-                    - totalMontant += Number(t.montant) || 0
-                  - montantTotalGeneral += totalMontant  
-                  h2 #{user.username} (#{user.taux} €/h)
-                  p.salaire Salaire : #{totalMontant} €
-                  p Nombre de missions : #{user.tasks.length}
-                  ul.task-list
+              if user.tasks
+                li.user-item
+                  //- p Taux horaire actuel : #{user.taux} €/h
+                  if user.tasks && user.tasks.length
+                    - var totalMontant = 0
                     each t in user.tasks
-                      - const dateObj = new Date(t.date)
-                      - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-                      li.item(data-task-id=t._id.toString())
-                        | #{t.name || t.task} (#{dateFr})
-                        p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
-                        button(type="button" onclick="deleteTask(this)" class="button-delete-task")
-                          i(class="fas fa-trash-alt")
+                      - totalMontant += Number(t.montant) || 0
+                    - montantTotalGeneral += totalMontant  
+                    h2 #{user.username} (#{user.taux} €/h)
+                    p.salaire Salaire : #{totalMontant} €
+                    p Nombre de missions : #{user.tasks.length}
+                    ul.task-list
+                      each t in user.tasks
+                        - const dateObj = new Date(t.date)
+                        - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+                        li.item(data-task-id=t._id.toString())
+                          | #{t.name || t.task} (#{dateFr})
+                          p.separation .............
+                          p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                          button(type="button" onclick="deleteTask(this)" class="button-delete-task")
+                            i(class="fas fa-trash-alt")
                           //- |  Accueil
                       //- br.small-br
         form(action="/admin" method="get")
