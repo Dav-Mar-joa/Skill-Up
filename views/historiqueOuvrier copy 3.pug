@@ -4,6 +4,8 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Skil Up
     link(rel="manifest" href="/manifest.json")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     style.
       :root {
         --fond: #1e1e2f;
@@ -12,7 +14,7 @@ html(lang="en")
         --accent:rgb(182, 186, 185); /*--accent: #8a2be2; */
         --accent2: #00ffff; /* cyan */
         --danger: #e74c3c;
-        --ombre: 0 0 1px rgba(0, 0, 0, 0.3);
+        --ombre: 0 0 10px rgba(0, 0, 0, 0.7);
       }
       .head {
         display: flex;
@@ -28,6 +30,10 @@ html(lang="en")
         padding: 20px;
         display: flex;
         justify-content: center;
+      }
+      h2{
+        margin-bottom:10px;
+        margin-top:5px;
       }
 
       .container {
@@ -51,6 +57,9 @@ html(lang="en")
       }
 
       .salaire {
+        display: block;
+        width: max-content; /* Pour qu'il garde sa largeur auto */
+        margin: 0 auto;
         background-color: black;
         border-radius:20px;
         border : 1px solid var(--accent); 
@@ -61,7 +70,22 @@ html(lang="en")
         color:gold;
         font-weight: bold;
         font-size:1rem;
+        margin : auto;
+        margin-top:0.8em;
+        margin-bottom:0;
       }
+
+      /*li.user-item:not(:last-child)::after {
+        content: "";
+        display: block;
+        width: 100%;
+        border-radius:20px;
+        border: 1px solid var(--accent2);
+        height: 5px; 
+        background-color: var(--accent2);
+        margin-top: 1rem;
+        border-radius: 1px;
+      }*/
 
       .titre {
         text-align: center;
@@ -73,16 +97,26 @@ html(lang="en")
         margin-bottom: 1rem;
       }
 
+      .sousTitre{
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+
       form {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 0.1rem
       }
 
       label {
         font-weight: bold;
         color: var(--accent2);
-        MARGIN-BOTTOM: 5px;
+        margin-bottom: 0px;
       }
 
       input, textarea {
@@ -100,7 +134,7 @@ html(lang="en")
         border-color: var(--accent2);
       }
 
-      .button-submit-taches, .button-delete {
+      .button-submit-taches, .button-delete,.button-delete-task {
         border: none;
         padding: 12px;
         border-radius: 8px;
@@ -146,6 +180,30 @@ html(lang="en")
         color: black;
       }
 
+      .button-reinitialze {
+        display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-bottom:25px;
+      }
+
+      .button-reinitialze {
+        background-color: var(--accent);
+        color:black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-reinitialze:hover {
+        background-color: var(--accent);
+        color: black;
+      }
+
       .button-delete {
         background-color: var(--danger);
         color: white;
@@ -153,6 +211,18 @@ html(lang="en")
       }
 
       .button-delete:hover {
+        background-color: #c0392b;
+      }
+
+      .button-delete-task {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+        float:right;
+        margin-top: 0px;
+      }
+
+      .button-delete-task:hover {
         background-color: #c0392b;
       }
 
@@ -206,6 +276,9 @@ html(lang="en")
         margin-top: 20px;
         color: var(--text);
       }
+      .qui{
+        margin-bottom:10px;
+      }
 
       .priority-qui-container {
         display: flex;
@@ -230,14 +303,30 @@ html(lang="en")
         padding: 0.5rem;
         font-size: 1rem;
         font-family: 'Press Start 2P', monospace;
+        margin-top:15px;
+      }
+      .dateInput input[type="month"]{
+        background-color: #444;
+        color: #f0f0f0;
+        border: 2px solid var(--accent);
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top:15px;
+        margin-left: 0px; /* a changer*/
+        margin-right: 10px;
+        font-size: 1rem;
+        font-family: 'Press Start 2P', monospace;
       }
 
-      br.small-br {
-        line-height: 0.7;  /* réduit l'espace vertical */
+      .small-br {
+        border-radius:20px;
+        border: 1px solid var(--accent2);
+        background-color: var(--accent2);
+        line-height: 0.5;  /* réduit l'espace vertical */
         content: "";       /* pas obligatoire mais parfois utile */
         margin: 2px 0;     /* tu peux ajuster la marge aussi */
         display: block;    /* forcer le saut en bloc */
-        height: 6px;       /* hauteur personnalisée */
+        height: 5px;       /* hauteur personnalisée */
       }
 
       .heureTravail {
@@ -254,23 +343,48 @@ html(lang="en")
         display: none
       }
       .input-task {
+        margin-top:15px;
         width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
-
-      select.input-task {
-        background-color: #444;
-        color: var(--texte);
-        border: 2px solid var(--accent);
-        border-radius: 8px;
-        padding: 10px;
-        font-size: 1rem;
-        transition: border 0.3s ease;
-        appearance: none; /* enlève le style natif pour plus de cohérence */
+      .input-task2 {
+        margin-top:15px;
+        width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
-      select.input-task:focus {
-        outline: none;
-        border-color: var(--accent2);
+      .sousTitre{
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+      li .item {
+        background-color:rgb(116, 116, 119);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: var(--ombre);
+      }
+
+      li.user-item {
+        list-style-type: none;
+      }
+
+      .boutonFiltre-reinitialise {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      ul.task-list {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      p.item-text {
+        font-size: 1rem;
+        color: var(--texte);
+        margin-bottom: 5px;
       }
 
       /* Priorités */
@@ -294,38 +408,70 @@ html(lang="en")
       }
 
   body
-  .container
-    .form-container 
-      .head
-        .formDate
-          .date-time
-            #dateJour 
-            #heure    
+    .container
+      .form-container 
+        .head
+          .formDate
+            .date-time
+              #dateJour 
+              #heure    
+ 
+        p.titre Skil Up 
+        p.sousTitre Historique des ouvriers
 
-      p.titre Skil Up
+        form(action="/historiqueOuvrier" method="POST")
+          label(for="username") Filtres (Ouvrier et Mois) :
+          //- input(type="text" name="username" placeholder="Nom utilisateur")
+          //- .boutonFiltre-reinitialise
 
-      // Affichage du message d'erreur
-      //- if errorMessage
-      //-   p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
+          .dateInput
+            select(name="username" id="username")
+              option(value="" disabled selected) Ouvrier
+              each user in usersAdmin
+                option(value=user.username)= user.username
+  
+          .dateInput
+            input(type="month" name="mois" id="mois" placeholder="Mois")      
 
-      form(action="/createUser" method="post")
-        label(for="username") Login :
-        input(type="text" id="username" name="username" class="input-task" required)
-
-        label(for="secret-question") Question secrète :
-        select(name="secret-question" id="secret-question" class="input-task" required)
-          option(value="" disabled selected) Choisissez une question
-          option(value="Quel est le nom de votre premier animal ?") Quel est le nom de votre premier animal ?
-          option(value="Quel est le nom de votre meilleur ami ?") Quel est le nom de votre meilleur ami ?
-          option(value="Quel est le nom de votre ville natale ?") Quel est le nom de votre ville natale ?
-
-        label(for="mdp" class="qui") Mot de passe :
-        input(type="text" id="mdp" name="mdp" class="input-task" required)
-
-        button(type="submit" class="button-submit-taches") Création de compte
-      form(action="/login" method="get")  
-        button(type="submit" class="button-historique") J'ai déjà un compte 
-          
+          .boutonFiltre-reinitialise
+            button(type="submit" class="button-historique") Filtrer
+            a(href="/historiqueOuvrier") 
+              button(type="button" class="button-reinitialze") Réinitialiser
+          div.small-br
+        // Si la liste est vide
+        if !usersAdmin || usersAdmin.length === 0
+          p Aucun ouvrier trouvé.
+        user-list
+          each user in usersAdmin
+            if user.username != "Admin"
+              li.user-item
+                //- p Taux horaire actuel : #{user.taux} €/h
+                if user.tasks && user.tasks.length
+                  - var totalMontant = 0
+                  each t in user.tasks
+                    - totalMontant += Number(t.montant) || 0
+                  h2 #{user.username} (#{user.taux} €/h)
+                  p.salaire Salaires : #{totalMontant} €
+                  p Nombre de missions : #{user.tasks.length}
+                  ul.task-list
+                    each t in user.tasks
+                      - const dateObj = new Date(t.date)
+                      - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+                      li.item(data-task-id=t._id.toString())
+                        | #{t.name || t.task} (#{dateFr})
+                        p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                        button(type="button" onclick="deleteTask(this)" class="button-delete-task")
+                          i(class="fas fa-trash-alt")
+                          //- |  Accueil
+                      //- br.small-br
+        form(action="/admin" method="get")
+          button(type="submit" class="button-historique")
+            i(class="fas fa-home")
+            |  Accueil               
+        form(action="/logout" method="get")
+          button(type="submit" class="button-delete")
+            i(class="fas fa-sign-out-alt")
+            |  Déconnexion           
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
@@ -337,4 +483,3 @@ html(lang="en")
           });
         });
       }
-

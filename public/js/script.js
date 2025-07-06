@@ -183,7 +183,18 @@ async function deleteTask(button) {
   }
 }
 
+document.getElementById('btnReset').addEventListener('click', () => {
+    window.location.href = '/historiqueUserAll';
+}); 
 
+document.getElementById('btnMois').addEventListener('click', () => {
+    window.location.href = '/';
+});
+
+document.getElementById('btnMoisOuvriers').addEventListener('click', () => {
+    console.log('click !');
+    window.location.href = '/historiqueOuvrier';
+});
 
 function deleteCourse(button) {
     const courseElement = button.closest('.purchase-item');

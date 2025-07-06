@@ -428,7 +428,7 @@ app.get('/completeProfile', async (req, res) => {
   res.render('completeProfile');
 });
 // Affiche l'historique de TOUS les UsersAdmin
-app.get('/historiqueOuvrierAll', async (req, res) => {
+app.get('/historiqueOuvrier', async (req, res) => {
   try {
     // 1) Lire tous les UsersAdmin avec leurs tâches
     const usersAdmin = await db
@@ -450,56 +450,6 @@ app.get('/historiqueOuvrierAll', async (req, res) => {
     res.status(500).send('Erreur serveur');
   }
 });
-
-app.get('/historiqueOuvrier', async (req, res) => {
-  try {
-    // Calculer le mois en cours
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
-    // Pipeline aggregation pour le mois en cours
-    const pipeline = [
-      {
-        $addFields: {
-          tasks: {
-            $filter: {
-              input: "$tasks",
-              as: "task",
-              cond: {
-                $and: [
-                  { $gte: ["$$task.date", startDate] },
-                  { $lt: ["$$task.date", endDate] }
-                ]
-              }
-            }
-          }
-        }
-      },
-      {
-        $match: {
-          "tasks.0": { $exists: true }
-        }
-      },
-      { $sort: { username: 1 } }
-    ];
-
-    const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
-
-    // Tri final
-    usersAdmin.forEach(user => {
-      if (user.tasks && Array.isArray(user.tasks)) {
-        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-      }
-    });
-
-    res.render('historiqueOuvrier', { usersAdmin });
-  } catch (err) {
-    console.error('Erreur récupération historique ouvriers :', err);
-    res.status(500).send('Erreur serveur');
-  }
-});
-
 
 // app.post('/historiqueOuvrier', async (req, res) => {
 //   try {

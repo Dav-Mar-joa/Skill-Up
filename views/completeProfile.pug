@@ -12,7 +12,7 @@ html(lang="en")
         --accent:rgb(182, 186, 185); /*--accent: #8a2be2; */
         --accent2: #00ffff; /* cyan */
         --danger: #e74c3c;
-        --ombre: 0 0 10px rgba(0, 0, 0, 0.7);
+        --ombre: 0 0 1px rgba(0, 0, 0, 0.3);
       }
       .head {
         display: flex;
@@ -321,6 +321,9 @@ html(lang="en")
 
         label(for="mdp" class="qui") Mot de passe :
         input(type="text" id="mdp" name="mdp" class="input-task" required)
+
+        label(for="mdp" class="qui") Confirmer mot de passe :
+        input(type="text" id="mdpConfirmed" name="mdpConfirmed" class="input-task" required)
 
         button(type="submit" class="button-submit-taches") Création de compte
       form(action="/login" method="get")  

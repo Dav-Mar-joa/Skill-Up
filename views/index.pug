@@ -14,7 +14,7 @@ html(lang="en")
         --accent:rgb(182, 186, 185); /*--accent: #8a2be2; */
         --accent2: #00ffff; /* cyan */
         --danger: #e74c3c;
-        --ombre: 0 0 10px rgba(0, 0, 0, 0.7);
+        --ombre: 0 0 1px rgba(0, 0, 0, 0.3);
       }
       .head {
         display: flex;
@@ -126,7 +126,7 @@ html(lang="en")
 
       .button-historique {
         display: block;             /* Permet d'utiliser margin auto */
-        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        margin: 10px auto 5 auto;   /* Centré horizontalement + marge au-dessus */
         border: none;
         padding: 12px;
         border-radius: 8px;
@@ -134,7 +134,6 @@ html(lang="en")
         cursor: pointer;
         transition: background 0.3s ease;
         font-size: 1rem;
-        margin-bottom:25px;
       }
 
       .button-historique {
@@ -184,12 +183,49 @@ html(lang="en")
       }
 
       .button-reinitialze {
+        display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-bottom:25px;
+      }
+
+      .button-reinitialze {
         background-color: var(--accent);
         color:black;
         box-shadow: var(--ombre);
       }
 
       .button-reinitialze:hover {
+        background-color: var(--accent);
+        color: black;
+      }
+
+      .button-filter {
+        display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-bottom:25px;
+      }
+
+      .button-filter {
+        background-color: var(--accent2);
+        color:black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-filter:hover {
         background-color: var(--accent);
         color: black;
       }
@@ -276,7 +312,11 @@ html(lang="en")
         border-radius: 10px;
         text-align: center;
       }
-      .historique {
+      .heureTravail p {
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+            .historique {
         display: none
       }
       .boutonFiltre-reinitialise {
@@ -320,7 +360,7 @@ html(lang="en")
             .date-time
               p.salaire Salaire : #{salaire} €   
  
-        p.titre Skil Up
+        
         
 
       //-   form(action="/" method="post")
@@ -413,38 +453,41 @@ html(lang="en")
           
        
       .tasks-container
+        p.titre Skil Up
+        // Bouton pour afficher/masquer l'historique
         button.button-historique(type="button" id="toggleHistorique") Historique
-        div.historique(id="historique")
-          //- form(action="/historiqueOuvrier" method="POST")
-          //- label(for="username") Filtres (Ouvrier et Mois) :
-          //- //- input(type="text" name="username" placeholder="Nom utilisateur")
-          //- //- .boutonFiltre-reinitialise
-  
-          //- .dateInput
-          //-   input(type="month" name="mois" id="mois" placeholder="Mois")      
 
-          //- .boutonFiltre-reinitialise
-          //-   button(type="submit" class="button-historique") Filtrer
-          //-   a(href="/historiqueOuvrier") 
-          //-     button(type="button" class="button-reinitialze") Réinitialiser
-          each task in tasks
-            .task(data-task-id=task._id)(class=task.priority)
-              
-                  .task-header
-                  h3.nomTache #{task.task} 
-                  if task.qui && task.qui.trim() !== ''
-                    div.nomQui
-                      P Chef d'équipe : #{task.qui}
-                  p.nomTacheHeure Début de mission :
-                  .dateFormat 
-                    p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
-                  p.nomTacheHeure Fin de mission :
-                  .dateFormat     
-                    p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
-                  if task.description
-                    p.taskDescritption Commentaires : #{task.description}
-                  .heureTravail
-                    .test #{task.montant}€ :#{task.heureTravail}h (#{task.taux}€/h - #{task.pause}h de pause)
+        // Bloc historique masqué par défaut
+        div.historique(id="historique")
+        form(action="/historiqueUser" method="POST")
+          label(for="mois") Mois :
+          .dateInput
+            input(type="month" name="mois" id="mois" placeholder="Mois")
+          .boutonFiltre-reinitialise
+            button(type="submit" class="button-filter") Filtrer
+            button(type="button" id="btnMois" class="button-reinitialze") Ce mois
+            button(type="button" id="btnReset" class="button-reinitialze") Tout
+        //- if message
+        //-     #message.message #{message}
+        // Liste des tâches
+        each task in tasks
+          .task(data-task-id=task._id class=task.priority)
+            .task-header
+              h3.nomTache #{task.task} 
+              if task.qui && task.qui.trim() !== ''
+                div.nomQui
+                  p Chef d'équipe : #{task.qui}
+              p.nomTacheHeure Début de mission :
+              .dateFormat 
+                p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
+              p.nomTacheHeure Fin de mission :
+              .dateFormat     
+                p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
+              if task.description
+                p.taskDescription Commentaires : #{task.description}
+              .heureTravail
+                p #{task.montant}€ : #{task.heureTravail}h (#{task.taux}€/h - #{task.pause}h de pause)
+
                   //- button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
       
       //- form(action="/logout" method="get")
