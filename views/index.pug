@@ -477,10 +477,10 @@ html(lang="en")
               if task.qui && task.qui.trim() !== ''
                 div.nomQui
                   p Chef d'équipe : #{task.qui}
-              p.nomTacheHeure Début de mission :
+              p.nomTacheHeure Début de chantier :
               .dateFormat 
                 p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
-              p.nomTacheHeure Fin de mission :
+              p.nomTacheHeure Fin de chantier :
               .dateFormat     
                 p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
               if task.description

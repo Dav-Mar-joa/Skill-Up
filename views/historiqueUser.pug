@@ -452,7 +452,7 @@ html(lang="en")
                     - totalMontant += Number(t.montant) || 0
                   h2 #{user.username} (#{user.taux} €/h)
                   p.salaire Salaires : #{totalMontant} €
-                  p Nombre de missions : #{user.tasks.length}
+                  p Nombre de chantiers : #{user.tasks.length}
                   ul.task-list
                     each t in user.tasks
                       - const dateObj = new Date(t.date)
