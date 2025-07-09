@@ -208,3 +208,22 @@ function deleteCourse(button) {
         }
     }).catch(error => console.error('Erreur lors de la suppression de la course :', error));
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  // On cible le bouton et le bloc à masquer/afficher
+  const toggleButton = document.getElementById("toggleHistorique");
+  const historique = document.getElementById("historique");
+
+  // Masquer le bloc au départ
+  historique.style.display = "none";
+  historique.style.marginBottom = "20px";
+
+  // Quand on clique sur le bouton...
+  toggleButton.addEventListener("click", function() {
+    if (historique.style.display === "none") {
+      historique.style.display = "block";
+    } else {
+      historique.style.display = "none";
+    }
+  });
+});

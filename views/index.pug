@@ -140,6 +140,7 @@ html(lang="en")
         background-color: var(--accent2);
         color:black;
         box-shadow: var(--ombre);
+        margin-bottom : 15px;
       }
 
       .button-historique:hover {
@@ -187,12 +188,13 @@ html(lang="en")
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
         border: none;
         padding: 12px;
+        margin-bottom : 0px;
         border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
         transition: background 0.3s ease;
         font-size: 1rem;
-        margin-bottom:25px;
+        margin-bottom:0px;
       }
 
       .button-reinitialze {
@@ -216,7 +218,7 @@ html(lang="en")
         cursor: pointer;
         transition: background 0.3s ease;
         font-size: 1rem;
-        margin-bottom:25px;
+        margin-bottom:0px;
       }
 
       .button-filter {
@@ -316,13 +318,15 @@ html(lang="en")
         margin-top: 0px;
         margin-bottom: 0px;
       }
-            .historique {
-        display: none
+      .historique {
+        display: none;
+        margin-bottom: 20px;
       }
       .boutonFiltre-reinitialise {
         display: flex;
         justify-content: space-between;
-        margin-top: 10px;
+        margin-top: 00px;
+        margin-bottom: 00px;
       }
       .input-task {
         width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
@@ -455,28 +459,30 @@ html(lang="en")
       .tasks-container
         p.titre Skil Up
         // Bouton pour afficher/masquer l'historique
-        button.button-historique(type="button" id="toggleHistorique") Historique
+        button.button-historique(type="button" id="toggleHistorique") Filtre
 
         // Bloc historique masqué par défaut
         div.historique(id="historique")
-        form(action="/historiqueUser" method="POST")
-          label(for="mois") Mois :
-          .dateInput
-            input(type="month" name="mois" id="mois" placeholder="Mois")
-          .boutonFiltre-reinitialise
-            button(type="submit" class="button-filter") Filtrer
-            button(type="button" id="btnMois" class="button-reinitialze") Ce mois
-            button(type="button" id="btnReset" class="button-reinitialze") Tout
+          form(action="/historiqueUser" method="POST")
+            label(for="mois") Mois :
+            .dateInput
+              input(type="month" name="mois" id="mois" placeholder="Mois")
+            .boutonFiltre-reinitialise
+              button(type="submit" class="button-filter") Filtrer
+              button(type="button" id="btnMois" class="button-reinitialze") Ce mois
+              button(type="button" id="btnReset" class="button-reinitialze") Tout
         //- if message
         //-     #message.message #{message}
         // Liste des tâches
         each task in tasks
           .task(data-task-id=task._id class=task.priority)
             .task-header
-              h3.nomTache #{task.task} 
+              if task.qui
+                h3.nomTache #{task.task} (#{task.qui})
+              else 
+                h3.nomTache #{task.task}  
               if task.qui && task.qui.trim() !== ''
                 div.nomQui
-                  p Chef d'équipe : #{task.qui}
               p.nomTacheHeure Début de chantier :
               .dateFormat 
                 p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}

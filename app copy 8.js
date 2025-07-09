@@ -746,7 +746,7 @@ app.get('/createChantier', async (req, res) => {
 app.post('/createChantier', async (req, res) => {
   try {
     // 1) Récupération des champs du formulaire
-    const { task, pause, date, heure, datef, heuref, qui} = req.body;
+    const { task, pause, date, heure, datef, heuref, qui: chefUsername } = req.body;
     let ouvriers = req.body['ouvriers[]'] || req.body.ouvriers; 
     // si un seul ouvrier, Express renvoie une string, sinon un tableau
     if (!Array.isArray(ouvriers)) ouvriers = [ouvriers];
@@ -763,7 +763,7 @@ app.post('/createChantier', async (req, res) => {
     // 4) Récupérer en base le chef + ouvriers pour connaître leurs taux
     const col = db.collection('UsersAdmin');
     const participants = await col.find({
-      username: { $in: [qui, ...ouvriers] }
+      username: { $in: [chefUsername, ...ouvriers] }
     }).toArray();
 
     // 5) Construire et injecter une tâche dans chaque document
@@ -781,7 +781,7 @@ app.post('/createChantier', async (req, res) => {
         heureTravail: diffHours,
         montant,
         taux: u.taux,
-        qui
+        role: u.username === chefUsername ? 'chef' : 'ouvrier'
       };
       return {
         updateOne: {

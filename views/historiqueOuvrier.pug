@@ -137,7 +137,7 @@ html(lang="en")
         border-color: var(--accent2);
       }
 
-      .button-submit-taches, .button-delete,.button-delete-task {
+      .button-submit-taches, .button-delete {
         border: none;
         padding: 12px;
         border-radius: 8px;
@@ -146,6 +146,27 @@ html(lang="en")
         transition: background 0.3s ease;
         font-size: 1rem;
         margin-top: 10px;
+      }
+      .button-delete-task {
+        padding: 5px;
+        border: 2px solid black;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .button-delete-task {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+        float:right;
+        margin-top: 0px;
+      }
+
+      .button-delete-task:hover {
+        background-color: #c0392b;
       }
 
       .button-submit-taches {
@@ -236,17 +257,7 @@ html(lang="en")
         background-color: #c0392b;
       }
 
-      .button-delete-task {
-        background-color: var(--danger);
-        color: white;
-        box-shadow: var(--ombre);
-        float:right;
-        margin-top: 0px;
-      }
-
-      .button-delete-task:hover {
-        background-color: #c0392b;
-      }
+      
 
       .task, .purchase-item {
         background-color: #1f1f2f;
@@ -393,14 +404,18 @@ html(lang="en")
       }
       li .item {
         background-color:rgb(116, 116, 119);
+        border : 2px solid white;
         border-radius: 10px;
         padding: 15px;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         box-shadow: var(--ombre);
         color:white;
         //- font-weight: bold;
         //- font-size : 1rem;
           
+      }
+      .montantCentrer {
+        text-align:center
       }
 
       li.user-item {
@@ -490,7 +505,7 @@ html(lang="en")
               button(type="button" class="button-reinitialze") Réinitialiser
           div.small-br
           - var montantTotalGeneral = 0
-          h2 Montant total général : #{montantTotalGeneral} €
+          h2.montantCentrer Montant total général : #{montantTotalGeneral} €
           div.small-br
 
         // Si la liste est vide
@@ -561,7 +576,7 @@ html(lang="en")
             a(href="/historiqueOuvrierAll") 
               button(type="button" class="button-reinitialze") Réinitialiser
           div.small-br
-          h2 Total des salaires :
+          h2.montantCentrer Total des salaires :
           h2.montantTotal  #{montantTotalGeneral} €
           div.small-br
 
@@ -582,17 +597,31 @@ html(lang="en")
                     - montantTotalGeneral += totalMontant  
                     h2 #{user.username} (#{user.taux} €/h)
                     p.salaire Salaire : #{totalMontant} €
-                    p Nombre de missions : #{user.tasks.length}
+                    if user.tasks.length === 0
+                      p Aucun chantier
+                    else if user.tasks.length === 1
+                      p Nombre de chantier : #{user.tasks.length}
+                    else
+                      p Nombre de chantiers : #{user.tasks.length}  
                     ul.task-list
                       each t in user.tasks
                         - const dateObj = new Date(t.date)
-                        - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-                        li.item(data-task-id=t._id.toString())
-                          | #{t.name || t.task} (#{dateFr})
-                          p.separation .............
-                          p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
-                          button(type="button" onclick="deleteTask(this)" class="button-delete-task")
-                            i(class="fas fa-trash-alt")
+                        //- - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+                        - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'numeric', year: 'numeric' })
+                        if t.qui
+                          li.item(data-task-id=t._id.toString())
+                            | #{t.name || t.task} (#{dateFr} - #{t.qui}) 
+                            p.separation .............
+                            p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                            button(type="button" onclick="deleteTask(this)" class="button-delete-task")
+                              i(class="fas fa-trash-alt")
+                        else    
+                          li.item(data-task-id=t._id.toString())
+                            | #{t.name || t.task} (#{dateFr})   
+                            p.separation .............
+                            p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                            button(type="button" onclick="deleteTask(this)" class="button-delete-task")
+                              i(class="fas fa-trash-alt")
                           //- |  Accueil
                       //- br.small-br
         form(action="/admin" method="get")
