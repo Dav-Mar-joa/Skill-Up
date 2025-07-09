@@ -620,7 +620,7 @@ html(lang="en")
                             | #{t.name || t.task} (#{dateFr})   
                             p.separation .............
                             p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
-                            button(type="button" onclick="confirmDelete(this)" class="button-delete-task")
+                            button(type="button" onclick="deleteTask(this)" class="button-delete-task")
                               i(class="fas fa-trash-alt")
                           //- |  Accueil
                       //- br.small-br
