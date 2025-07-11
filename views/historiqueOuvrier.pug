@@ -48,7 +48,7 @@ html(lang="en")
         background-color: var(--carte);
         border-radius: 15px;
         box-shadow: var(--ombre);
-        padding: 20px;
+        padding: 10px;
         flex: 1;
       }
       .form-container-cache {
@@ -434,6 +434,13 @@ html(lang="en")
 
       }
 
+      .iconBurger{
+        height:1.3rem;
+        position : absolute;
+        margin-left : 0.6rem;
+        margin-top : 0.1rem;
+      }
+
       .boutonFiltre-reinitialise {
         display: flex;
         justify-content: space-between;
@@ -610,14 +617,23 @@ html(lang="en")
                         - const dateFr = dateObj.toLocaleDateString('fr-FR', { day: 'numeric', month: 'numeric', year: 'numeric' })
                         if t.qui
                           li.item(data-task-id=t._id.toString())
-                            | #{t.name || t.task} (#{dateFr} - #{t.qui}) 
+                            if t.repas==="on"
+                              | #{t.name || t.task} (#{dateFr} - #{t.qui})
+                              img(src="./assets/icons/burger.png" alt="Image description" class="iconBurger")
+
+                            else 
+                              | #{t.name || t.task} (#{dateFr} - #{t.qui}) 
                             p.separation .............
                             p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
                               i(class="fas fa-trash-alt")
                         else    
                           li.item(data-task-id=t._id.toString())
-                            | #{t.name || t.task} (#{dateFr})   
+                            if t.repas==="on"
+                              | #{t.name || t.task} (#{dateFr})
+                              img(src="./assets/icons/burger.png" alt="Image description")
+                            else 
+                              | #{t.name || t.task} (#{dateFr})   
                             p.separation .............
                             p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")

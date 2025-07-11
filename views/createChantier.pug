@@ -44,7 +44,7 @@ html(lang="en")
         background-color: var(--carte);
         border-radius: 15px;
         box-shadow: var(--ombre);
-        padding: 20px;
+        padding: 10px;
         flex: 1;
       }
 
@@ -326,6 +326,9 @@ html(lang="en")
               option(value="1") 1h
               option(value="2") 2h
           //- input(type="text" id="task" name="task" required)
+          .dateInput
+            label(for="repas") Repas prévu : 
+            input(type="checkbox" id="repas" name="repas")
           label(for="qui") Chef d'équipe du chantier :
           .dateInput
             select(name="qui" id="qui" required)
