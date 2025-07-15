@@ -214,6 +214,7 @@ html(lang="en")
         cursor: pointer;
         transition: background 0.3s ease;
         font-size: 1rem;
+        //- margin-top:20px;
         margin-bottom:25px;
         margin-left : 10px; /* Pour espacer les boutons */
       }
@@ -536,7 +537,7 @@ html(lang="en")
           .boutonFiltre-reinitialise
             button(type="submit" class="button-historique") Filtrer
             a(href="/historiqueOuvrier") 
-              button(type="button" class="button-mois") Ce mois
+              button(type="button" class="button-mois") 
             a(href="/historiqueOuvrierAll") 
               button(type="button" class="button-reinitialze") Réinitialiser
           div.small-br
@@ -606,7 +607,7 @@ html(lang="en")
             input(type="month" name="mois" id="mois" placeholder="Mois")      
 
           .boutonFiltre-reinitialise
-            button(type="submit" class="button-historique") Filtrer
+            button(type="submit" class="button-historique") Ok
             a(href="/historiqueOuvrier") 
               button(type="button" class="button-mois") Ce mois
             a(href="/historiqueOuvrierAll") 
