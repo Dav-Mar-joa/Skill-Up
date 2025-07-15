@@ -12,7 +12,7 @@ html(lang="en")
         --accent:rgb(182, 186, 185); /*--accent: #8a2be2; */
         --accent2: #00ffff; /* cyan */
         --danger: #e74c3c;
-        --ombre: 0 0 1px rgba(0, 0, 0, 0.3);
+        --ombre: 0 0 5px rgba(0, 0, 0, 0.8);
       }
       .head {
         display: flex;
@@ -101,7 +101,7 @@ html(lang="en")
       }
 
       .button-submit-taches, .button-delete {
-        border: none;
+        //- border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -125,7 +125,7 @@ html(lang="en")
       .button-historique {
         display: block;             /* Permet d'utiliser margin auto */
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        border: none;
+        //- border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -281,7 +281,7 @@ html(lang="en")
       .button-reinitialze {
         display: block;             /* Permet d'utiliser margin auto */
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        border: none;
+        //- border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -295,6 +295,10 @@ html(lang="en")
         background-color: var(--accent);
         color:black;
         box-shadow: var(--ombre);
+      }
+
+      .footer-content{
+        text-align:center;
       }
 
       .button-reinitialze:hover {
@@ -345,7 +349,7 @@ html(lang="en")
       a(href="/loginOublie") 
               button(type="button" class="button-reinitialze") Login oublié
       a(href="/mdpOublie") 
-              button(type="button" class="button-reinitialze") Mot de passe oublié       
+              button(type="button" class="button-reinitialze") Mot de passe oublié             
       //- form(action="/loginMpdOublie" method="post")
       //-   //- label(for="username") Login :
       //-   //- input(type="text" id="username" name="username" class="input-task" required)
@@ -381,7 +385,9 @@ html(lang="en")
       //-   button(type="submit" class="button-historique") Valider 
       form(action="/login" method="get")  
         button(type="submit" class="button-historique") J'ai déjà un compte 
-          
+      footer
+          .footer-content
+            p Skil up © — Tous droits réservés — 2025    
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

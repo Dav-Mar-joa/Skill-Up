@@ -14,7 +14,7 @@ html(lang="en")
         --accent:rgb(182, 186, 185); /*--accent: #8a2be2; */
         --accent2: #00ffff; /* cyan */
         --danger: #e74c3c;
-        --ombre: 0 0 1px rgba(0, 0, 0, 0.3);
+        --ombre: 0 0 5px rgba(0, 0, 0, 0.8);
       }
       .head {
         display: flex;
@@ -135,7 +135,7 @@ html(lang="en")
       }
 
       .button-submit-taches, .button-delete,.button-delete-task {
-        border: none;
+        //- border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -159,7 +159,7 @@ html(lang="en")
       .button-historique {
         display: block;             /* Permet d'utiliser margin auto */
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        border: none;
+        //- border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -183,7 +183,7 @@ html(lang="en")
       .button-reinitialze {
         display: block;             /* Permet d'utiliser margin auto */
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        border: none;
+        //- border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -386,6 +386,9 @@ html(lang="en")
         color: var(--texte);
         margin-bottom: 5px;
       }
+      .footer-content{
+        text-align:center;
+      }
 
       /* Priorités */
       .faible {
@@ -471,7 +474,10 @@ html(lang="en")
         form(action="/logout" method="get")
           button(type="submit" class="button-delete")
             i(class="fas fa-sign-out-alt")
-            |  Déconnexion           
+            |  Déconnexion 
+        footer
+          .footer-content
+            p Skil up © — Tous droits réservés — 2025              
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
