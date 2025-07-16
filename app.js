@@ -42,6 +42,7 @@ app.use(session({
   },
   rolling: true                 // <–– renouvelle maxAge à chaque requête
 }));
+app.use(express.json())
 // app.use(sessionMiddleware);
 
 // Connexion à MongoDB
@@ -500,80 +501,6 @@ app.get('/historiqueOuvrier', async (req, res) => {
   }
 });
 
-
-// app.post('/historiqueOuvrier', async (req, res) => {
-//   try {
-//     const { username, mois, jour } = req.body;
-//     console.log("mois :", mois)
-
-//     // Construire le filtre MongoDB
-//     const filter = {};
-
-//     if (username && username.trim() !== '') {
-//       // Chercher exactement le username
-//       filter.username = username.trim();
-//     }
-
-//     if (mois && mois.trim() !== '') {
-//       // mois au format "YYYY-MM"
-//       // On filtre les tâches qui ont une date dans ce mois
-//       const [year, month] = mois.split('-');
-//       const startDate = new Date(year, month - 1, 1);
-//       const endDate = new Date(year, month, 1);
-//       // Filtrer sur les tâches qui ont une date dans cette plage
-//       filter.tasks = {
-//         $elemMatch: {
-//           date: { $gte: startDate.toISOString(), $lt: endDate.toISOString() }
-          
-//         }
-        
-//       };
-//       console.log("filter.tasks ",filter.tasks);
-//     }
-
-//     if (jour && jour.trim() !== '') {
-//       // jour au format "YYYY-MM-DD"
-//       const dayStart = new Date(jour);
-//       const dayEnd = new Date(jour);
-//       dayEnd.setDate(dayEnd.getDate() + 1);
-
-//       filter.tasks = filter.tasks || {};
-//       filter.tasks.$elemMatch = filter.tasks.$elemMatch || {};
-
-//       // Si déjà $elemMatch présent (mois), on doit combiner conditions $and
-//       if (filter.tasks.$elemMatch.date) {
-//         // Combine avec $and
-//         filter.tasks.$elemMatch = {
-//           $and: [
-//             { date: filter.tasks.$elemMatch.date },
-//             { date: { $gte: dayStart.toISOString(), $lt: dayEnd.toISOString() } }
-//           ]
-//         };
-//       } else {
-//         filter.tasks.$elemMatch.date = { $gte: dayStart.toISOString(), $lt: dayEnd.toISOString() };
-//       }
-//     }
-
-//     // Trouver les users selon filtre
-//     const usersAdmin = await db.collection('UsersAdmin')
-//       .find(filter)
-//       .sort({ username: 1 })
-//       .toArray();
-
-//     // Trier les tasks pour chaque user
-//     usersAdmin.forEach(user => {
-//       if (user.tasks && Array.isArray(user.tasks)) {
-//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-//       }
-//     });
-
-//     res.render('historiqueOuvrier', { usersAdmin });
-//   } catch (err) {
-//     console.error('Erreur récupération historique ouvriers :', err);
-//     res.status(500).send('Erreur serveur');
-//   }
-// });
-
 app.post('/historiqueOuvrier', async (req, res) => {
   try {
     const { username, mois, jour } = req.body;
@@ -1022,7 +949,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-
 app.post('/historiqueUser', async (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
@@ -1251,3 +1177,114 @@ app.delete('/delete-task/:id', async (req, res) => {
     res.status(500).send('Erreur serveur lors de la suppression');
   }
 });
+
+app.put('/modify-task-hours/:id', async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const nouvelleHeureTravail = Number(req.body.nouvelleHeureTravail);
+    console.log("nouvelle heure : ", req.body);
+
+    if (!taskId || isNaN(nouvelleHeureTravail)) {
+      return res.status(400).send('Paramètres manquants ou heure invalide');
+    }
+
+    const ObjectId = require('mongodb').ObjectId;
+    const _id = new ObjectId(taskId);
+
+    // 1️⃣ Retrouver la tâche pour récupérer le taux
+    const user = await db.collection('UsersAdmin').findOne({ 'tasks._id': _id }, { projection: { 'tasks.$': 1 } });
+
+    if (!user || !user.tasks || user.tasks.length === 0) {
+      return res.status(404).send('Tâche non trouvée');
+    }
+
+    const task = user.tasks[0];
+    const taux = task.taux;
+    const nouveauMontant = nouvelleHeureTravail * taux;
+
+    // 2️⃣ Mettre à jour heureTravail ET montant
+    const result = await db.collection('UsersAdmin').updateOne(
+      { 'tasks._id': _id },
+      {
+        $set: {
+          'tasks.$.heureTravail': nouvelleHeureTravail,
+          'tasks.$.montant': nouveauMontant
+        }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).send('Tâche non trouvée ou inchangée');
+    }
+
+    res.status(200).json({
+      nouvelleHeureTravail,
+      nouveauMontant
+    });
+
+  } catch (error) {
+    console.error('Erreur modification heureTravail :', error);
+    res.status(500).send('Erreur serveur lors de la modification');
+  }
+});
+
+// app.put('/modify-task-hours/:id', async (req, res) => {
+//   try {
+//     const taskId = req.params.id;
+//     const nouvelleHeureTravail = Number( req.body.nouvelleHeureTravail);
+//     console.log(nouvelleHeureTravail)
+
+//     if (!taskId || nouvelleHeureTravail == null) {
+//       return res.status(400).send('Paramètres manquants');
+//     }
+
+//     const ObjectId = require('mongodb').ObjectId;
+//     const _id = new ObjectId(taskId);
+
+//     const result = await db.collection('UsersAdmin').updateOne(
+//       { 'tasks._id': _id },
+//       { $set: { 'tasks.$.heureTravail': nouvelleHeureTravail } }
+//     );
+
+//     if (result.modifiedCount === 0) {
+//       return res.status(404).send('Tâche non trouvée ou inchangée');
+//     }
+
+//     res.status(200).send('Heures de travail modifiées');
+//   } catch (error) {
+//     console.error('Erreur modification heureTravail :', error);
+//     res.status(500).send('Erreur serveur lors de la modification');
+//   }
+// });
+
+// app.put('/modify-task-hours/:id', async (req, res) => {
+//   try {
+//     const taskId = req.params.id;
+//     const nouvelleHeureTravail = Number(req.body.nouvelleHeureTravail);
+//     console.log("nouvelle heure : ",req.body)
+
+//     if (!taskId || isNaN(nouvelleHeureTravail)) {
+//       return res.status(400).send('Paramètres manquants ou heure invalide');
+//     }
+
+//     const ObjectId = require('mongodb').ObjectId;
+//     const _id = new ObjectId(taskId);
+
+//     const result = await db.collection('UsersAdmin').updateOne(
+//       { 'tasks._id': _id },
+//       { $set: { 'tasks.$.heureTravail': nouvelleHeureTravail } }
+//     );
+
+//     if (result.modifiedCount === 0) {
+//       return res.status(404).send('Tâche non trouvée ou inchangée');
+//     }
+
+//     res.status(200).send('Heures de travail modifiées');
+//   } catch (error) {
+//     console.error('Erreur modification heureTravail :', error);
+//     res.status(500).send('Erreur serveur lors de la modification');
+//   }
+// });
+
+
+

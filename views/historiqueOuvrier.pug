@@ -149,6 +149,7 @@ html(lang="en")
       }
       .button-delete-task {
         padding: 5px;
+        margin-left:10px;
         border: 2px solid black;
         border-radius: 8px;
         font-weight: bold;
@@ -167,6 +168,39 @@ html(lang="en")
 
       .button-delete-task:hover {
         background-color: #c0392b;
+      }
+
+      .button-modify-task {
+        
+        padding: 5px;
+        border: 2px solid black;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .button-modify-task {
+        background-color: var(--accent2);
+        color: white;
+        box-shadow: var(--ombre);
+        float:right;
+        margin-top: 0px;
+      }
+
+      .button-modify-task:hover {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .button-modify-task i {
+        color: black;
+        background-color: var(--accent2);
+      }
+      .button-modify-task i:hover {
+        color: black;
+        background-color: var(--accent);
       }
 
       .button-submit-taches {
@@ -365,6 +399,19 @@ html(lang="en")
         margin-top:15px;
       }
       .dateInput input[type="month"]{
+        background-color: #444;
+        color: #f0f0f0;
+        border: 2px solid var(--accent);
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top:15px;
+        margin-left: 0px; /* a changer*/
+        margin-right: 10px;
+        font-size: 1rem;
+        font-family: 'Press Start 2P', monospace;
+      }
+
+      .select-hours {
         background-color: #444;
         color: #f0f0f0;
         border: 2px solid var(--accent);
@@ -649,25 +696,81 @@ html(lang="en")
                           li.item(data-task-id=t._id.toString())
                             if t.repas==="on"
                               | #{t.name || t.task} (#{dateFr} - #{t.qui}) avec
+                              | #{t.pause}h de pause + 
                               img(src="./assets/icons/burger.png" alt="Image description" class="iconBurger")
+                              
 
                             else 
-                              | #{t.name || t.task} (#{dateFr} - #{t.qui}) 
+                              | #{t.name || t.task} (#{dateFr} - #{t.qui}) avec
+                              | #{t.pause}h de pause 
                             p.separation .............
                             p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                            
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
                               i(class="fas fa-trash-alt")
+                            button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
+                              i(class="fas fa-pencil-alt") 
+                            select.select-hours(style="display:none")
+                              option Heure
+                              option(value="1") 1
+                              option(value="2") 2
+                              option(value="3") 3
+                              option(value="4") 4
+                              option(value="5") 5
+                              option(value="6") 6
+                              option(value="7") 7
+                              option(value="8") 8
+                              option(value="9") 9
+                              option(value="10") 10
+                              option(value="11") 11  
+                              option(value="12") 12  
+                            //- div(class="item" data-task-id=task._id)
+                            //-   .heureTravail
+                            //-     span.heures #{task.heureTravail}h
+                            //-   select.select-hours(style="display:none;")
+                            //-     each heure in [1,2,3,4,5,6,7,8,9,10,11,12]
+                            //-       option(value=heure) #{heure}h
+                            //-   button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
+                            //-     i(class="fas fa-pencil-alt") 
                         else    
                           li.item(data-task-id=t._id.toString())
                             if t.repas==="on"
                               | #{t.name || t.task} (#{dateFr}) avec 
+                              | #{t.pause}h de pause +
                               img(src="./assets/icons/burger.png" alt="Image description")
+                              
                             else 
-                              | #{t.name || t.task} (#{dateFr})   
+                              | #{t.name || t.task} (#{dateFr}) avec
+                              | #{t.pause}h de pause 
                             p.separation .............
                             p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                          
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
-                              i(class="fas fa-trash-alt")
+                              i(class="fas fa-trash-alt")  
+                            button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
+                              i(class="fas fa-pencil-alt") 
+                            select.select-hours(style="display:none")
+                              option Heure
+                              option(value="1") 1
+                              option(value="2") 2
+                              option(value="3") 3
+                              option(value="4") 4
+                              option(value="5") 5
+                              option(value="6") 6
+                              option(value="7") 7
+                              option(value="8") 8
+                              option(value="9") 9
+                              option(value="10") 10
+                              option(value="11") 11  
+                              option(value="12") 12 
+                            //- div(class="item" data-task-id=task._id)
+                            //-   .heureTravail
+                            //-     span.heures #{task.heureTravail}h
+                            //-   select.select-hours(style="display:none;")
+                            //-     each heure in [1,2,3,4,5,6,7,8,9,10,11,12]
+                            //-       option(value=heure) #{heure}h
+                            //-   button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
+                            //-     i(class="fas fa-pencil-alt")
                           //- |  Accueil
                       //- br.small-br
         form(action="/admin" method="get")

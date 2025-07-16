@@ -183,6 +183,201 @@ async function deleteTask(button) {
   }
 }
 
+// async function modifyTask(button) {
+//   const taskElement = button.closest('.item');
+//   const taskId = taskElement.getAttribute('data-task-id');
+
+//   if (!taskId) {
+//     alert("ID de la tâche introuvable !");
+//     return;
+//   }
+
+//   // Exemple : On récupère le montant ou les heures affichées
+//   const montantElement = taskElement.querySelector('.heureTravail .test');
+//   const montantText = montantElement?.innerText || "";
+//   const montantMatch = montantText.match(/(\d+)\s?€/);
+//   const montant = montantMatch ? parseInt(montantMatch[1], 10) : 0;
+
+//   // Demander un nouveau montant à l'utilisateur
+//   const nouveauMontant = prompt("Entrez le nouveau montant en € :", montant);
+//   if (nouveauMontant === null) return; // Annulé
+
+//   const nouveauMontantInt = parseInt(nouveauMontant, 10);
+//   if (isNaN(nouveauMontantInt) || nouveauMontantInt < 0) {
+//     alert("Montant invalide !");
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch(`/modify-task/${taskId}`, {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ nouveauMontant: nouveauMontantInt }),
+//     });
+
+//     if (response.ok) {
+//       // Mettre à jour le montant affiché dans le DOM
+//       montantElement.innerText = `${nouveauMontantInt}€`;
+//       alert("Tâche mise à jour !");
+//     } else {
+//       const text = await response.text();
+//       alert("Erreur lors de la modification : " + text);
+//     }
+//   } catch (error) {
+//     alert("Erreur réseau ou serveur : " + error.message);
+//   }
+// }
+
+// async function modifyTaskHours(button) {
+//   const taskElement = button.closest('.item');
+//   const selectElement = taskElement.querySelector('.select-hours');
+
+//   // Affiche le select
+//   selectElement.style.display = 'inline';
+
+//   // Quand on change la valeur, on envoie direct
+//   selectElement.addEventListener('change', async function () {
+//     const taskId = taskElement.getAttribute('data-task-id');
+//     const nouvelleHeureTravailInt = parseInt(selectElement.value, 10);
+
+//     if (isNaN(nouvelleHeureTravailInt) || nouvelleHeureTravailInt < 0) {
+//       alert("Nombre d'heures invalide !");
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch(`/modify-task-hours/${taskId}`, {
+//         method: 'PUT',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ nouvelleHeureTravail: nouvelleHeureTravailInt }),
+//       });
+
+//       if (response.ok) {
+//         const data = await response.json();
+
+//         // Met à jour heureTravail
+//         const heureTravailElement = taskElement.querySelector('.heureTravail .heures');
+//         heureTravailElement.innerText = `${data.nouvelleHeureTravail}h`;
+
+//         // Met à jour montant
+//         const montantElement = taskElement.querySelector('.montant .item-text');
+//         montantElement.innerText = `${data.nouveauMontant} €`;
+
+//         alert("Heures et montant mis à jour !");
+//       } else {
+//         const text = await response.text();
+//         alert("Erreur lors de la modification : " + text);
+//       }
+//     } catch (error) {
+//       alert("Erreur réseau ou serveur : " + error.message);
+//     } finally {
+//       // Cache à nouveau le select
+//       selectElement.style.display = 'none';
+//     }
+//   }, { once: true }); // Pour éviter plusieurs handlers
+// }
+
+// async function modifyTaskHours(button) {
+//   const taskElement = button.closest('.item');
+//   const selectElement = taskElement.querySelector('.select-hours');
+
+//   selectElement.style.display = 'inline';
+
+//   selectElement.addEventListener('change', async function () {
+//     const taskId = taskElement.getAttribute('data-task-id');
+//     const nouvelleHeureTravailInt = parseInt(selectElement.value, 10);
+
+//     if (isNaN(nouvelleHeureTravailInt) || nouvelleHeureTravailInt < 0) {
+//       alert("Nombre d'heures invalide !");
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch(`/modify-task-hours/${taskId}`, {
+//         method: 'PUT',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ nouvelleHeureTravail: nouvelleHeureTravailInt }),
+//       });
+
+//       if (response.ok) {
+//         const data = await response.json();
+
+//         const heureTravailElement = taskElement.querySelector('.heureTravail .heures');
+//         heureTravailElement.innerText = `${data.nouvelleHeureTravail}h`;
+
+//         const montantElement = taskElement.querySelector('.montant .item-text');
+//         montantElement.innerText = `${data.nouveauMontant} €`;
+
+//         // recalculerTotal(); // <= Appelle le recalcul du total si besoin
+//         window.location.reload();
+
+//       } else {
+//         const text = await response.text();
+//         alert("Erreur lors de la modification : " + text);
+//       }
+//     } catch (error) {
+//       alert("Erreur réseau ou serveur : " + error.message);
+//     } finally {
+//       selectElement.style.display = 'none';
+//     }
+//   }, { once: true });
+// }
+
+async function modifyTaskHours(button) {
+  const taskElement = button.closest('.item');
+  const selectElement = taskElement.querySelector('.select-hours');
+
+  selectElement.style.display = 'inline';
+
+  selectElement.addEventListener('change', async function () {
+    const taskId = taskElement.getAttribute('data-task-id');
+    const nouvelleHeureTravailInt = parseInt(selectElement.value, 10);
+
+    if (isNaN(nouvelleHeureTravailInt) || nouvelleHeureTravailInt < 0) {
+      alert("Nombre d'heures invalide !");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/modify-task-hours/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nouvelleHeureTravail: nouvelleHeureTravailInt }),
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        const text = await response.text();
+        alert("Erreur lors de la modification : " + text);
+      }
+    } catch (error) {
+      alert("Erreur réseau ou serveur : " + error.message);
+    } finally {
+      selectElement.style.display = 'none';
+    }
+  }, { once: true });
+}
+
+
+// function recalculerTotal() {
+//   let total = 0;
+//   document.querySelectorAll('.montant .item-text').forEach(el => {
+//     const montant = parseFloat(el.innerText.replace('€', '').trim());
+//     if (!isNaN(montant)) total += montant;
+//   });
+//   document.querySelector('#total-global').innerText = `${total} €`;
+// }
+
+
 async function confirmDelete(button) {
   const isConfirmed = confirm("Veux-tu vraiment supprimer cette tâche ?");
   if (isConfirmed) {
