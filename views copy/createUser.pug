@@ -3,11 +3,45 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Skil Up
-    link(rel="manifest" href="/manifest.json")
     link(rel="stylesheet" href="/css/style.css")
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    link(rel="manifest" href="/manifest.json")
     style.
+
+      //- .head {
+      //-   display: flex;
+      //-   justify-content: space-between;
+      //-   align-items: center;
+      //- }
+
+      //- body {
+      //-   background-color: var(--fond);
+      //-   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      //-   color: var(--texte);
+      //-   margin: 0;
+      //-   padding: 20px;
+      //-   display: flex;
+      //-   justify-content: center;
+      //- }
+
+      //- .container {
+      //-   display: flex;
+      //-   flex-direction: row;
+      //-   max-width: 1600px;
+      //-   gap: 30px;
+      //-   width: 100%;
+      //- }
+
+      //- .form-container, .tasks-container, .purchase-container {
+      //-   background-color: var(--carte);
+      //-   border-radius: 15px;
+      //-   box-shadow: var(--ombre);
+      //-   padding: 20px;
+      //-   flex: 1;
+      //- }
+
+      //- .tasks-container {
+      //-   overflow: visible;
+      //- }
 
       .salaire {
         background-color: black;
@@ -22,10 +56,69 @@ html(lang="en")
         font-size:1rem;
       }
 
-      .button-historique {
-        display: block;             /* Permet d'utiliser margin auto */
-        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+      //- .titre {
+      //-   text-align: center;
+      //-   font-size: 3rem;
+      //-   color: var(--accent2);
+      //-   font-family: 'Orbitron', sans-serif;
+      //-   text-shadow: 0 0 5px var(--accent2);
+      //-   margin-top:1rem;
+      //-   margin-bottom: 1rem;
+      //- }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      label {
+        font-weight: bold;
+        color: var(--accent2);
+        MARGIN-BOTTOM: 5px;
+      }
+
+      input, textarea {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+      }
+
+      input:focus, textarea:focus {
+        outline: none;
+        border-color: var(--accent2);
+      }
+
+      .button-submit-taches, .button-delete {
         //- border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      .button-submit-taches {
+        background-color: var(--accent2);
+        color: black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-submit-taches:hover {
+        background-color: var(--accent);
+        color: #000;
+      }
+
+      .button-historique {
+        //- display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -46,15 +139,15 @@ html(lang="en")
         color: black;
       }
 
-      //- .button-delete {
-      //-   background-color: var(--danger);
-      //-   color: white;
-      //-   box-shadow: var(--ombre);
-      //- }
+      .button-delete {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+      }
 
-      //- .button-delete:hover {
-      //-   background-color: #c0392b;
-      //- }
+      .button-delete:hover {
+        background-color: #c0392b;
+      }
 
       .task, .purchase-item {
         background-color: #1f1f2f;
@@ -154,7 +247,7 @@ html(lang="en")
         display: none
       }
       .input-task {
-        width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
+        width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
       select.input-task {
@@ -168,14 +261,14 @@ html(lang="en")
         appearance: none; /* enlève le style natif pour plus de cohérence */
       }
 
-      .footer-content{
-        text-align:center;
-        font-size:0.9rem
-      }
-
       select.input-task:focus {
         outline: none;
         border-color: var(--accent2);
+      }
+
+      .footer-content{
+        text-align:center;
+        font-size:0.9rem
       }
 
       /* Priorités */
@@ -208,46 +301,31 @@ html(lang="en")
             #heure    
 
       p.titre Skil Up
-      p.sousTitre Modification taux horaire ouvrier
 
       // Affichage du message d'erreur
       //- if errorMessage
       //-   p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
 
-      form(action="/updateOuvrier" method="post")
-        label(for="username") Login ouvrier :
-        //- input(type="text" id="username" name="username" class="input-task" required placeholder="Entrez le nom de l'ouvrier")
-        .dateInput
-          select(name="username" id="username" required placeholder="Entrez le nom de l'ouvrier")
-                option(value="" disabled selected) -- Nom ouvrier --
-                each user in usersAdmin
-                  if user.username !="Admin"
-                    option(value=user.username)= user.username + ' (' + user.taux + ' €/h)'
+      form(action="/createUser" method="post")
+        label(for="username") Login :
+        input(type="text" id="username" name="username" class="input-task" required)
 
-        label(for="taux") Nouveau taux horaire :
-        select(name="taux" id="taux" class="input-task" required placeholder="Sélectionnez le taux horaire") 
-          option(value="10") 10 €/h
-          option(value="12") 12 €/h
-          option(value="15") 15 €/h  
-          option(value="20") 20 €/h
-          option(value="25") 25 €/h                      
+        label(for="secret-question") Question secrète :
+        select(name="secret-question" id="secret-question" class="input-task" required)
+          option(value="" disabled selected) Choisissez une question
+          option(value="Quel est le nom de votre premier animal ?") Quel est le nom de votre premier animal ?
+          option(value="Quel est le nom de votre meilleur ami ?") Quel est le nom de votre meilleur ami ?
+          option(value="Quel est le nom de votre ville natale ?") Quel est le nom de votre ville natale ?
 
-        button(type="submit" class="button-submit-taches")
-          i(class="fas fa-history")
-          |  Modification €/h de l'ouvrier
-      form(action="/admin" method="get")
-        button(type="submit" class="button-historique")
-          i(class="fas fa-home")
-          |  Accueil               
-      //- form(action="/logout" method="get")
-      //-   button(type="submit" class="button-logout") Déconnexion 
-      form(action="/logout" method="get")
-          button(type="submit" class="button-logout")
-            i(class="fas fa-sign-out-alt")
-            |  Déconnexion  
+        label(for="mdp" class="qui") Mot de passe :
+        input(type="text" id="mdp" name="mdp" class="input-task" required)
+
+        button(type="submit" class="button-submit-taches") Création de compte
+      form(action="/login" method="get")  
+        button(type="submit" class="button-historique") J'ai déjà un compte 
       footer
           .footer-content
-            p Skil up © — Tous droits réservés     
+            p Skil up © — Tous droits réservés — 2025  
           
     script(src="/js/script.js")
     script.

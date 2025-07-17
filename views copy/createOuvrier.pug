@@ -9,6 +9,42 @@ html(lang="en")
 
     style.
 
+      //- .head {
+      //-   display: flex;
+      //-   justify-content: space-between;
+      //-   align-items: center;
+      //- }
+
+      //- body {
+      //-   background-color: var(--fond);
+      //-   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      //-   color: var(--texte);
+      //-   margin: 0;
+      //-   padding: 20px;
+      //-   display: flex;
+      //-   justify-content: center;
+      //- }
+
+      //- .container {
+      //-   display: flex;
+      //-   flex-direction: row;
+      //-   max-width: 1600px;
+      //-   gap: 30px;
+      //-   width: 100%;
+      //- }
+
+      //- .form-container, .tasks-container, .purchase-container {
+      //-   background-color: var(--carte);
+      //-   border-radius: 15px;
+      //-   box-shadow: var(--ombre);
+      //-   padding: 20px;
+      //-   flex: 1;
+      //- }
+
+      //- .tasks-container {
+      //-   overflow: visible;
+      //- }
+
       .salaire {
         background-color: black;
         border-radius:20px;
@@ -20,6 +56,65 @@ html(lang="en")
         color:gold;
         font-weight: bold;
         font-size:1rem;
+      }
+
+      //- .titre {
+      //-   text-align: center;
+      //-   font-size: 3rem;
+      //-   color: var(--accent2);
+      //-   font-family: 'Orbitron', sans-serif;
+      //-   text-shadow: 0 0 5px var(--accent2);
+      //-   margin-top:1rem;
+      //-   margin-bottom: 1rem;
+      //- }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      label {
+        font-weight: bold;
+        color: var(--accent2);
+        MARGIN-BOTTOM: 5px;
+      }
+
+      input, textarea {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+      }
+
+      input:focus, textarea:focus {
+        outline: none;
+        border-color: var(--accent2);
+      }
+
+      .button-submit-taches, .button-delete {
+        //- border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      .button-submit-taches {
+        background-color: var(--accent2);
+        color: black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-submit-taches:hover {
+        background-color: var(--accent);
+        color: #000;
       }
 
       .button-historique {
@@ -46,15 +141,15 @@ html(lang="en")
         color: black;
       }
 
-      //- .button-delete {
-      //-   background-color: var(--danger);
-      //-   color: white;
-      //-   box-shadow: var(--ombre);
-      //- }
+      .button-delete {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+      }
 
-      //- .button-delete:hover {
-      //-   background-color: #c0392b;
-      //- }
+      .button-delete:hover {
+        background-color: #c0392b;
+      }
 
       .task, .purchase-item {
         background-color: #1f1f2f;
@@ -156,6 +251,10 @@ html(lang="en")
       .input-task {
         width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
+      .footer-content{
+        text-align:center;
+        font-size:0.9rem
+      }
 
       select.input-task {
         background-color: #444;
@@ -168,15 +267,20 @@ html(lang="en")
         appearance: none; /* enlève le style natif pour plus de cohérence */
       }
 
-      .footer-content{
-        text-align:center;
-        font-size:0.9rem
-      }
-
       select.input-task:focus {
         outline: none;
         border-color: var(--accent2);
       }
+
+      //- .sousTitre{
+      //-   text-align: center;
+      //-   font-size: 1.5rem;
+      //-   color: var(--accent2);
+      //-   font-family: 'Orbitron', sans-serif;
+      //-   text-shadow: 0 0 5px var(--accent2);
+      //-   margin-top:1rem;
+      //-   margin-bottom: 1rem;
+      //- }
 
       /* Priorités */
       .faible {
@@ -208,23 +312,17 @@ html(lang="en")
             #heure    
 
       p.titre Skil Up
-      p.sousTitre Modification taux horaire ouvrier
+      p.sousTitre Création d'un nouvel ouvrier
 
       // Affichage du message d'erreur
       //- if errorMessage
       //-   p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
 
-      form(action="/updateOuvrier" method="post")
+      form(action="/createOuvrier" method="post")
         label(for="username") Login ouvrier :
-        //- input(type="text" id="username" name="username" class="input-task" required placeholder="Entrez le nom de l'ouvrier")
-        .dateInput
-          select(name="username" id="username" required placeholder="Entrez le nom de l'ouvrier")
-                option(value="" disabled selected) -- Nom ouvrier --
-                each user in usersAdmin
-                  if user.username !="Admin"
-                    option(value=user.username)= user.username + ' (' + user.taux + ' €/h)'
+        input(type="text" id="username" name="username" class="input-task" required placeholder="Entrez le nom de l'ouvrier")
 
-        label(for="taux") Nouveau taux horaire :
+        label(for="taux") Taux horaire :
         select(name="taux" id="taux" class="input-task" required placeholder="Sélectionnez le taux horaire") 
           option(value="10") 10 €/h
           option(value="12") 12 €/h
@@ -232,23 +330,24 @@ html(lang="en")
           option(value="20") 20 €/h
           option(value="25") 25 €/h                      
 
+        //- button(type="submit" class="button-submit-taches") Ajout nouvel ouvrier
         button(type="submit" class="button-submit-taches")
-          i(class="fas fa-history")
-          |  Modification €/h de l'ouvrier
+          i(class="fas fa-user-plus")
+          |  Ajout nouvel ouvrier
+        
       form(action="/admin" method="get")
         button(type="submit" class="button-historique")
           i(class="fas fa-home")
           |  Accueil               
       //- form(action="/logout" method="get")
-      //-   button(type="submit" class="button-logout") Déconnexion 
+      //-   button(type="submit" class="button-delete") Déconnexion 
       form(action="/logout" method="get")
-          button(type="submit" class="button-logout")
+          button(type="submit" class="button-delete")
             i(class="fas fa-sign-out-alt")
             |  Déconnexion  
       footer
           .footer-content
-            p Skil up © — Tous droits réservés     
-          
+            p Skil up © — Tous droits réservés — 2025    
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

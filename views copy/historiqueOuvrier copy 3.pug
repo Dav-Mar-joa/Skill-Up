@@ -4,10 +4,57 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title Skil Up
     link(rel="manifest" href="/manifest.json")
-    link(rel="stylesheet" href="/css/style.css")
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     style.
+      :root {
+        --fond: #1e1e2f;
+        --carte: #2c2c3a;
+        --texte: #f0f0f0;
+        --accent:rgb(182, 186, 185); /*--accent: #8a2be2; */
+        --accent2: #00ffff; /* cyan */
+        --danger: #e74c3c;
+        --ombre: 0 0 10px rgba(0, 0, 0, 0.7);
+      }
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      body {
+        background-color: var(--fond);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--texte);
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+      }
+      h2{
+        margin-bottom:10px;
+        margin-top:5px;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        max-width: 1600px;
+        gap: 30px;
+        width: 100%;
+      }
+
+      .form-container, .tasks-container, .purchase-container {
+        background-color: var(--carte);
+        border-radius: 15px;
+        box-shadow: var(--ombre);
+        padding: 20px;
+        flex: 1;
+      }
+
+      .tasks-container {
+        overflow: visible;
+      }
 
       .salaire {
         display: block;
@@ -40,10 +87,79 @@ html(lang="en")
         border-radius: 1px;
       }*/
 
+      .titre {
+        text-align: center;
+        font-size: 3rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+
+      .sousTitre{
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--accent2);
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 5px var(--accent2);
+        margin-top:1rem;
+        margin-bottom: 1rem;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem
+      }
+
+      label {
+        font-weight: bold;
+        color: var(--accent2);
+        margin-bottom: 0px;
+      }
+
+      input, textarea {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+      }
+
+      input:focus, textarea:focus {
+        outline: none;
+        border-color: var(--accent2);
+      }
+
+      .button-submit-taches, .button-delete,.button-delete-task {
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      .button-submit-taches {
+        background-color: var(--accent2);
+        color: black;
+        box-shadow: var(--ombre);
+      }
+
+      .button-submit-taches:hover {
+        background-color: var(--accent);
+        color: #000;
+      }
+
       .button-historique {
         display: block;             /* Permet d'utiliser margin auto */
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        //- border: none;
+        border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -67,7 +183,7 @@ html(lang="en")
       .button-reinitialze {
         display: block;             /* Permet d'utiliser margin auto */
         margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        //- border: none;
+        border: none;
         padding: 12px;
         border-radius: 8px;
         font-weight: bold;
@@ -88,15 +204,15 @@ html(lang="en")
         color: black;
       }
 
-      //- .button-delete {
-      //-   background-color: var(--danger);
-      //-   color: white;
-      //-   box-shadow: var(--ombre);
-      //- }
+      .button-delete {
+        background-color: var(--danger);
+        color: white;
+        box-shadow: var(--ombre);
+      }
 
-      //- .button-delete:hover {
-      //-   background-color: #c0392b;
-      //- }
+      .button-delete:hover {
+        background-color: #c0392b;
+      }
 
       .button-delete-task {
         background-color: var(--danger);
@@ -270,10 +386,6 @@ html(lang="en")
         color: var(--texte);
         margin-bottom: 5px;
       }
-      .footer-content{
-        text-align:center;
-        font-size:0.9rem
-      }
 
       /* Priorités */
       .faible {
@@ -289,7 +401,7 @@ html(lang="en")
       }
 
       /* Responsive */
-      @media (max-width: 1800px) {
+      @media (max-width: 768px) {
         .container {
           flex-direction: column;
         }
@@ -340,7 +452,7 @@ html(lang="en")
                     - totalMontant += Number(t.montant) || 0
                   h2 #{user.username} (#{user.taux} €/h)
                   p.salaire Salaires : #{totalMontant} €
-                  p Nombre de chantiers : #{user.tasks.length}
+                  p Nombre de missions : #{user.tasks.length}
                   ul.task-list
                     each t in user.tasks
                       - const dateObj = new Date(t.date)
@@ -357,12 +469,9 @@ html(lang="en")
             i(class="fas fa-home")
             |  Accueil               
         form(action="/logout" method="get")
-          button(type="submit" class="button-logout")
+          button(type="submit" class="button-delete")
             i(class="fas fa-sign-out-alt")
-            |  Déconnexion 
-        footer
-          .footer-content
-            p Skil up © — Tous droits réservés — 2025              
+            |  Déconnexion           
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
