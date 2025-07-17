@@ -329,43 +329,101 @@ async function deleteTask(button) {
 //   }, { once: true });
 // }
 
+// async function modifyTaskHours(button) {
+//   const taskElement = button.closest('.item');
+//   const selectElement = taskElement.querySelector('.select-hours');
+
+//   selectElement.style.display = 'inline';
+
+//    if (selectElement.style.display === 'inline') {
+//     selectElement.style.display = 'none';
+//     // return; // On ne continue pas si on cache
+//   } else {
+//     selectElement.style.display = 'inline';
+//   }
+
+//   selectElement.addEventListener('change', async function () {
+//     const taskId = taskElement.getAttribute('data-task-id');
+//     const nouvelleHeureTravailInt = parseInt(selectElement.value, 10);
+
+//     if (isNaN(nouvelleHeureTravailInt) || nouvelleHeureTravailInt < 0) {
+//       alert("Nombre d'heures invalide !");
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch(`/modify-task-hours/${taskId}`, {
+//         method: 'PUT',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ nouvelleHeureTravail: nouvelleHeureTravailInt }),
+//       });
+
+//       if (response.ok) {
+//         window.location.reload();
+//       } else {
+//         const text = await response.text();
+//         alert("Erreur lors de la modification : " + text);
+//       }
+//     } catch (error) {
+//       alert("Erreur réseau ou serveur : " + error.message);
+//     } finally {
+//       selectElement.style.display = 'none';
+//     }
+//   }, { once: true });
+// }
+
 async function modifyTaskHours(button) {
   const taskElement = button.closest('.item');
   const selectElement = taskElement.querySelector('.select-hours');
 
-  selectElement.style.display = 'inline';
+  // Toggle d'affichage
+  if (selectElement.style.display === 'inline') {
+    selectElement.style.display = 'none';
+    return;
+  } else {
+    selectElement.style.display = 'inline';
+  }
 
-  selectElement.addEventListener('change', async function () {
-    const taskId = taskElement.getAttribute('data-task-id');
-    const nouvelleHeureTravailInt = parseInt(selectElement.value, 10);
+  // Si le listener n'est pas déjà ajouté
+  if (!selectElement.dataset.listenerAdded) {
+    selectElement.addEventListener('change', async function () {
+      const taskId = taskElement.getAttribute('data-task-id');
+      const nouvelleHeureTravailInt = parseInt(selectElement.value, 10);
 
-    if (isNaN(nouvelleHeureTravailInt) || nouvelleHeureTravailInt < 0) {
-      alert("Nombre d'heures invalide !");
-      return;
-    }
-
-    try {
-      const response = await fetch(`/modify-task-hours/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nouvelleHeureTravail: nouvelleHeureTravailInt }),
-      });
-
-      if (response.ok) {
-        window.location.reload();
-      } else {
-        const text = await response.text();
-        alert("Erreur lors de la modification : " + text);
+      if (isNaN(nouvelleHeureTravailInt) || nouvelleHeureTravailInt < 0) {
+        alert("Nombre d'heures invalide !");
+        return;
       }
-    } catch (error) {
-      alert("Erreur réseau ou serveur : " + error.message);
-    } finally {
-      selectElement.style.display = 'none';
-    }
-  }, { once: true });
+
+      try {
+        const response = await fetch(`/modify-task-hours/${taskId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ nouvelleHeureTravail: nouvelleHeureTravailInt }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          const text = await response.text();
+          alert("Erreur lors de la modification : " + text);
+        }
+      } catch (error) {
+        alert("Erreur réseau ou serveur : " + error.message);
+      } finally {
+        selectElement.style.display = 'none';
+      }
+    });
+
+    // Marquer que le listener est ajouté
+    selectElement.dataset.listenerAdded = 'true';
+  }
 }
+
 
 
 // function recalculerTotal() {
