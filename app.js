@@ -941,7 +941,8 @@ app.get('/', async (req, res) => {
       courses: courses || [],
       successCourse,
       salaire,
-      success
+      success,
+      username:user.username
     });
   } catch (err) {
     console.error('Erreur lors de la récupération des tâches :', err);
