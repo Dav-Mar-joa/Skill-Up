@@ -104,6 +104,9 @@ input:focus, textarea:focus {
     background-color: var(--accent2);
     color: black;
     shadow: var(--ombre);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     }
 
 .button-submit-taches:hover {
