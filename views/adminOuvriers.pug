@@ -162,6 +162,20 @@ html(lang="en")
         width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
+      .small-br {
+        border-radius:20px;
+        border: 1px solid var(--accent2);
+        background-color: var(--accent2);
+        line-height: 0.5;  /* réduit l'espace vertical */
+        content: "";       /* pas obligatoire mais parfois utile */
+        margin: 2px 0;     /* tu peux ajuster la marge aussi */
+        display: block;    /* forcer le saut en bloc */
+        height: 5px;       /* hauteur personnalisée */
+        width : 60%;
+        margin-left : auto;
+        margin-right : auto;
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
@@ -192,7 +206,7 @@ html(lang="en")
               #heure    
  
         p.titre Skil Up
-        p.sousTitre Admin
+        p.sousTitre Gestion des ouvriers
         //- form(action="/login" method="post")
         //-   label(for="login") Login
 
@@ -205,34 +219,39 @@ html(lang="en")
         //-   button(type="submit" class="button-submit-taches") Connection 
         //- form(action="/createUser" method="get")  
         //-   button(type="submit" class="button-historique") Creér un compte
-        form(action="/createChantier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-hammer") 
-            |  Création chantier
+        //- form(action="/createChantier" method="get")
+        //-   button(type="submit" class="button-historique")
+        //-     i(class="fas fa-hammer") 
+        //-     |  Création chantier
+        //- //- form(action="/historiqueOuvrier" method="get")
+        //- //-   button(type="submit" class="button-historique") Historique
         //- form(action="/historiqueOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") Historique
-        form(action="/historiqueOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-history")
-            |  Historique
+        //-   button(type="submit" class="button-historique")
+        //-     i(class="fas fa-history")
+        //-     |  Historique
         //- form(action="/createOuvrier" method="get")
         //-   button(type="submit" class="button-historique") + Ajout d'ouvrier 
-        //- form(action="/createOuvrier" method="get")
-        //-   button(type="submit" class="button-historique")
-        //-     i(class="fas fa-user-plus")
-        //-     |  Ajout d'ouvrier
-        //- //- form(action="/updateOuvrier" method="get")
-        //- //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
-        //- form(action="/updateOuvrier" method="get")
-        //-   button(type="submit" class="button-historique")
-        //-     i(class="fas fa-dollar-sign")
-        //-     |  Modification €/h d'ouvrier 
-        form(action="/adminOuvriers" method="get")
+        form(action="/createOuvrier" method="get")
           button(type="submit" class="button-historique")
             i(class="fas fa-user-plus")
-            |  Ouvriers     
+            |  Ajout d'ouvrier
+        //- form(action="/updateOuvrier" method="get")
+        //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
+        form(action="/updateOuvrier" method="get")
+          button(type="submit" class="button-historique")
+            i(class="fas fa-dollar-sign")
+            |  Modification €/h d'ouvrier 
+        form(action="/deleteOuvrier" method="get")
+          button(type="submit" class="button-historique" style="color:red")
+            i(class="fas fa-user-times")
+            |  Suppression d'ouvrier     
+        div.small-br    
         //- form(action="/logout" method="get")
         //-   button(type="submit" class="buttonlogoute") Déconnexion 
+        form(action="/admin" method="get")
+          button(type="submit" class="button-historique")
+            i(class="fas fa-home")
+            |  Accueil
         form(action="/logout" method="get")
           button(type="submit" class="button-logout")
             i(class="fas fa-sign-out-alt")

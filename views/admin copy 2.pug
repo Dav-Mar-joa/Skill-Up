@@ -217,20 +217,16 @@ html(lang="en")
             |  Historique
         //- form(action="/createOuvrier" method="get")
         //-   button(type="submit" class="button-historique") + Ajout d'ouvrier 
-        //- form(action="/createOuvrier" method="get")
-        //-   button(type="submit" class="button-historique")
-        //-     i(class="fas fa-user-plus")
-        //-     |  Ajout d'ouvrier
-        //- //- form(action="/updateOuvrier" method="get")
-        //- //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
-        //- form(action="/updateOuvrier" method="get")
-        //-   button(type="submit" class="button-historique")
-        //-     i(class="fas fa-dollar-sign")
-        //-     |  Modification €/h d'ouvrier 
-        form(action="/adminOuvriers" method="get")
+        form(action="/createOuvrier" method="get")
           button(type="submit" class="button-historique")
             i(class="fas fa-user-plus")
-            |  Ouvriers     
+            |  Ajout d'ouvrier
+        //- form(action="/updateOuvrier" method="get")
+        //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
+        form(action="/updateOuvrier" method="get")
+          button(type="submit" class="button-historique")
+            i(class="fas fa-dollar-sign")
+            |  Modification €/h d'ouvrier 
         //- form(action="/logout" method="get")
         //-   button(type="submit" class="buttonlogoute") Déconnexion 
         form(action="/logout" method="get")

@@ -436,19 +436,19 @@ async function modifyTaskHours(button) {
 // }
 
 
-async function confirmDelete(button) {
-  const isConfirmed = confirm("Veux-tu vraiment supprimer cette tâche ?");
-  if (isConfirmed) {
-    try {
-      await deleteTask(button);
-      alert("Tâche supprimée ✅");
-    } catch (error) {
-      alert("Une erreur est survenue : " + error.message);
-    }
-  } else {
-    alert("Suppression annulée ❌");
-  }
-}
+// async function confirmDelete(button) {
+//   const isConfirmed = confirm("Veux-tu vraiment supprimer cette tâche ?");
+//   if (isConfirmed) {
+//     try {
+//       await deleteTask(button);
+//       alert("Tâche supprimée ✅");
+//     } catch (error) {
+//       alert("Une erreur est survenue : " + error.message);
+//     }
+//   } else {
+//     alert("Suppression annulée ❌");
+//   }
+// }
 document.getElementById('btnReset').addEventListener('click', () => {
     window.location.href = '/historiqueUserAll';
 }); 
