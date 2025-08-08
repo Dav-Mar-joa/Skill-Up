@@ -1279,6 +1279,105 @@ app.put('/modify-task-hours/:id', async (req, res) => {
   }
 });
 
+// app.put('/add-taxi-refund/:id', async (req, res) => {
+//   try {
+//     const taskId = req.params.id;
+//     const taxiRefund = Number(req.body.taxiRefund);
+
+//     if (!taskId || isNaN(taxiRefund) || taxiRefund <= 0) {
+//       return res.status(400).send('Paramètres manquants ou prix invalide');
+//     }
+
+//     const ObjectId = require('mongodb').ObjectId;
+//     const _id = new ObjectId(taskId);
+
+//     // Récupération de la tâche
+//     const user = await db.collection('UsersAdmin').findOne({ 'tasks._id': _id }, { projection: { 'tasks.$': 1 } });
+
+//     if (!user || !user.tasks || user.tasks.length === 0) {
+//       return res.status(404).send('Tâche non trouvée');
+//     }
+
+//     const task = user.tasks[0];
+
+//     // Calcul du nouveau montant : on ajoute le remboursement au montant actuel
+//     const nouveauMontant = task.montant + taxiRefund;
+
+//     // Mise à jour
+//     const result = await db.collection('UsersAdmin').updateOne(
+//       { 'tasks._id': _id },
+//       {
+//         $set: {
+//           'tasks.$.montant': nouveauMontant
+//         }
+//       }
+//     );
+
+//     if (result.modifiedCount === 0) {
+//       return res.status(404).send('Tâche non trouvée ou inchangée');
+//     }
+
+//     res.status(200).json({
+//       taxiRefund,
+//       nouveauMontant
+//     });
+
+//   } catch (error) {
+//     console.error('Erreur ajout remboursement taxi :', error);
+//     res.status(500).send('Erreur serveur lors du remboursement taxi');
+//   }
+// });
+app.put('/add-taxi-refund/:id', async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const taxiRefund = Number(req.body.taxiRefund);
+
+    if (!taskId || isNaN(taxiRefund) || taxiRefund < 0) {
+      return res.status(400).send('Paramètres manquants ou prix invalide');
+    }
+
+    const ObjectId = require('mongodb').ObjectId;
+    const _id = new ObjectId(taskId);
+
+    // Récupération de la tâche
+    const user = await db.collection('UsersAdmin').findOne({ 'tasks._id': _id }, { projection: { 'tasks.$': 1 } });
+
+    if (!user || !user.tasks || user.tasks.length === 0) {
+      return res.status(404).send('Tâche non trouvée');
+    }
+
+    const task = user.tasks[0];
+
+    // Calcul du nouveau montant : on ajoute le remboursement taxi au montant actuel
+    const nouveauMontant = task.montant + taxiRefund;
+
+    // Mise à jour montant ET taxiRefund
+    const result = await db.collection('UsersAdmin').updateOne(
+      { 'tasks._id': _id },
+      {
+        $set: {
+          'tasks.$.montant': nouveauMontant,
+          'tasks.$.taxiRefund': taxiRefund
+        }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).send('Tâche non trouvée ou inchangée');
+    }
+
+    res.status(200).json({
+      taxiRefund,
+      nouveauMontant
+    });
+
+  } catch (error) {
+    console.error('Erreur ajout remboursement taxi :', error);
+    res.status(500).send('Erreur serveur lors du remboursement taxi');
+  }
+});
+
+
 // app.put('/modify-task-hours/:id', async (req, res) => {
 //   try {
 //     const taskId = req.params.id;

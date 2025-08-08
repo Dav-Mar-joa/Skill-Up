@@ -424,6 +424,55 @@ async function modifyTaskHours(button) {
   }
 }
 
+async function modifyTaxiRefund(button) {
+  const taskElement = button.closest('.item');
+  const inputElement = taskElement.querySelector('.input-taxi-price');
+
+  // Toggle affichage
+  if (inputElement.style.display === 'inline') {
+    inputElement.style.display = 'none';
+    return;
+  } else {
+    inputElement.style.display = 'inline';
+    inputElement.focus();
+  }
+
+  // Si le listener n'est pas déjà ajouté
+  if (!inputElement.dataset.listenerAdded) {
+    inputElement.addEventListener('change', async function () {
+      const taskId = taskElement.getAttribute('data-task-id');
+      const taxiPrice = parseFloat(inputElement.value);
+
+      if (isNaN(taxiPrice) || taxiPrice < 0) {
+        alert("Prix invalide !");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/add-taxi-refund/${taskId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ taxiRefund: taxiPrice }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          const text = await response.text();
+          alert("Erreur lors du remboursement taxi : " + text);
+        }
+      } catch (error) {
+        alert("Erreur réseau ou serveur : " + error.message);
+      } finally {
+        inputElement.style.display = 'none';
+      }
+    });
+
+    inputElement.dataset.listenerAdded = 'true';
+  }
+}
 
 
 // function recalculerTotal() {

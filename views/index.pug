@@ -313,7 +313,10 @@ html(lang="en")
                 if task.description
                   p.taskDescription Commentaires : #{task.description}
                 .heureTravail
-                  p #{task.montant}€ : #{task.heureTravail}h (#{task.taux}€/h - #{task.pause}h de pause)
+                  if task.taxiRefund && task.taxiRefund > 0
+                    p #{task.montant}€ : #{task.heureTravail}h (#{task.taux}€/h - #{task.pause}h de pause) + taxi  : #{task.taxiRefund} €
+                  else
+                    p #{task.montant}€ : #{task.heureTravail}h (#{task.taux}€/h - #{task.pause}h de pause)
 
                     //- button(type="button" onclick="deleteTask(this)" class="button-delete") Supprimer
         

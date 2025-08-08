@@ -74,7 +74,6 @@ html(lang="en")
       }
 
       .button-modify-task {
-        
         padding: 5px;
         border: 2px solid black;
         border-radius: 8px;
@@ -106,6 +105,38 @@ html(lang="en")
         background-color: var(--accent);
       }
 
+      .button-taxi {
+        padding: 5px;
+        border: 2px solid black;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .button-taxi {
+        background-color: var(--texte);
+        color: white;
+        box-shadow: var(--ombre);
+        float:right;
+        margin-top: 0px;
+        margin-right : 0.6rem;
+      }
+
+      .button-taxi:hover {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .button-taxi i {
+        color: black;
+        background-color: var(--texte);
+      }
+      .button-taxi i:hover {
+        color: black;
+        background-color: var(--accent);
+      }
 
       .button-historique {
         display: block;             /* Permet d'utiliser margin auto */
@@ -575,7 +606,10 @@ html(lang="en")
                               | #{t.name || t.task} (#{dateFr} - #{t.qui}) avec
                               | #{t.pause}h de pause 
                             p.separation .............
-                            p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                            if t.taxiRefund && t.taxiRefund > 0
+                              p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
+                            else  
+                              p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
                             
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
                               i(class="fas fa-trash-alt")
@@ -594,7 +628,11 @@ html(lang="en")
                               option(value="9") 9
                               option(value="10") 10
                               option(value="11") 11  
-                              option(value="12") 12  
+                              option(value="12") 12
+                            button(type="button" onclick="modifyTaxiRefund(this)" class="button-taxi")
+                              i(class="fas fa-taxi")
+                            input.input-taxi-price(type="number" step="0.01" placeholder="Prix (€)" style="display:none")
+                                  
                             //- div(class="item" data-task-id=task._id)
                             //-   .heureTravail
                             //-     span.heures #{task.heureTravail}h
@@ -614,7 +652,10 @@ html(lang="en")
                               | #{t.name || t.task} (#{dateFr}) avec
                               | #{t.pause}h de pause 
                             p.separation .............
-                            p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
+                            if t.taxiRefund && t.taxiRefund > 0
+                              p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
+                            else  
+                              p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
                           
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
                               i(class="fas fa-trash-alt")  
@@ -634,6 +675,9 @@ html(lang="en")
                               option(value="10") 10
                               option(value="11") 11  
                               option(value="12") 12 
+                            button(type="button" onclick="modifyTaxiRefund(this)" class="button-taxi")
+                              i(class="fas fa-taxi")
+                            input.input-taxi-price(type="number" step="0.01" placeholder="Prix (€)" style="display:none") 
                             //- div(class="item" data-task-id=task._id)
                             //-   .heureTravail
                             //-     span.heures #{task.heureTravail}h

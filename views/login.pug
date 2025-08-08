@@ -44,6 +44,30 @@ html(lang="en")
         color: black;
       }
 
+      .button-mdp-login {
+        display: block;             /* Permet d'utiliser margin auto */
+        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
+        //- border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 1rem;
+        margin-bottom:25px;
+      }
+
+      .button-mdp-login {
+        background-color: transparent;
+        color:var(--accent2);
+        box-shadow: var(--ombre);
+      }
+
+      .button-mdp-login:hover {
+        //- background-color: var(--accent2);
+        color: var(--texte);
+      }
+
       //- .button-delete {
       //-   background-color: var(--danger);
       //-   color: white;
@@ -205,9 +229,9 @@ html(lang="en")
           input(type="text" id="password" name="password" class ="input-task" required)
           if message
             #message.message #{message}
-          button(type="submit" class="button-submit-taches") Connection 
+          button(type="submit" class="button-historique") Connection 
         form(action="/loginMdpOublie" method="get")  
-          button(type="submit" class="button-historique")  Login ou mot de passe oublié ?   
+          button(type="submit" class="button-mdp-login")  Login ou mot de passe oublié ?   
         form(action="/completeProfile" method="get")  
           button(type="submit" class="button-historique") Première connexion
         footer
