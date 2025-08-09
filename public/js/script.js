@@ -443,7 +443,7 @@ async function modifyTaxiRefund(button) {
       const taskId = taskElement.getAttribute('data-task-id');
       const taxiPrice = parseFloat(inputElement.value);
 
-      if (isNaN(taxiPrice) || taxiPrice < 0) {
+      if (isNaN(taxiPrice)) {
         alert("Prix invalide !");
         return;
       }

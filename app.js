@@ -1251,7 +1251,8 @@ app.put('/modify-task-hours/:id', async (req, res) => {
 
     const task = user.tasks[0];
     const taux = task.taux;
-    const nouveauMontant = nouvelleHeureTravail * taux;
+    const taxiRefund = task.taxiRefund || 0; // Récupérer le remboursement taxi s'il existe
+    const nouveauMontant = nouvelleHeureTravail * taux + taxiRefund; // Calculer le nouveau montant
 
     // 2️⃣ Mettre à jour heureTravail ET montant
     const result = await db.collection('UsersAdmin').updateOne(
@@ -1349,7 +1350,7 @@ app.put('/add-taxi-refund/:id', async (req, res) => {
     const task = user.tasks[0];
 
     // Calcul du nouveau montant : on ajoute le remboursement taxi au montant actuel
-    const nouveauMontant = task.montant + taxiRefund;
+    const nouveauMontant = (task.heureTravail)*parseFloat(task.taux) + taxiRefund;
 
     // Mise à jour montant ET taxiRefund
     const result = await db.collection('UsersAdmin').updateOne(
