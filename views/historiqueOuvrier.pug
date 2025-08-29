@@ -11,6 +11,7 @@ html(lang="en")
     
       h2{
         margin-bottom:10px;
+        font-size:1.3rem;
         margin-top:5px;
       }
 
@@ -213,7 +214,7 @@ html(lang="en")
         color: black;
       }
 
-      .montantTotal{
+      .montanttotal{
         display: block;
         width: max-content;
         margin: 0 auto;
@@ -221,7 +222,7 @@ html(lang="en")
         border-radius: 20px;
         border: 1px solid var(--accent);
         box-shadow: var(--ombre);
-        padding: 10px;
+        padding: 5px;
         padding-left: 0.7rem;
         padding-right: 0.7rem;
         color: gold;
@@ -441,6 +442,9 @@ html(lang="en")
         margin-top:0.5rem;
         width:40%
       }
+      .espaceHistorique{
+        margin-bottom:10px;
+      }
 
       /* Priorités */
       .faible {
@@ -453,6 +457,13 @@ html(lang="en")
 
       .haute {
         border-left-color: red;
+      }
+      #username {
+        margin-bottom:0px
+      }
+
+      #mois {
+        margin-top:0px
       }
 
       /* Responsive */
@@ -603,13 +614,17 @@ html(lang="en")
                         if t.qui
                           li.item(data-task-id=t._id.toString())
                             if t.repas==="on"
-                              | #{t.name || t.task} (#{dateFr} - #{t.qui}) avec
+                              | - #{t.name || t.task} de #{t.heure} à #{t.heuref}
+                              br.espaceHistorique
+                              | - Le #{dateFr}  (Chef : #{t.qui}) avec
                               | #{t.pause}h de pause + 
                               img(src="./assets/icons/burger.png" alt="Image description" class="iconBurger")
                               
 
                             else 
-                              | #{t.name || t.task} (#{dateFr} - #{t.qui}) avec
+                              | - #{t.name || t.task} de #{t.heure} à #{t.heuref}
+                              br.espaceHistorique
+                              | - Le #{dateFr}  (Chef : #{t.qui}) avec
                               | #{t.pause}h de pause 
                             p.separation .............
                             if t.taxiRefund && t.taxiRefund > 0
