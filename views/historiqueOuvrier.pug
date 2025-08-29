@@ -38,6 +38,11 @@ html(lang="en")
         margin-bottom:0;
       }
 
+      .salaire.paye {
+        text-decoration: line-through;
+        color:green;
+      }
+
       /*li.user-item:not(:last-child)::after {
         content: "";
         display: block;
@@ -446,6 +451,12 @@ html(lang="en")
         margin-bottom:10px;
       }
 
+      .SalaireEtValidationPaye{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
       /* Priorités */
       .faible {
         border-left-color: green;
@@ -599,7 +610,9 @@ html(lang="en")
                       - totalMontant += Number(t.montant) || 0
                     - montantTotalGeneral += totalMontant  
                     h2 #{user.username} (#{user.taux} €/h)
+                    .SalaireEtValidationPaye
                     p.salaire Salaire : #{totalMontant} €
+                      //- button(type="button" class="salairePayeBtn" onclick="salairePaye(this)") X
                     if user.tasks.length === 0
                       p Aucun chantier
                     else if user.tasks.length === 1
@@ -638,6 +651,7 @@ html(lang="en")
                               i(class="fas fa-pencil-alt") 
                             select.select-hours(style="display:none")
                               option Heures
+                              option(value="0") 0
                               option(value="1") 1
                               option(value="2") 2
                               option(value="3") 3

@@ -30,7 +30,7 @@ function affichageHeure(){
     let day = date.getDay()
     let numberDay = date.getDate()
     let month = date.getMonth()
-    
+
     hour = hour < 10 ? '0' + hour : hour;
     min = min < 10 ? '0'+min : min;
     sec = sec < 10 ? '0' + sec : sec
@@ -142,6 +142,15 @@ async function modifyTaskHours(button) {
 
     // Marquer que le listener est ajouté
     selectElement.dataset.listenerAdded = 'true';
+  }
+}
+
+function salairePaye(button) {
+  if (!button) return;
+  const parent = button.closest('.user-item'); // ou .salaireEtPaye si tu wraps chaque bloc
+  const salaireTextElement = parent.querySelector('.salaire');
+  if (salaireTextElement) {
+    salaireTextElement.classList.toggle('paye');
   }
 }
 
