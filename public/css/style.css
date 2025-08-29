@@ -126,3 +126,9 @@ input:focus, textarea:focus {
 .button-logout:hover {
     background-color: #c0392b;
     }    
+#dateJour, #heure {
+  display: inline-block;
+  min-width: 200px; /* largeur approximative de ton texte */
+  min-height: 20px;  /* hauteur approximative */
+  /* text-align: center; */
+}
