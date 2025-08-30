@@ -5,6 +5,7 @@ html(lang="en")
     title Skil Up
     link(rel="manifest" href="/manifest.json")
     link(rel="stylesheet" href="/css/style.css")
+    link(rel="icon", href="/assets/icons/favicon.ico", type="image/x-icon")
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     style.
@@ -163,9 +164,10 @@ html(lang="en")
         border: 2px solid var(--accent);
         border-radius: 8px;
         padding: 10px;
+        max-width:30%;
         font-size: 1rem;
         transition: border 0.3s ease;
-        appearance: none; /* enlève le style natif pour plus de cohérence */
+        //- appearance: none; 
       }
 
       .footer-content{
@@ -176,6 +178,7 @@ html(lang="en")
       select.input-task:focus {
         outline: none;
         border-color: var(--accent2);
+        max-width: 100%;
       }
 
       /* Priorités */
@@ -220,18 +223,27 @@ html(lang="en")
         //- input(type="text" id="username" name="username" class="input-task" required placeholder="Entrez le nom de l'ouvrier")
         .dateInput
           select(name="username" id="username" required placeholder="Entrez le nom de l'ouvrier")
-                option(value="" disabled selected) -- Nom ouvrier --
+                option(value="" disabled selected) -- Nom de l'ouvrier --
                 each user in usersAdmin
                   if user.username !="Admin"
                     option(value=user.username)= user.username + ' (' + user.taux + ' €/h)'
 
         label(for="taux") Nouveau taux horaire :
         select(name="taux" id="taux" class="input-task" required placeholder="Sélectionnez le taux horaire") 
-          option(value="10") 10 €/h
-          option(value="12") 12 €/h
-          option(value="15") 15 €/h  
-          option(value="20") 20 €/h
-          option(value="25") 25 €/h                      
+          option(value="12") 12 € / h
+          option(value="13") 13 € / h
+          option(value="14") 14 € / h
+          option(value="15") 15 € / h
+          option(value="16") 16 € / h
+          option(value="17") 17 € / h
+          option(value="18") 18 € / h
+          option(value="19") 19 € / h
+          option(value="20") 20 € / h
+          option(value="21") 21 € / h
+          option(value="22") 22 € / h
+          option(value="23") 23 € / h
+          option(value="24") 24 € / h
+          option(value="25") 25 € / h                    
 
         button(type="submit" class="button-submit-taches")
           i(class="fas fa-history")
@@ -246,9 +258,10 @@ html(lang="en")
           button(type="submit" class="button-logout")
             i(class="fas fa-sign-out-alt")
             |  Déconnexion  
-      footer
-          .footer-content
-            p Skil up © — Tous droits réservés     
+      //- footer
+      //-     .footer-content
+      //-       p Skil up © — Tous droits réservés  
+      include includes/footer.pug   
           
     script(src="/js/script.js")
     script.

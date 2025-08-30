@@ -5,6 +5,7 @@ html(lang="en")
     title Skil Up
     link(rel="stylesheet" href="/css/style.css")
     link(rel="manifest" href="/manifest.json")
+    link(rel="icon", href="/assets/icons/favicon.ico", type="image/x-icon")
     style.
 
       .salaire {
@@ -236,9 +237,10 @@ html(lang="en")
           button(type="submit" class="button-mdp-login")  Login ou mot de passe oublié ?   
         form(action="/completeProfile" method="get")  
           button(type="submit" class="button-historique") Première connexion
-        footer
-          .footer-content
-            p Skil up © — Tous droits réservés — 2025     
+        //- footer
+        //-   .footer-content
+        //-     p Skil up © — Tous droits réservés — 2025 
+        include includes/footer.pug    
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

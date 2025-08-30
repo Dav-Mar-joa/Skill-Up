@@ -5,6 +5,7 @@ html(lang="en")
     title Skil Up
     link(rel="stylesheet" href="/css/style.css")
     link(rel="manifest" href="/manifest.json")
+    link(rel="icon", href="/assets/icons/favicon.ico", type="image/x-icon")
     style.
 
       .salaire {
@@ -234,9 +235,10 @@ html(lang="en")
         button(type="submit" class="button-historique") Valider 
       form(action="/login" method="get")  
         button(type="submit" class="button-historique") Connexion 
-      footer
-          .footer-content
-            p Skil up © — Tous droits réservés 
+      //- footer
+      //-     .footer-content
+      //-       p Skil up © — Tous droits réservés
+      include includes/footer.pug  
           
     script(src="/js/script.js")
     script.

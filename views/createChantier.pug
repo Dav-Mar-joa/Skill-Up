@@ -4,6 +4,7 @@ html(lang="en")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     link(rel="stylesheet" href="/css/style.css")
+    link(rel="icon", href="/assets/icons/favicon.ico", type="image/x-icon")
     title Skil Up
     link(rel="manifest" href="/manifest.json")
     style.
@@ -322,9 +323,10 @@ html(lang="en")
           button(type="submit" class="button-logout")
             i(class="fas fa-sign-out-alt")
             |  Déconnexion  
-        footer
-          .footer-content
-            p Skil up © — Tous droits réservés — 2025                
+        //- footer
+        //-   .footer-content
+        //-     p Skil Up © — Tous droits réservés — 2025 
+        include includes/footer.pug               
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
