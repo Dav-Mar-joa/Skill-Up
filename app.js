@@ -586,7 +586,9 @@ app.post('/createOuvrier', async (req, res) => {
   const { username, taux } = req.body;
     console.log("Username:", username); 
     console.log("taux", taux); 
-  const isAdmin = "n"                  
+  const isAdmin = "n"
+  const isPayed = "n"                  
+
   try {
     const usersCollection = db.collection('UsersAdmin');
     // const existingUser = await usersCollection.findOne({ username });
@@ -601,7 +603,8 @@ app.post('/createOuvrier', async (req, res) => {
     const user = {
       username,
       taux,
-      isAdmin
+      isAdmin,
+      isPayed
     };
 
     await usersCollection.insertOne(user);

@@ -6,6 +6,7 @@
     --accent2: #00ffff;
     --danger: #e74c3c;
     --ombre: 0 0 5px rgba(0, 0, 0, 0.8);
+    --vert: #32d46b
       }
 .head {
     display: flex;
@@ -128,7 +129,7 @@ input:focus, textarea:focus {
     }    
 #dateJour, #heure {
   display: inline-block;
-  min-width: 200px; /* largeur approximative de ton texte */
+  min-width: 20px; /* largeur approximative de ton texte */
   min-height: 20px;  /* hauteur approximative */
   /* text-align: center; */
 }

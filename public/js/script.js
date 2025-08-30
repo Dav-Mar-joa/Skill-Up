@@ -149,8 +149,15 @@ function salairePaye(button) {
   if (!button) return;
   const parent = button.closest('.user-item'); // ou .salaireEtPaye si tu wraps chaque bloc
   const salaireTextElement = parent.querySelector('.salaire');
+  const salaireButton = parent.querySelector('.buttonSalairePaye');
   if (salaireTextElement) {
     salaireTextElement.classList.toggle('paye');
+    salaireButton.classList.toggle('paye');
+    if (salaireTextElement.classList.contains('paye')) {
+      salaireButton.innerText = "Payé";
+    } else {
+      salaireButton.innerText = "A Payer";
+    }
   }
 }
 
