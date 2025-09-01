@@ -354,7 +354,6 @@ app.post('/loginOublie', async (req, res) => {
   }
 });
 
-
 app.get('/mdpOublie', async (req, res) => {
     res.render('mdpOublie');  } )    
 
@@ -501,6 +500,55 @@ app.get('/historiqueOuvrier', async (req, res) => {
   }
 });
 
+app.get('/payementOuvrier', async (req, res) => {
+  try {
+    // Calculer le mois en cours
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    // Pipeline aggregation pour le mois en cours
+    const pipeline = [
+      {
+        $addFields: {
+          tasks: {
+            $filter: {
+              input: "$tasks",
+              as: "task",
+              cond: {
+                $and: [
+                  { $gte: ["$$task.date", startDate] },
+                  { $lt: ["$$task.date", endDate] }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        $match: {
+          "tasks.0": { $exists: true }
+        }
+      },
+      { $sort: { username: 1 } }
+    ];
+
+    const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+
+    // Tri final
+    usersAdmin.forEach(user => {
+      if (user.tasks && Array.isArray(user.tasks)) {
+        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+    });
+
+    res.render('payementOuvrier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur récupération historique ouvriers :', err);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
 app.post('/historiqueOuvrier', async (req, res) => {
   try {
     const { username, mois, jour } = req.body;
@@ -572,6 +620,283 @@ app.post('/historiqueOuvrier', async (req, res) => {
     res.status(500).send('Erreur serveur');
   }
 });
+
+// app.post('/payementOuvrier', async (req, res) => {
+//   try {
+//     const { username, mois, jour } = req.body;
+//     const { userId } = req.body
+//     console.log("userId:", userId);
+//     const ObjectId = require('mongodb').ObjectId;
+
+//     // Mettre à jour le champ isPayed
+//     await db.collection('UsersAdmin').updateOne(
+//       { _id: new ObjectId(userId) },
+//       { $set: { isPayed: "y" } }
+//     );
+
+//     // Construire le filtre utilisateur de base (username)
+//     const userFilter = {};
+//     if (username && username.trim() !== '') {
+//       userFilter.username = username.trim();
+//     }
+
+//     // Construire la plage de date en ISODate pour filtrer tasks
+//     let startDate, endDate;
+//     if (mois && mois.trim() !== '') {
+//       const [year, month] = mois.split('-');
+//       startDate = new Date(year, month - 1, 1);
+//       endDate = new Date(year, month, 1);
+//     } else if (jour && jour.trim() !== '') {
+//       startDate = new Date(jour);
+//       endDate = new Date(jour);
+//       endDate.setDate(endDate.getDate() + 1);
+//     }
+
+//     // Pipeline aggregation
+//     const pipeline = [
+//       { $match: userFilter }
+//     ];
+
+//     if (startDate && endDate) {
+//       pipeline.push({
+//         $addFields: {
+//           tasks: {
+//             $filter: {
+//               input: "$tasks",
+//               as: "task",
+//               cond: {
+//                 $and: [
+//                   { $gte: ["$$task.date", startDate] },
+//                   { $lt: ["$$task.date", endDate] }
+//                 ]
+//               }
+//             }
+//           }
+//         }
+//       });
+//       // Ne garder que les utilisateurs qui ont au moins une tâche dans cette période
+//       pipeline.push({
+//         $match: {
+//           "tasks.0": { $exists: true }
+//         }
+//       });
+//     }
+
+//     // Trier par username
+//     pipeline.push({ $sort: { username: 1 } });
+
+//     // Exécuter aggregation
+//     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+
+//     // Trier les tâches au cas où (pas forcément utile)
+//     usersAdmin.forEach(user => {
+//       if (user.tasks && Array.isArray(user.tasks)) {
+//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+//       }
+//     });
+
+//     res.render('payementOuvrier', { usersAdmin });
+//   } catch (err) {
+//     console.error('Erreur récupération historique ouvriers :', err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
+
+// app.post('/payementOuvrier', async (req, res) => {
+//   try {
+//     const { userId, username, mois, jour } = req.body;
+//     const ObjectId = require('mongodb').ObjectId;
+
+//     // Si userId est présent, mettre à jour le paiement
+//     if (userId) {
+//       console.log("userId:", userId);
+//       await db.collection('UsersAdmin').updateOne(
+//         { _id: new ObjectId(userId) },
+//         { $set: { isPayed: "y" } }
+//       );
+//     }
+
+//     // Construire le filtre utilisateur de base (username)
+//     const userFilter = {};
+//     if (username && username.trim() !== '') {
+//       userFilter.username = username.trim();
+//     }
+
+//     // Construire la plage de date en ISODate pour filtrer tasks
+//     let startDate, endDate;
+//     if (mois && mois.trim() !== '') {
+//       const [year, month] = mois.split('-');
+//       startDate = new Date(year, month - 1, 1);
+//       endDate = new Date(year, month, 1);
+//     } else if (jour && jour.trim() !== '') {
+//       startDate = new Date(jour);
+//       endDate = new Date(jour);
+//       endDate.setDate(endDate.getDate() + 1);
+//     }
+
+//     // Pipeline aggregation
+//     const pipeline = [{ $match: userFilter }];
+
+//     if (startDate && endDate) {
+//       pipeline.push({
+//         $addFields: {
+//           tasks: {
+//             $filter: {
+//               input: "$tasks",
+//               as: "task",
+//               cond: {
+//                 $and: [
+//                   { $gte: ["$$task.date", startDate] },
+//                   { $lt: ["$$task.date", endDate] }
+//                 ]
+//               }
+//             }
+//           }
+//         }
+//       });
+//       // Ne garder que les utilisateurs qui ont au moins une tâche dans cette période
+//       pipeline.push({
+//         $match: {
+//           "tasks.0": { $exists: true }
+//         }
+//       });
+//     }
+
+//     // Trier par username
+//     pipeline.push({ $sort: { username: 1 } });
+
+//     // Exécuter aggregation
+//     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+
+//     // Trier les tâches (optionnel)
+//     usersAdmin.forEach(user => {
+//       if (user.tasks && Array.isArray(user.tasks)) {
+//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+//       }
+//     });
+
+//     res.render('payementOuvrier', { usersAdmin });
+//   } catch (err) {
+//     console.error('Erreur récupération historique ouvriers :', err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
+
+app.post('/payementOuvrier', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const ObjectId = require('mongodb').ObjectId;
+    console.log("userId:", userId);
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "userId manquant" });
+    }
+
+    await db.collection('UsersAdmin').updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { isPayed: "y" } }
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Erreur serveur :", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Route pour remettre à zéro tous les paiements
+app.post('/refresh', async (req, res) => {
+  try {
+    // Met à jour tous les utilisateurs (sauf Admin) pour remettre isPayed à "n"
+    const result = await db.collection('UsersAdmin').updateMany(
+      { username: { $ne: "Admin" } }, // on exclut l'admin
+      { $set: { isPayed: "n" } }
+    );
+
+    console.log(`Paiements remis à zéro pour ${result.modifiedCount} utilisateurs`);
+    
+    // Redirige vers la page de paiement pour voir les changements
+    res.redirect('/payementOuvrier');
+  } catch (err) {
+    console.error("Erreur lors de la remise à zéro des paiements :", err);
+    res.status(500).send("Erreur serveur");
+  }
+});
+
+
+// app.post('/payementOuvrier', async (req, res) => {
+//   try {
+//     const { username, mois, jour } = req.body;
+//     const { userId, taskId } = req.body;
+//      if (!userId || !taskId) return res.status(400).send('Paramètres manquants');
+    
+//     // Construire le filtre utilisateur de base (username)
+//     const userFilter = {};
+//     if (username && username.trim() !== '') {
+//       userFilter.username = username.trim();
+//     }
+
+//     // Construire la plage de date en ISODate pour filtrer tasks
+//     let startDate, endDate;
+//     if (mois && mois.trim() !== '') {
+//       const [year, month] = mois.split('-');
+//       startDate = new Date(year, month - 1, 1);
+//       endDate = new Date(year, month, 1);
+//     } else if (jour && jour.trim() !== '') {
+//       startDate = new Date(jour);
+//       endDate = new Date(jour);
+//       endDate.setDate(endDate.getDate() + 1);
+//     }
+
+//     // Pipeline aggregation
+//     const pipeline = [
+//       { $match: userFilter }
+//     ];
+
+//     if (startDate && endDate) {
+//       pipeline.push({
+//         $addFields: {
+//           tasks: {
+//             $filter: {
+//               input: "$tasks",
+//               as: "task",
+//               cond: {
+//                 $and: [
+//                   { $gte: ["$$task.date", startDate] },
+//                   { $lt: ["$$task.date", endDate] }
+//                 ]
+//               }
+//             }
+//           }
+//         }
+//       });
+//       // Ne garder que les utilisateurs qui ont au moins une tâche dans cette période
+//       pipeline.push({
+//         $match: {
+//           "tasks.0": { $exists: true }
+//         }
+//       });
+//     }
+
+//     // Trier par username
+//     pipeline.push({ $sort: { username: 1 } });
+
+//     // Exécuter aggregation
+//     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+
+//     // Trier les tâches au cas où (pas forcément utile)
+//     usersAdmin.forEach(user => {
+//       if (user.tasks && Array.isArray(user.tasks)) {
+//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+//       }
+//     });
+
+//     res.render('payementOuvrier', { usersAdmin });
+//   } catch (err) {
+//     console.error('Erreur récupération historique ouvriers :', err);
+//     res.status(500).send('Erreur serveur');
+//   }
+// });
 
 app.get('/createOuvrier', async (req, res) => {
 

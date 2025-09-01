@@ -232,12 +232,16 @@ html(lang="en")
         form(action="/adminOuvriers" method="get")
           button(type="submit" class="button-historique")
             i(class="fas fa-user-plus")
-            |  Ouvriers     
+            |  Ouvriers 
+        form(action="/payementOuvrier" method="get")
+          button(type="submit" class="button-historique")
+            i(class="fas fa-coins")
+            |  Payement         
         //- form(action="/logout" method="get")
         //-   button(type="submit" class="buttonlogoute") Déconnexion 
         form(action="/logout" method="get")
           button(type="submit" class="button-logout")
-            i(class="fas fa-sign-out-alt")
+            i(class="fas fa-sign-out-alt")    
             |  Déconnexion 
         //- footer
         //-   .footer-content

@@ -145,21 +145,133 @@ async function modifyTaskHours(button) {
   }
 }
 
-function salairePaye(button) {
-  if (!button) return;
-  const parent = button.closest('.user-item'); // ou .salaireEtPaye si tu wraps chaque bloc
+// function salairePaye(button) {
+//   if (!button) return;
+//   const parent = button.closest('.user-item'); // ou .salaireEtPaye si tu wraps chaque bloc
+//   const salaireTextElement = parent.querySelector('.salaire');
+//   const salaireButton = parent.querySelector('.buttonSalairePaye');
+//   if (salaireTextElement) {
+//     salaireTextElement.classList.toggle('paye');
+//     salaireButton.classList.toggle('paye');
+//     if (salaireTextElement.classList.contains('paye')) {
+//       salaireButton.innerText = "Payé";
+//     } else {
+//       salaireButton.innerText = "A Payer";
+//     }
+//   }
+// }
+
+// function salairePaye(button, userId) {
+//   if (!button) return;
+
+//   const parent = button.closest('.user-item');
+//   const salaireTextElement = parent.querySelector('.salaire');
+
+//   fetch('/payementOuvrier', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ userId })
+//   })
+//   .then(res => res.json())
+//   .then(data => {
+//     if (data.success) {
+//       salaireTextElement.classList.add('paye');
+//       button.classList.add('paye');
+//       button.innerText = "Payé";
+//     } else {
+//       alert("Erreur lors de la mise à jour du salaire");
+//     }
+//   })
+//   .catch(err => console.error(err));
+// }
+
+// function salairePaye(button, userId) {
+//   if (!button || !userId) return;
+
+//   const parent = button.closest('.user-item');
+//   const salaireTextElement = parent.querySelector('.salaire');
+
+//   fetch('/payementOuvrier', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ userId })
+//   })
+//     .then(res => res.json())
+//     .then(data => {
+//       if (data.success) {
+//         // Ajouter la classe "paye" côté visuel
+//         if (salaireTextElement) salaireTextElement.classList.add('paye');
+//         button.classList.add('paye');
+//         button.innerText = "Payé";
+
+//         // Facultatif : désactiver le bouton pour éviter plusieurs clics
+//         button.disabled = true;
+//       } else {
+//         alert("Erreur lors de la mise à jour du salaire");
+//       }
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       alert("Erreur serveur lors de la mise à jour du salaire");
+//     });
+// }
+
+// function salairePaye(button, userId) {
+//   if (!button || !userId) return;
+
+//   const parent = button.closest('.user-item');
+//   const salaireTextElement = parent.querySelector('.salaire');
+
+//   fetch('/payementOuvrier', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify({ userId })
+//   })
+//     .then(res => res.json())
+//     .then(data => {
+//       if (data.success) {
+//         if (salaireTextElement) salaireTextElement.classList.add('paye');
+//         button.classList.add('paye');
+//         button.innerText = "Payé";
+//         button.disabled = true; // empêcher de recliquer
+//       } else {
+//         alert("Erreur lors de la mise à jour du salaire");
+//       }
+//     })
+//     .catch(err => {
+//       console.error("Erreur fetch:", err);
+//       alert("Erreur serveur");
+//     });
+// }
+function salairePaye(button, userId) {
+  if (!button || !userId) return;
+
+  const parent = button.closest('.user-item');
   const salaireTextElement = parent.querySelector('.salaire');
-  const salaireButton = parent.querySelector('.buttonSalairePaye');
-  if (salaireTextElement) {
-    salaireTextElement.classList.toggle('paye');
-    salaireButton.classList.toggle('paye');
-    if (salaireTextElement.classList.contains('paye')) {
-      salaireButton.innerText = "Payé";
-    } else {
-      salaireButton.innerText = "A Payer";
-    }
-  }
+
+  fetch('/payementOuvrier', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // Ajouter la classe "paye" côté visuel
+        if (salaireTextElement) salaireTextElement.classList.add('paye');
+        button.classList.add('paye');
+        button.innerText = "Payé";
+        button.disabled = true; // empêcher plusieurs clics
+      } else {
+        alert("Erreur lors de la mise à jour du salaire");
+      }
+    })
+    .catch(err => {
+      console.error("Erreur fetch:", err);
+      alert("Erreur serveur");
+    });
 }
+
 
 async function modifyTaxiRefund(button) {
   const taskElement = button.closest('.item');
