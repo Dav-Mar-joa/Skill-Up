@@ -138,12 +138,23 @@ html(lang="en")
         font-size:0.9rem
       }
 
-      br.small-br {
-        line-height: 0.7;  /* réduit l'espace vertical */
+      //- br.small-br {
+      //-   line-height: 0.7;  /* réduit l'espace vertical */
+      //-   content: "";       /* pas obligatoire mais parfois utile */
+      //-   margin: 2px 0;     /* tu peux ajuster la marge aussi */
+      //-   display: block;    /* forcer le saut en bloc */
+      //-   height: 2px;       /* hauteur personnalisée */
+      //- }
+
+      .small-br {
+        border-radius:20px;
+        border: 1px solid var(--accent2);
+        background-color: var(--accent2);
+        line-height: 0.5;  /* réduit l'espace vertical */
         content: "";       /* pas obligatoire mais parfois utile */
         margin: 2px 0;     /* tu peux ajuster la marge aussi */
         display: block;    /* forcer le saut en bloc */
-        height: 6px;       /* hauteur personnalisée */
+        height: 2px;       /* hauteur personnalisée */
       }
 
       .heureTravail {
@@ -171,7 +182,7 @@ html(lang="en")
         content: "";       /* pas obligatoire mais parfois utile */
         margin: 2px 0;     /* tu peux ajuster la marge aussi */
         display: block;    /* forcer le saut en bloc */
-        height: 5px;       /* hauteur personnalisée */
+        height: 2px;       /* hauteur personnalisée */
         width : 60%;
         margin-left : auto;
         margin-right : auto;
