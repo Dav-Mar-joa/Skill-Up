@@ -500,54 +500,54 @@ app.get('/historiqueOuvrier', async (req, res) => {
   }
 });
 
-// app.get('/payementOuvrier', async (req, res) => {
-//   try {
-//     // Calculer le mois en cours
-//     const now = new Date();
-//     const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-//     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+app.get('/payementOuvrier', async (req, res) => {
+  try {
+    // Calculer le mois en cours
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-//     // Pipeline aggregation pour le mois en cours
-//     const pipeline = [
-//       {
-//         $addFields: {
-//           tasks: {
-//             $filter: {
-//               input: "$tasks",
-//               as: "task",
-//               cond: {
-//                 $and: [
-//                   { $gte: ["$$task.date", startDate] },
-//                   { $lt: ["$$task.date", endDate] }
-//                 ]
-//               }
-//             }
-//           }
-//         }
-//       },
-//       {
-//         $match: {
-//           "tasks.0": { $exists: true }
-//         }
-//       },
-//       { $sort: { username: 1 } }
-//     ];
+    // Pipeline aggregation pour le mois en cours
+    const pipeline = [
+      {
+        $addFields: {
+          tasks: {
+            $filter: {
+              input: "$tasks",
+              as: "task",
+              cond: {
+                $and: [
+                  { $gte: ["$$task.date", startDate] },
+                  { $lt: ["$$task.date", endDate] }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        $match: {
+          "tasks.0": { $exists: true }
+        }
+      },
+      { $sort: { username: 1 } }
+    ];
 
-//     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+    const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
 
-//     // Tri final
-//     usersAdmin.forEach(user => {
-//       if (user.tasks && Array.isArray(user.tasks)) {
-//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-//       }
-//     });
+    // Tri final
+    usersAdmin.forEach(user => {
+      if (user.tasks && Array.isArray(user.tasks)) {
+        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+    });
 
-//     res.render('payementOuvrier', { usersAdmin });
-//   } catch (err) {
-//     console.error('Erreur récupération historique ouvriers :', err);
-//     res.status(500).send('Erreur serveur');
-//   }
-// });
+    res.render('payementOuvrier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur récupération historique ouvriers :', err);
+    res.status(500).send('Erreur serveur');
+  }
+});
 
 app.post('/historiqueOuvrier', async (req, res) => {
   try {
@@ -621,154 +621,25 @@ app.post('/historiqueOuvrier', async (req, res) => {
   }
 });
 
-
-
-// POST : filtrer selon le mois choisi
-// app.post('/payementOuvrier', async (req, res) => {
-//   try {
-//     const { mois } = req.body;
-
-//     const [year, month] = mois.split('-');
-//     const startDate = new Date(year, month - 1, 1);
-//     const endDate = new Date(year, month, 1);
-
-//     const pipeline = [
-//       {
-//         $addFields: {
-//           tasks: {
-//             $filter: {
-//               input: "$tasks",
-//               as: "task",
-//               cond: { $and: [{ $gte: ["$$task.date", startDate] }, { $lt: ["$$task.date", endDate] }] }
-//             }
-//           }
-//         }
-//       },
-//       { $match: { "tasks.0": { $exists: true } } },
-//       { $sort: { username: 1 } }
-//     ];
-
-//     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
-
-//     let montantTotalGeneral = 0;
-//     usersAdmin.forEach(user => {
-//       if (user.tasks && Array.isArray(user.tasks)) {
-//         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-//         user.totalMontant = user.tasks.reduce((acc, t) => acc + Number(t.montant || 0), 0);
-//         montantTotalGeneral += user.totalMontant;
-//       }
-//     });
-
-//     res.render('payementOuvrier', { usersAdmin, montantTotalGeneral, moisActuel: mois });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send('Erreur serveur');
-//   }
-// });
-
-
-// ------------------------
-
-app.get('/payementOuvrier', async (req, res) => {
-  try {
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
-    const pipeline = [
-      {
-        $addFields: {
-          tasks: {
-            $filter: {
-              input: "$tasks",
-              as: "task",
-              cond: { $and: [{ $gte: ["$$task.date", startDate] }, { $lt: ["$$task.date", endDate] }] }
-            }
-          }
-        }
-      },
-      { $match: { "tasks.0": { $exists: true } } },
-      { $sort: { username: 1 } }
-    ];
-
-    const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
-
-    let montantTotalGeneral = 0;
-    usersAdmin.forEach(user => {
-      if (user.tasks && Array.isArray(user.tasks)) {
-        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-        user.totalMontant = user.tasks.reduce((acc, t) => acc + Number(t.montant || 0), 0);
-        montantTotalGeneral += user.totalMontant;
-      }
-    });
-
-    // transmettre aussi le mois actuel pour l'input
-    const moisActuel = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-    res.render('payementOuvrier', { usersAdmin, montantTotalGeneral, moisActuel });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Erreur serveur');
-  }
-});
-
 app.post('/payementOuvrier', async (req, res) => {
   try {
-    const { userId, mois } = req.body;
+    const { userId } = req.body;
     const ObjectId = require('mongodb').ObjectId;
+    console.log("userId:", userId);
 
-    // --- Si userId est présent, c'est un toggle d'état isPayed ---
-    if (userId) {
-      const user = await db.collection('UsersAdmin').findOne({ _id: new ObjectId(userId) });
-      if (!user) return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
-
-      const newPayedState = user.isPayed === "y" ? "n" : "y";
-
-      await db.collection('UsersAdmin').updateOne(
-        { _id: new ObjectId(userId) },
-        { $set: { isPayed: newPayedState } }
-      );
-
-      return res.json({ success: true, newPayedState });
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "userId manquant" });
     }
 
-    // --- Sinon, filtrage par mois pour affichage page ---
-    const now = new Date();
-    const [year, month] = mois ? mois.split('-') : [now.getFullYear(), now.getMonth() + 1];
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 1);
+    await db.collection('UsersAdmin').updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { isPayed: "y" } }
+    );
 
-    const pipeline = [
-      {
-        $addFields: {
-          tasks: {
-            $filter: {
-              input: "$tasks",
-              as: "task",
-              cond: { $and: [{ $gte: ["$$task.date", startDate] }, { $lt: ["$$task.date", endDate] }] }
-            }
-          }
-        }
-      },
-      { $match: { "tasks.0": { $exists: true } } },
-      { $sort: { username: 1 } }
-    ];
-
-    const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
-
-    let montantTotalGeneral = 0;
-    usersAdmin.forEach(user => {
-      if (user.tasks && Array.isArray(user.tasks)) {
-        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-        user.totalMontant = user.tasks.reduce((acc, t) => acc + Number(t.montant || 0), 0);
-        montantTotalGeneral += user.totalMontant;
-      }
-    });
-
-    res.render('payementOuvrier', { usersAdmin, montantTotalGeneral, moisActuel: `${year}-${String(month).padStart(2,'0')}` });
+    res.json({ success: true });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Erreur serveur');
+    console.error("Erreur serveur :", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
@@ -790,8 +661,6 @@ app.post('/refresh', async (req, res) => {
     res.status(500).send("Erreur serveur");
   }
 });
-
-// ------------------------
 
 // app.post('/payementOuvrier', async (req, res) => {
 //   try {

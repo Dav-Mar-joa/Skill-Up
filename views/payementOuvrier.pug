@@ -39,10 +39,12 @@ html(lang="en")
         margin-bottom:0;
       }
 
-      .salaire.paye {
-        //- text-decoration: line-through;
-        color: var(--texte);;
-      }
+      //- .salaire.paye {
+      //-   //- text-decoration: line-through;
+      //-   color: var(--fond);
+      //-   background-color: var(--accent2);
+      //-   transition: background 1s ease;
+      //- }
 
       
       .button-delete-task {
@@ -526,7 +528,7 @@ html(lang="en")
           //-     #heure    
  
         p.titre Skil Up 
-        p.sousTitre Salaire des ouvriers à payer
+        p.sousTitre Salaire à payer
          div.small-br
 
         form(action="/historiqueOuvrier" method="POST")
@@ -600,7 +602,7 @@ html(lang="en")
               #heure    
  
         p.titre Skil Up 
-        p.sousTitre Salaires des ouvriers à payer
+        p.sousTitre Salaires à payer
         //-  div.small-br
 
         form(action="/payementOuvrier" method="POST")
@@ -614,14 +616,14 @@ html(lang="en")
           //-     each user in usersAdmin
           //-       option(value=user.username)= user.username
   
-          //- .dateInput
-          //-   input(type="month" name="mois" id="mois" placeholder="Mois")      
+          .dateInput
+            input(type="month" name="mois" id="mois" placeholder="Mois")      
 
-          //- .boutonFiltre-reinitialise
-          //-   button(type="submit" class="button-historique") Filtrer
-          //-   a(href="/payementOuvrier") 
-            //-   button(type="button" class="button-mois") Ce mois
-            //- a(href="/historiqueOuvrierAll") 
+          .boutonFiltre-reinitialise
+            button(type="submit" class="button-historique") Filtrer
+            a(href="/payementOuvrier") 
+              button(type="button" class="button-mois") Ce mois
+            a(href="/payementOuvrier") 
             //-   button(type="button" class="button-reinitialze") Tout
           div.small-br
           h2.montantCentrer Total des salaires :
@@ -651,11 +653,11 @@ html(lang="en")
                         type="button"
                         class=user.isPayed === "y" ? "paye" : ""
                         onclick=`salairePaye(this, '${user._id}')`
-                      )= user.isPayed === "y" ? "Payé" : "A payer"
+                      )= user.isPayed === "y" ? "Payé ✅" : "A payer"
         form(action="/refresh" method="post")
           button(type="submit" class="button-RAZ")
             i(class="fas fa-sync-alt")
-            |  Tous les paiements sont efféctués !            
+            |  Tous les paiements sont effectués !            
         form(action="/admin" method="get")
           button(type="submit" class="button-historique")
             i(class="fas fa-home")
