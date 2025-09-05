@@ -396,6 +396,11 @@ html(lang="en")
         color:white;
         //- font-weight: bold;
         //- font-size : 1rem;
+        position: relative;
+        white-space: normal;  /* Permet au texte de passer à la ligne */
+        word-wrap: break-word; /* Coupe les mots trop longs pour éviter le débordement */
+        overflow-wrap: break-word; /* Compatibilité moderne */
+
           
       }
       .montantCentrer {
@@ -460,6 +465,14 @@ html(lang="en")
         display: flex;
         justify-content: space-between;
         align-items: center;
+      }
+      .atelier20Point12 img{
+        position: absolute;
+        left: -8.5%;          /* colle à droite, ajuste si besoin */
+        top: 10%;             /* au milieu vertical */
+        transform: translateY(-20%);
+        //- height: 1.5rem;   !important;   
+        width:2.1rem;
       }
 
       /* Priorités */
@@ -656,13 +669,18 @@ html(lang="en")
                               | - Le #{dateFr}  (Chef : #{t.qui}) avec
                               | #{t.pause}h de pause + 
                               img(src="./assets/icons/burger.png" alt="Image description" class="iconBurger")
-                              
+                              if t.atelier20Point12 === "on"
+                                div.atelier20Point12 
+                                  img(src="./assets/icons/logo_20Point12.png"  alt="20.12")
 
                             else 
                               | - #{t.name || t.task} de #{t.heure} à #{t.heuref}
                               br.espaceHistorique
                               | - Le #{dateFr}  (Chef : #{t.qui}) avec
                               | #{t.pause}h de pause 
+                              if t.atelier20Point12 === "on"
+                                div.atelier20Point12 
+                                  img(src="./assets/icons/logo_20Point12.png" alt="20.12")
                             p.separation .............
                             if t.taxiRefund && t.taxiRefund > 0
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
@@ -706,10 +724,16 @@ html(lang="en")
                               | #{t.name || t.task} (#{dateFr}) avec 
                               | #{t.pause}h de pause +
                               img(src="./assets/icons/burger.png" alt="Image description")
+                              if t.atelier20Point12 === "on"
+                                div.atelier20Point12 
+                                  img(src="./assets/icons/logo_20Point12.png"  alt="20.12")
                               
                             else 
                               | #{t.name || t.task} (#{dateFr}) avec
                               | #{t.pause}h de pause 
+                              if t.atelier20Point12 === "on"
+                                div.atelier20Point12 Atelier 20.12 
+                                  img(src="./assets/icons/logo_20Point12.png" alt="20.12")
                             p.separation .............
                             if t.taxiRefund && t.taxiRefund > 0
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
