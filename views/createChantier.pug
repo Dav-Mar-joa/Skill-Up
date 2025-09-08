@@ -136,6 +136,18 @@ html(lang="en")
         margin-top:15px;
       }
 
+      .checkBoxEntreprise {
+        display: flex;
+        gap: 3rem; /* espace horizontal entre les cases */
+        align-items: center; /* aligne bien verticalement */
+      }
+
+      .checkBoxEntreprise .dateInput {
+        display: flex;
+        align-items: center;
+        gap: 5px; /* espace entre label et input */
+      }
+
       br.small-br {
         line-height: 0.7;  /* réduit l'espace vertical */
         content: "";       /* pas obligatoire mais parfois utile */
@@ -219,14 +231,14 @@ html(lang="en")
               option(value="0") 0h
               option(value="1") 1h
               option(value="2") 2h
-          //- input(type="text" id="task" name="task" required)
-          .dateInput
-            label(for="atelier20Point12") Atelier 20.12 : 
-            input(type="checkbox" id="atelier20Point12" name="atelier20Point12")
+          .checkBoxEntreprise
+            .dateInput
+              label(for="atelier20Point12") Atelier 20.12 : 
+              input(type="checkbox" id="atelier20Point12" name="atelier20Point12")
+            .dateInput
+              label(for="skilUp") Skil Up :
+              input(type="checkbox" id="skilUp" name="skilUp")  
 
-          .dateInput
-            label(for="repas") Repas prévu : 
-            input(type="checkbox" id="repas" name="repas")
           label(for="qui") Chef d'équipe du chantier :
           .dateInput
             select(name="qui" id="qui" required)
@@ -298,7 +310,9 @@ html(lang="en")
               option(value="21:00") 21h
               option(value="22:00") 22h
               option(value="23:00") 23h
-            
+          .dateInput
+            label(for="repas") Repas prévu : 
+            input(type="checkbox" id="repas" name="repas")  
             //- label(for="description") Commentaires :
             //- textarea(id="description" name="description" rows="1" )
           //- button(type="submit" class="button-submit-taches") Ajouter

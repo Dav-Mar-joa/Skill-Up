@@ -1022,7 +1022,7 @@ app.get('/createChantier', async (req, res) => {
 app.post('/createChantier', async (req, res) => {
   try {
     // 1) Récupération des champs du formulaire
-    const { task, pause, date, heure, datef, heuref, qui,repas,atelier20Point12} = req.body;
+    const { task, pause, date, heure, datef, heuref, qui,repas,atelier20Point12,skilUp} = req.body;
     let ouvriers = req.body['ouvriers[]'] || req.body.ouvriers; 
     // si un seul ouvrier, Express renvoie une string, sinon un tableau
     if (!Array.isArray(ouvriers)) ouvriers = [ouvriers];
@@ -1059,7 +1059,8 @@ app.post('/createChantier', async (req, res) => {
         taux: u.taux,
         qui,
         repas,
-        atelier20Point12
+        atelier20Point12,
+        skilUp
       };
       return {
         updateOne: {
