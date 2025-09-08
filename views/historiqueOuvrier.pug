@@ -672,7 +672,7 @@ html(lang="en")
                               br.espaceHistorique
                               | - Le #{dateFr} 
                               br.espaceHistorique
-                              | - #{t.heure} à #{t.heuref} (pause : #{t.pause}h) +
+                              | - #{t.heure} à #{t.heuref} (off: #{t.pause}h) +
                               img(src="./assets/icons/burger.png" alt="Image description" class="iconBurger")
 
                               br.espaceHistorique
@@ -689,7 +689,7 @@ html(lang="en")
                               br.espaceHistorique
                               | - Le #{dateFr} 
                               br.espaceHistorique
-                              | - #{t.heure} à #{t.heuref} (pause : #{t.pause}h)
+                              | - #{t.heure} à #{t.heuref} (off: #{t.pause}h)
                               br.espaceHistorique
                               | - Chef : #{t.qui} 
                               if t.atelier20Point12 === "on"
@@ -741,7 +741,7 @@ html(lang="en")
                               | - Chantier : #{t.name || t.task}
                               |- Le #{dateFr}
                               br.espaceHistorique
-                              | #{t.heure} à #{t.heuref} (pause : #{t.pause}h) +
+                              | #{t.heure} à #{t.heuref} (off: #{t.pause}h) +
                               img(src="./assets/icons/burger.png" alt="Image description")
                               |
                               br.espaceHistorique
@@ -759,7 +759,7 @@ html(lang="en")
                               br.espaceHistorique   
                               | - Le #{dateFr}
                               br.espaceHistorique
-                              | #{t.heure} à #{t.heuref}(pause : #{t.pause}h)
+                              | #{t.heure} à #{t.heuref}(off: #{t.pause}h)
                               br.espaceHistorique
                               | - Chef : #{t.qui}
                               if t.atelier20Point12 === "on"
