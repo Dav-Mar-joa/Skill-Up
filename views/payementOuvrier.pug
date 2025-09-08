@@ -247,9 +247,26 @@ html(lang="en")
         padding-right: 0.7rem;
         color: gold;
         font-weight: bold;
-        font-size: 1.5rem; 
+        font-size: 1.3rem; 
         margin: auto;
         margin-bottom: 0.8rem;
+      }
+      .montantAPayer{
+        display: block;
+        width: max-content;
+        margin: 0 auto;
+        background-color: black;
+        border-radius: 20px;
+        border: 1px solid var(--accent);
+        box-shadow: var(--ombre);
+        padding: 5px;
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+        color: var(--texte);;
+        font-weight: bold;
+        font-size: 1.0rem; 
+        margin: auto;
+        margin-top: 0.2rem;
       }
 
       .task, .purchase-item {
@@ -473,6 +490,12 @@ html(lang="en")
         justify-content: space-between;
         align-items: center;
       }
+      .SalaireTotalEtAPayer{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+      }
 
       /* Priorités */
       .faible {
@@ -554,6 +577,7 @@ html(lang="en")
           //-     button(type="button" class="button-reinitialze") Réinitialiser
           div.small-br
           - var montantTotalGeneral = 0
+          - var montantTotalGeneralAPayer = 0
           h2.montantCentrer Montant total général : #{montantTotalGeneral} €
           div.small-br
 
@@ -568,9 +592,11 @@ html(lang="en")
                 //- p Taux horaire actuel : #{user.taux} €/h
                 if user.tasks && user.tasks.length
                   - var totalMontant = 0
-                  each t in user.tasks
-                    - totalMontant += Number(t.montant) || 0
-                  - montantTotalGeneral += totalMontant  
+                    each t in user.tasks 
+                      - totalMontant += Number(t.montant) || 0
+                    - montantTotalGeneral += totalMontant  
+                    if user.isPayed==="n"  
+                      - montantTotalGeneralAPayer += totalMontant
                   h2 #{user.username} (#{user.taux} €/h)
                   p.salaire Salaire : #{totalMontant} €
                   p Nombre de chantiers : #{user.tasks.length}
@@ -628,7 +654,9 @@ html(lang="en")
             //-   button(type="button" class="button-reinitialze") Tout
           div.small-br
           h2.montantCentrer Total des salaires :
-          h2.montantTotal  #{montantTotalGeneral} €
+          .SalaireTotalEtAPayer
+            h2.montantTotal  #{montantTotalGeneral} €
+            h2.montantAPayer Reste à payer : #{montantTotalGeneralAPayer} €
           div.small-br
 
         // Si la liste est vide
@@ -645,7 +673,8 @@ html(lang="en")
                     - var totalMontant = 0
                     each t in user.tasks
                       - totalMontant += Number(t.montant) || 0
-                    - montantTotalGeneral += totalMontant  
+                    if user.isPayed==="n"  
+                      - montantTotalGeneral += totalMontant
                     h2 #{user.username}
                     .SalaireEtValidationPaye
                       p.salaire Salaire : #{totalMontant} €

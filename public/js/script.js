@@ -496,7 +496,7 @@ async function salairePaye(button, userId) {
       // }, 800);
       
       button.innerText = data.newPayedState === 'y' ? 'Payé ✅' : 'A payer';
-      
+      window.location.reload();
 
     } else {
       console.error('Erreur serveur:', data.message);
