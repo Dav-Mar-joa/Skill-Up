@@ -33,10 +33,15 @@ html(lang="en")
         padding-right: 0.7rem;
         color:gold;
         font-weight: bold;
-        font-size:1rem;
-        margin : auto;
-        margin-top:0.8em;
+        font-size:0.9rem;
+        margin-left:5%;
+        margin-top:0.4em;
         margin-bottom:0;
+      }
+
+      p{
+        margin-top:0.4em;
+        margin-bottom:0.2em;
       }
 
       .salaire.paye {
@@ -462,6 +467,11 @@ html(lang="en")
       .espaceHistorique{
         margin-bottom:10px;
       }
+      .SalaireEtNbreChantiers{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
       .salaireEtValidationPaye{
         display: flex;
@@ -577,8 +587,8 @@ html(lang="en")
                     - totalMontant += Number(t.montant) || 0
                   - montantTotalGeneral += totalMontant  
                   h2 #{user.username} (#{user.taux} €/h)
-                  p.salaire Salaire : #{totalMontant} €
-                  p Nombre de chantiers : #{user.tasks.length}
+                  p.salaire : #{totalMontant} €
+                  p Chantiers : #{user.tasks.length}
                   ul.task-list
                     each t in user.tasks
                       - const dateObj = new Date(t.date)
@@ -651,15 +661,16 @@ html(lang="en")
                       - totalMontant += Number(t.montant) || 0
                     - montantTotalGeneral += totalMontant  
                     h2 #{user.username} (#{user.taux} €/h)
-                    //- .SalaireEtValidationPaye
-                    p.salaire Salaire : #{totalMontant} €
-                      //- button.buttonSalairePaye(type="button" class="salairePayeBtn" onclick="salairePaye(this)") A payer
-                    if user.tasks.length === 0
-                      p Aucun chantier
-                    else if user.tasks.length === 1
-                      p Nombre de chantier : #{user.tasks.length}
-                    else
-                      p Nombre de chantiers : #{user.tasks.length}  
+                    .SalaireEtNbreChantiers
+                      if user.tasks.length === 0
+                        p Aucun chantier
+                      else if user.tasks.length === 1
+                        p Chantier : #{user.tasks.length}
+                      else
+                        p Chantiers : #{user.tasks.length} 
+                      p.salaire Salaire : #{totalMontant} €
+                        //- button.buttonSalairePaye(type="button" class="salairePayeBtn" onclick="salairePaye(this)") A payer
+                       
                     ul.task-list
                       each t in user.tasks
                         - const dateObj = new Date(t.date)
