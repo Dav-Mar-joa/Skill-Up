@@ -168,6 +168,7 @@ html(lang="en")
       .nomTache {
         border : 2px solid var(--accent);
         background-color: #444;
+        font-size:1rem;
         padding: 10px;
         border-radius: 10px;
         margin-right:2rem;
@@ -316,7 +317,7 @@ html(lang="en")
             .task(data-task-id=task._id class=task.priority)
               .task-header
                 if task.qui
-                  h3.nomTache Chantier : #{task.task} (#{task.qui})
+                  h3.nomTache Chantier : #{task.task}
                 else 
                   h3.nomTache Chantier #{task.task}  
                 if task.qui && task.qui.trim() !== ''
