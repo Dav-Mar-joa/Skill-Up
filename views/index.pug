@@ -48,7 +48,7 @@ html(lang="en")
         background-color: var(--accent2);
         color:black;
         box-shadow: var(--ombre);
-        margin-bottom : 15px;
+        margin-bottom : 10px;
       }
 
       .button-historique:hover {
@@ -196,6 +196,7 @@ html(lang="en")
         align-items: center;
         gap: 1rem;
         margin-bottom: 1rem;
+        ma
       }
 
       .dateInput input[type="date"],
@@ -223,7 +224,7 @@ html(lang="en")
         border: 2px solid var(--accent);
         border-radius: 6px;
         padding: 0.5rem;
-        margin-top:15px;
+        margin-top:0px;
         margin-left: 0px; /* a changer*/
         margin-right: 10px;
         font-size: 1rem;
@@ -307,7 +308,7 @@ html(lang="en")
           // Bloc historique masqué par défaut
           div.historique(id="historique")
             form(action="/historiqueUser" method="POST")
-              label(for="mois") Mois :
+              label(for="mois") Date (mois) :
               .dateInput
                 input(type="month" name="mois" id="mois" placeholder="Mois")
               .boutonFiltre-reinitialise
