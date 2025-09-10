@@ -1234,7 +1234,8 @@ app.get('/historiqueUserAll', async (req, res) => {
       courses: courses || [],
       successCourse,
       salaire,
-      success
+      success,
+      username:user.username
     });
   } catch (err) {
     console.error('Erreur lors de la récupération des tâches :', err);
@@ -1347,7 +1348,8 @@ app.post('/historiqueUser', async (req, res) => {
       courses: courses || [],
       success: false,
       successCourse: false,
-      salaire
+      salaire,
+      username: user.username
     });
 
   } catch (err) {

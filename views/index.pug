@@ -309,10 +309,10 @@ html(lang="en")
                   h3.nomTache Chantier #{task.task}  
                 if task.qui && task.qui.trim() !== ''
                   div.nomQui
-                p.nomTacheHeure Début de chantier :
+                p.nomTacheHeure Début du chantier :
                 .dateFormat 
                   p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.date))} - #{task.heure}
-                p.nomTacheHeure Fin de chantier :
+                p.nomTacheHeure Fin du chantier :
                 .dateFormat     
                   p.date #{new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(task.datef))} - #{task.heuref}
                 if task.description
