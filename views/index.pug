@@ -160,6 +160,9 @@ html(lang="en")
         border-radius: 10px;
         margin-right:2rem;
         margin-left:2rem;
+        white-space: normal;  /* Permet au texte de passer à la ligne */
+        word-wrap: break-word; /* Coupe les mots trop longs pour éviter le débordement */
+        overflow-wrap: break-word; /* Compatibilité moderne */
       }
       .nomQui {
         margin-top: 20px;
@@ -276,7 +279,7 @@ html(lang="en")
               #heure 
           .formDate
             .date-time
-              p.salaire Salaire : #{salaire} €   
+              p.salaire #{salaire} €   
         p.loginUser Bienvenue #{username} !  
        
         .tasks-container
@@ -301,9 +304,9 @@ html(lang="en")
             .task(data-task-id=task._id class=task.priority)
               .task-header
                 if task.qui
-                  h3.nomTache #{task.task} (#{task.qui})
+                  h3.nomTache Chantier : #{task.task} (#{task.qui})
                 else 
-                  h3.nomTache #{task.task}  
+                  h3.nomTache Chantier #{task.task}  
                 if task.qui && task.qui.trim() !== ''
                   div.nomQui
                 p.nomTacheHeure Début de chantier :
