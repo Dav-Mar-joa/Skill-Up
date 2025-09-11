@@ -31,6 +31,30 @@ html(lang="en")
         font-weight: bold;
         font-size:1rem;
       }
+      .button-logout2{
+          border: none;
+          padding: 12px;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.3s ease;
+          font-size: 1rem;
+          margin-top: 10px;
+          }
+      .button-logout2{
+          background-color: var(--danger);
+          color: white;
+          box-shadow: var(--ombre);
+          width: fit-content;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 20px;
+          margin-top: 30px
+          }
+
+      .button-logout2:hover {
+          background-color: #c0392b;
+          } 
 
       .button-historique {
         background-color: var(--accent2);
@@ -333,11 +357,10 @@ html(lang="en")
         
         //- form(action="/logout" method="get")
         //-   button(type="submit" class="button-delete") Déconnexion
-        //- form(action="/logout" method="get")
-        //-     button(type="submit" class="button-logout")
-        //-       i(class="fas fa-sign-out-alt")
-        //-       |  Déconnexion
-        include includes/logout.pug
+        form(action="/logout" method="get")
+            button(type="submit" class="button-logout2")
+              i(class="fas fa-sign-out-alt")
+              |  Déconnexion
         //- footer
         //-     .footer-content
         //-       p Skil up © — Tous droits réservés — 2025 

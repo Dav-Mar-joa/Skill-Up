@@ -333,10 +333,12 @@ html(lang="en")
         //-     i(class="fas fa-sign-out-alt")
         //-     |  Déconnexion  
         include includes/logout.pug
+        include includes/acceuil.pug
+
         //- footer
         //-   .footer-content
         //-     p Skil Up © — Tous droits réservés — 2025 
-        include includes/footer.pug               
+        include includes/footer.pug 
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
