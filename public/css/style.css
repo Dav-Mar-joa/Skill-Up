@@ -93,13 +93,13 @@ input:focus, textarea:focus {
 
 .button-submit-taches, .button-logout {
     border: none;
-    padding: 12px;
+    padding: 8px;
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s ease;
-    font-size: 1rem;
-    margin-top: 10px;
+    font-size: 0.9rem;
+    margin-top: 15px;
     }
 
 .button-submit-taches {
