@@ -41,18 +41,6 @@ html(lang="en")
         border-radius: 1px;
       }*/
 
-      .button-historique {
-        display: block;             /* Permet d'utiliser margin auto */
-        margin: 10px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        //- border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        font-size: 1rem;
-        margin-bottom:25px;
-      }
 
       .button-historique {
         background-color: var(--accent2);
@@ -358,13 +346,15 @@ html(lang="en")
           button(type="submit" class="button-historique")
             i(class="fas fa-home")
             |  Accueil               
-        form(action="/logout" method="get")
-          button(type="submit" class="button-logout")
-            i(class="fas fa-sign-out-alt")
-            |  Déconnexion 
-        footer
-          .footer-content
-            p Skil Up © — Tous droits réservés — 2025              
+        //- form(action="/logout" method="get")
+        //-   button(type="submit" class="button-logout")
+        //-     i(class="fas fa-sign-out-alt")
+        //-     |  Déconnexion 
+        include includes/logout.pug
+        //- footer
+        //-   .footer-content
+        //-     p Skil Up © — Tous droits réservés — 2025 
+        include includes/footer.pug
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {

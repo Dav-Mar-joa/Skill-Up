@@ -153,19 +153,6 @@ html(lang="en")
       }
 
       .button-historique {
-        display: block;             /* Permet d'utiliser margin auto */
-        margin: 8px auto 0 auto;   /* Centré horizontalement + marge au-dessus */
-        //- border: 2px solid white;
-        padding: 8px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        font-size: 0.9rem;
-        margin-bottom:8px;
-      }
-
-      .button-historique {
         background-color: var(--accent2);
         color:black;
         box-shadow: var(--ombre);
@@ -830,10 +817,11 @@ html(lang="en")
           button(type="submit" class="button-historique")
             i(class="fas fa-home")
             |  Accueil               
-        form(action="/logout" method="get")
-          button(type="submit" class="button-logout")
-            i(class="fas fa-sign-out-alt")
-            |  Déconnexion  
+        //- form(action="/logout" method="get")
+        //-   button(type="submit" class="button-logout")
+        //-     i(class="fas fa-sign-out-alt")
+        //-     |  Déconnexion  
+        include includes/logout.pug
         //- footer
         //-   .footer-content
         //-     p Skil Up © — Tous droits réservés — 2025

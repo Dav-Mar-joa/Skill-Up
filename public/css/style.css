@@ -100,6 +100,7 @@ input:focus, textarea:focus {
     transition: background 0.3s ease;
     font-size: 0.9rem;
     margin-top: 15px;
+    margin-bottom: 15px;
     }
 
 .button-submit-taches {
@@ -115,6 +116,30 @@ input:focus, textarea:focus {
     background-color: var(--accent);
     color: #000;
     } 
+
+.button-submit-taches{
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    }
+    .button-logout {
+    position : absolute;
+    top:12px;
+    right:30px;
+    padding: 8px 20px 8px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+    }
     
 .button-logout {
     background-color: var(--danger);
@@ -135,4 +160,16 @@ input:focus, textarea:focus {
   min-width: 20px; /* largeur approximative de ton texte */
   min-height: 20px;  /* hauteur approximative */
   /* text-align: center; */
+}
+.button-historique {
+    display: block;             /* Permet d'utiliser margin auto */
+    margin: 10px auto 0 auto; 
+
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+    margin-bottom:8px;
 }
