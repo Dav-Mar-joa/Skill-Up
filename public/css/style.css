@@ -177,7 +177,7 @@ input:focus, textarea:focus {
 .button-acceuil {
     position : absolute;
     top:30px;
-    right:130px;
+    right:110px;
     margin: 10px auto 0 auto; 
     padding: 8px 12px 8px 12px;
     border-radius: 8px;
