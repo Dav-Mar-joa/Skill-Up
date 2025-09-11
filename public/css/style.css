@@ -123,6 +123,8 @@ input:focus, textarea:focus {
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 20px;
+    margin-top: 30px
     }
 
 .button-logout:hover {
