@@ -132,7 +132,7 @@ input:focus, textarea:focus {
     position : absolute;
     top:12px;
     right:30px;
-    padding: 8px 15px 8px 15px;
+    padding: 8px 12px 8px 12px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -163,7 +163,7 @@ input:focus, textarea:focus {
 }
 .button-historique {
     display: block;             /* Permet d'utiliser margin auto */
-    margin: 10px auto 0 auto; 
+    margin: 8px auto 0 auto; 
 
     padding: 8px;
     border-radius: 8px;
