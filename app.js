@@ -322,8 +322,8 @@ app.get('/loginOublie', async (req, res) => {
 
 app.post('/loginOublie', async (req, res) => {
   const { secretQuestion, password } = req.body;
-  console.log("secretQuestion:", secretQuestion);
-  console.log("password:", password);   
+  // console.log("secretQuestion:", secretQuestion);
+  // console.log("password:", password);   
 
   try {
     const collection = db.collection('UsersAdmin');
@@ -391,10 +391,10 @@ app.post('/mdpOublie', async (req, res) => {
     return res.render('mdpOublie', { message: `Les mots de passe ne sont pas identiques !` });
   }
 
-  console.log("secretQuestion:", secretQuestion);
-  console.log("password:", password);
-  console.log("passwordConfirmed:", passwordConfirmed);
-  console.log("username:", username);
+  // console.log("secretQuestion:", secretQuestion);
+  // console.log("password:", password);
+  // console.log("passwordConfirmed:", passwordConfirmed);
+  // console.log("username:", username);
 
   try {
     const collection = db.collection('UsersAdmin');
@@ -442,7 +442,7 @@ app.get('/historiqueOuvrierAll', async (req, res) => {
           user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
       });
-    console.log('usersAdmin:', usersAdmin);
+    // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
     res.render('historiqueOuvrier', { usersAdmin });
   } catch (err) {
@@ -781,7 +781,7 @@ app.post('/refresh', async (req, res) => {
       { $set: { isPayed: "n" } }
     );
 
-    console.log(`Paiements remis à zéro pour ${result.modifiedCount} utilisateurs`);
+    // console.log(`Paiements remis à zéro pour ${result.modifiedCount} utilisateurs`);
     
     // Redirige vers la page de paiement pour voir les changements
     res.redirect('/payementOuvrier');
@@ -878,8 +878,8 @@ app.get('/adminOuvriers', async (req, res) => {
 
 app.post('/createOuvrier', async (req, res) => {
   const { username, taux } = req.body;
-    console.log("Username:", username); 
-    console.log("taux", taux); 
+    // console.log("Username:", username); 
+    // console.log("taux", taux); 
   const isAdmin = "n"
   const isPayed = "n"                  
 
@@ -918,7 +918,7 @@ app.get('/updateOuvrier', async (req, res) => {
       .collection('UsersAdmin')
       .find({})
       .toArray();
-    console.log('usersAdmin:', usersAdmin);
+    // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
     res.render('updateOuvrier', { usersAdmin });
   } catch (err) {
@@ -928,8 +928,8 @@ app.get('/updateOuvrier', async (req, res) => {
 
 app.post('/updateOuvrier', async (req, res) => {
   const { username, taux } = req.body;
-    console.log("Username:", username); 
-    console.log("taux", taux);                 
+    // console.log("Username:", username); 
+    // console.log("taux", taux);                 
   try {
     const usersCollection = db.collection('UsersAdmin');
     // const existingUser = await usersCollection.findOne({ username });
@@ -966,7 +966,7 @@ app.get('/deleteOuvrier', async (req, res) => {
       .collection('UsersAdmin')
       .find({})
       .toArray();
-    console.log('usersAdmin:', usersAdmin);
+    // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
     res.render('deleteOuvrier', { usersAdmin });
   } catch (err) {
@@ -976,7 +976,7 @@ app.get('/deleteOuvrier', async (req, res) => {
 
 app.post('/deleteOuvrier', async (req, res) => {
   const { username } = req.body;
-    console.log("Username:", username);                 
+    // console.log("Username:", username);                 
   try {
     const usersCollection = db.collection('UsersAdmin');
     // const existingUser = await usersCollection.findOne({ username });
@@ -1119,9 +1119,9 @@ app.post('/completeProfile', async (req, res) => {
 
 app.post('/createUser', async (req, res) => {
   const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
-    console.log("Username:", username);
-    console.log("Password:", password);  
-    console.log("secret-question", secretQuestion);                   
+    // console.log("Username:", username);
+    // console.log("Password:", password);  
+    // console.log("secret-question", secretQuestion);                   
   try {
     const usersCollection = db.collection('UsersAdmin');
     const existingUser = await usersCollection.findOne({ username });
@@ -1536,7 +1536,7 @@ app.put('/modify-task-hours/:id', async (req, res) => {
   try {
     const taskId = req.params.id;
     const nouvelleHeureTravail = Number(req.body.nouvelleHeureTravail);
-    console.log("nouvelle heure : ", req.body);
+    // console.log("nouvelle heure : ", req.body);
 
     if (!taskId || isNaN(nouvelleHeureTravail)) {
       return res.status(400).send('Paramètres manquants ou heure invalide');

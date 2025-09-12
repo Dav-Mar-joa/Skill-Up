@@ -131,8 +131,8 @@ input:focus, textarea:focus {
     .button-logout {
     position : absolute;
     top:12px;
-    right:40px;
-    padding: 8px 20px 8px 20px;
+    right:30px;
+    padding: 8px 15px 8px 15px;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -177,7 +177,7 @@ input:focus, textarea:focus {
 .button-acceuil {
     position : absolute;
     top:30px;
-    right:110px;
+    right:90px;
     margin: 10px auto 0 auto; 
     padding: 8px 12px 8px 12px;
     border-radius: 8px;
