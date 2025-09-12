@@ -916,7 +916,7 @@ app.get('/updateOuvrier', async (req, res) => {
     // 1) Lire tous les UsersAdmin avec leurs tâches
     const usersAdmin = await db
       .collection('UsersAdmin')
-      .find({})
+      .find({ isAdmin: { $ne: "y" } })
       .toArray();
     // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
@@ -925,7 +925,21 @@ app.get('/updateOuvrier', async (req, res) => {
     console.error('Erreur récupération historique ouvriers :', err);
     res.status(500).send('Erreur serveur');
   }  } ) 
+app.get('/listeOuvrier', async (req, res) => {
 
+    try {
+    // 1) Lire tous les UsersAdmin avec leurs tâches
+    const usersAdmin = await db
+      .collection('UsersAdmin')
+      .find({ isAdmin: { $ne: "y" } })
+      .toArray();
+    // console.log('usersAdmin:', usersAdmin);
+    // 2) Rendre la vue en passant la liste
+    res.render('listeOuvrier', { usersAdmin });
+  } catch (err) {
+    console.error('Erreur récupération historique ouvriers :', err);
+    res.status(500).send('Erreur serveur');
+  }  } )
 app.post('/updateOuvrier', async (req, res) => {
   const { username, taux } = req.body;
     // console.log("Username:", username); 
@@ -964,7 +978,7 @@ app.get('/deleteOuvrier', async (req, res) => {
     // 1) Lire tous les UsersAdmin avec leurs tâches
     const usersAdmin = await db
       .collection('UsersAdmin')
-      .find({})
+      .find({ isAdmin: { $ne: "y" } })
       .toArray();
     // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
@@ -1008,7 +1022,7 @@ app.get('/createChantier', async (req, res) => {
     // Va chercher tous les admins (chefs + ouvriers)
     const usersAdmin = await db
       .collection('UsersAdmin')
-      .find({})
+      .find({ isAdmin: { $ne: "y" } })
       .toArray();
 
     // Passe-les à la vue

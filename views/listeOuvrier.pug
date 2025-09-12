@@ -23,7 +23,6 @@ html(lang="en")
         font-size:1rem;
       }
 
-
       .button-historique {
         background-color: var(--accent2);
         color:black;
@@ -117,27 +116,16 @@ html(lang="en")
         border: 2px solid var(--accent);
         border-radius: 6px;
         padding: 0.5rem;
-        font-size: 1rem;
+        font-size: 0.9rem;
         font-family: 'Press Start 2P', monospace;
       }
 
-      //- br.small-br {
-      //-   line-height: 0.7;  /* réduit l'espace vertical */
-      //-   content: "";       /* pas obligatoire mais parfois utile */
-      //-   margin: 2px 0;     /* tu peux ajuster la marge aussi */
-      //-   display: block;    /* forcer le saut en bloc */
-      //-   height: 2px;       /* hauteur personnalisée */
-      //- }
-
-      .small-br {
-        border-radius:20px;
-        border: 1px solid var(--accent2);
-        background-color: var(--accent2);
-        line-height: 0.5;  /* réduit l'espace vertical */
+      br.small-br {
+        line-height: 0.7;  /* réduit l'espace vertical */
         content: "";       /* pas obligatoire mais parfois utile */
         margin: 2px 0;     /* tu peux ajuster la marge aussi */
         display: block;    /* forcer le saut en bloc */
-        height: 2px;       /* hauteur personnalisée */
+        height: 6px;       /* hauteur personnalisée */
       }
 
       .heureTravail {
@@ -154,21 +142,26 @@ html(lang="en")
         display: none
       }
       .input-task {
-        width: 70%; /* ou 300px, ou 20rem selon ce que tu préfères */
+        width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
+        font-size:0.9rem;
       }
 
-      .small-br {
-        border-radius:20px;
-        border: 1px solid var(--accent2);
-        background-color: var(--accent2);
-        line-height: 0.5;  /* réduit l'espace vertical */
-        content: "";       /* pas obligatoire mais parfois utile */
-        margin: 2px 0;     /* tu peux ajuster la marge aussi */
-        display: block;    /* forcer le saut en bloc */
-        height: 2px;       /* hauteur personnalisée */
-        width : 60%;
-        margin-left : auto;
-        margin-right : auto;
+      select.input-task {
+        background-color: #444;
+        color: var(--texte);
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 10px;
+        max-width:25%;
+        font-size: 0.9rem;
+        transition: border 0.3s ease;
+        //- appearance: none; 
+      }
+
+      select.input-task:focus {
+        outline: none;
+        border-color: var(--accent2);
+        max-width: 100%;
       }
 
       /* Priorités */
@@ -192,78 +185,72 @@ html(lang="en")
       }
 
   body
-    .container
-      .form-container 
-        .head
-          .formDate
-            .date-time
-              #dateJour 
-              br 
-              #heure    
- 
-        include includes/title.pug 
-        p.sousTitre Gestion des ouvriers
-        //- form(action="/login" method="post")
-        //-   label(for="login") Login
+  .container
+    .form-container 
+      .head
+        .formDate
+          .date-time
+            #dateJour 
+            br
+            #heure    
 
-        //-   input(type="text" id="username" name="username" class ="input-task" required)
- 
+      include includes/title.pug 
+      p.sousTitre Listes des ouvriers
 
-        //-   label(for="mdp" class="qui") Mot de passe :
-        //-   input(type="text" id="password" name="password" class ="input-task" required)
+      // Affichage du message d'erreur
+      //- if errorMessage
+      //-   p.error-message(style="color: red; font-weight: bold;") #{errorMessage}
 
-        //-   button(type="submit" class="button-submit-taches") Connection 
-        //- form(action="/createUser" method="get")  
-        //-   button(type="submit" class="button-historique") Creér un compte
-        //- form(action="/createChantier" method="get")
-        //-   button(type="submit" class="button-historique")
-        //-     i(class="fas fa-hammer") 
-        //-     |  Création chantier
-        //- //- form(action="/historiqueOuvrier" method="get")
-        //- //-   button(type="submit" class="button-historique") Historique
-        //- form(action="/historiqueOuvrier" method="get")
-        //-   button(type="submit" class="button-historique")
-        //-     i(class="fas fa-history")
-        //-     |  Historique
-        //- form(action="/createOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") + Ajout d'ouvrier 
-        form(action="/createOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-user-plus")
-            |  Ajout d'ouvrier
-        //- form(action="/updateOuvrier" method="get")
-        //-   button(type="submit" class="button-historique") Modification €/h d'ouvrier 
-        form(action="/listeOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-users")
-            |   Listes des ouvriers
-        form(action="/updateOuvrier" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-dollar-sign")
-            |  Modification €/h d'ouvrier 
-        form(action="/deleteOuvrier" method="get")
-          button(type="submit" class="button-historique" style="color:red")
-            i(class="fas fa-user-times")
-            |  Suppression d'ouvrier     
-        div.small-br    
-        //- form(action="/logout" method="get")
-        //-   button(type="submit" class="buttonlogoute") Déconnexion 
-        form(action="/admin" method="get")
-          button(type="submit" class="button-historique")
-            i(class="fas fa-home")
-            |  Accueil
+      form(action="/listeOuvrier" method="get")
+        //- input(type="text" id="username" name="username" class="input-task" required placeholder="Entrez le nom de l'ouvrier")
+        .dateInput
+          //- select(name="username" id="username" required placeholder="Entrez le nom de l'ouvrier")
+          //-       option(value="" disabled selected) -- Nom de l'ouvrier --
+          //-       each user in usersAdmin
+          //-         if user.username !="Admin"
+          //-           option(value=user.username)= user.username + ' (' + user.taux + ' €/h)'
+          ul
+            each user in usersAdmin
+              if user.username != "Admin"
+                li #{user.username} - #{user.taux} €/h          
 
-       
-        //- form(action="/logout" method="get")
-        //-   button(type="submit" class="button-logout")
-        //-     i(class="fas fa-sign-out-alt")
-        //-     |  Déconnexion 
-        include includes/logout.pug
-        include includes/acceuil.pug
-        //- footer
-        //-   .footer-content
-        //-     p Skil Up © — Tous droits réservés — 2025 
-        include includes/footer.pug            
+        //- label(for="taux") Nouveau taux horaire :
+        //- select(name="taux" id="taux" class="input-task" required placeholder="Sélectionnez le taux horaire") 
+        //-   option(value="12") 12 €
+        //-   option(value="13") 13 €
+        //-   option(value="14") 14 €
+        //-   option(value="15") 15 €
+        //-   option(value="16") 16 €
+        //-   option(value="17") 17 €
+        //-   option(value="18") 18 €
+        //-   option(value="19") 19 €
+        //-   option(value="20") 20 €
+        //-   option(value="21") 21 €
+        //-   option(value="22") 22 €
+        //-   option(value="23") 23 €
+        //-   option(value="24") 24 €
+        //-   option(value="25") 25 €                    
+
+        //- button(type="submit" class="button-submit-taches")
+        //-   i(class="fas fa-history")
+        //-   |  Modification €/h de l'ouvrier
+      form(action="/admin" method="get")
+        button(type="submit" class="button-historique")
+          i(class="fas fa-home")
+          |  Accueil               
+      //- form(action="/logout" method="get")
+      //-   button(type="submit" class="button-logout") Déconnexion 
+      //- form(action="/logout" method="get")
+      //-     button(type="submit" class="button-logout")
+      //-       i(class="fas fa-sign-out-alt")
+      //-       |  Déconnexion 
+      include includes/logout.pug 
+      include includes/acceuil.pug
+      //- footer
+      //-     .footer-content
+      //-       p Skil up © — Tous droits réservés  
+      include includes/footer.pug   
+          
     script(src="/js/script.js")
     script.
       if ('serviceWorker' in navigator) {
@@ -275,3 +262,4 @@ html(lang="en")
           });
         });
       }
+
