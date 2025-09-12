@@ -448,6 +448,11 @@ html(lang="en")
         text-align:center;
       }
 
+      .historique {
+        display: none;
+        margin-bottom: 20px;
+      }
+
       .input-taxi-price{
         margin-top:0.5rem;
         width:40%;
@@ -515,6 +520,10 @@ html(lang="en")
       }
       #mois {
         margin-top:0px;
+        font-size:0.9rem;
+      }
+      #username {
+        margin-top:12px;
         font-size:0.9rem;
       }
 
@@ -612,25 +621,28 @@ html(lang="en")
         p.sousTitre Historique des ouvriers
 
         form(action="/historiqueOuvrier" method="POST")
-          label(for="username") Filtres (Ouvrier et Mois) :
-          //- input(type="text" name="username" placeholder="Nom utilisateur")
-          //- .boutonFiltre-reinitialise
+          button.button-historique(type="button" id="toggleHistorique") Filtres
+          div.historique(id="historique")
+            label(for="username") Filtres (Ouvrier et/ou Mois) :
+            
+            //- input(type="text" name="username" placeholder="Nom utilisateur")
+            //- .boutonFiltre-reinitialise
 
-          .dateInput
-            select(name="username" id="username")
-              option(value="" disabled selected) Nom de l'ouvrier
-              each user in usersAdmin
-                option(value=user.username)= user.username
-  
-          .dateInput
-            input(type="month" name="mois" id="mois" placeholder="Mois")      
+            .dateInput
+              select(name="username" id="username")
+                option(value="" disabled selected) Nom de l'ouvrier
+                each user in usersAdmin
+                  option(value=user.username)= user.username
+    
+            .dateInput
+              input(type="month" name="mois" id="mois" placeholder="Mois")      
 
-          .boutonFiltre-reinitialise
-            button(type="submit" class="button-historique") Filtrer
-            a(href="/historiqueOuvrier") 
-              button(type="button" class="button-mois") Ce mois
-            a(href="/historiqueOuvrierAll") 
-              button(type="button" class="button-reinitialze") Tout
+            .boutonFiltre-reinitialise
+              button(type="submit" class="button-historique") Valider
+              a(href="/historiqueOuvrier") 
+                button(type="button" class="button-mois") Ce mois
+              a(href="/historiqueOuvrierAll") 
+                button(type="button" class="button-reinitialze") Tout
           div.small-br
           h2.montantCentrer Total des salaires :
           h2.montantTotal  #{montantTotalGeneral} €
