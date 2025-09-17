@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+  
 
 function affichageHeure(){
     let jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -181,6 +182,32 @@ async function deleteTask(button) {
   } catch (error) {
     alert("Erreur réseau ou serveur : " + error.message);
   }
+}
+
+document.getElementById('showUsers').addEventListener('click', () => {
+  const userList = document.getElementById('userList');
+  userList.innerHTML = ''; // On vide la liste avant de remplir
+
+  users.forEach(user => {
+    if(user.username !== "Admin"){ // On ignore l'admin
+      const li = document.createElement('li');
+      li.className = 'user-item';
+      li.textContent = `${user.username} (${user.taux} €/h)`;
+
+      // Fonction qui s'exécute au clic sur le user
+      li.addEventListener('click', () => {
+        pir(user);
+      });
+
+      userList.appendChild(li);
+    }
+  });
+});
+
+// Exemple de fonction pour chaque user
+function pir(user) {
+  alert(`Fonction ^pir exécutée pour ${user.username}`);
+  // ici tu peux faire ce que tu veux : ouvrir un détail, modifier salaire, etc.
 }
 
 // async function modifyTask(button) {
@@ -505,6 +532,413 @@ async function salairePaye(button, userId) {
     console.error('Erreur fetch:', err);
   }
 }
+
+// function addUsers(btn) {
+//   const liTask = btn.closest("li.item"); // le chantier concerné
+//   const select = liTask.querySelector(".select-add-user");
+  
+//   // toggle affichage du menu déroulant
+//   select.style.display = (select.style.display === "none" ? "block" : "none");
+
+//   // quand on choisit un ouvrier
+//   select.onchange = async function () {
+//     const newUserId = this.value;
+//     if (!newUserId) return;
+
+//     const taskId = liTask.dataset.taskId;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+//       window.location.reload();
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+// }
+
+// function addUsers(btn) {
+//   const taskId = btn.dataset.taskId; // directement sur le bouton
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+
+//   // toggle affichage
+//   select.style.display = (select.style.display === "none" ? "block" : "none");
+
+//   // quand on choisit un ouvrier
+//   select.onchange = async function () {
+//     const newUserId = this.value;
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+//       window.location.reload();
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+// }
+
+// function addUsers(btn) {
+//   const taskId = btn.dataset.taskId; // ✅ récupère l'id directement du bouton
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+
+//   // toggle affichage
+//   select.style.display = (select.style.display === "none" ? "block" : "none");
+
+//   // quand on choisit un ouvrier
+//   select.onchange = async function () {
+//     const newUserId = this.value;
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+//       window.location.reload();
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+// }
+
+// function addUsers(btn) {
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+
+//   // toggle affichage
+//   select.style.display = (select.style.display === "none" ? "block" : "none");
+// }
+
+// Toggle affichage select
+// function addUsers(btn) {
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+//   select.style.display = select.style.display === "none" ? "block" : "none";
+// }
+
+// // Gestion de l'ajout d'ouvrier
+// document.querySelectorAll(".select-add-user").forEach(select => {
+//   select.addEventListener("change", async function () {
+//     const taskId = this.dataset.taskId;
+//     const newUserId = this.value;
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+//       alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+//       // Option 1 : recharger la page
+//       // window.location.reload();
+
+//       // Option 2 : ajouter le nom directement dans l'UI sans reload
+//       const liTask = document.querySelector(`li.item[data-task-id='${taskId}']`);
+//       const p = document.createElement("p");
+//       p.textContent = `Ouvrier ajouté : ${newTask.qui}`;
+//       liTask.appendChild(p);
+
+//       // reset le select
+//       this.value = "";
+//       this.style.display = "none";
+
+//     } catch (err) {
+//       console.error(err);
+//       alert("Erreur lors de l'ajout de l'ouvrier");
+//     }
+//   });
+// });
+
+
+// // Fonction pour toggle l'affichage du select pour chaque tâche
+// function addUsers(btn) {
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+//   if (!select) return;
+
+//   // Toggle affichage
+//   select.style.display = select.style.display === "none" ? "block" : "none";
+
+//   // Ajouter dataset si manquant
+//   if (!select.dataset.taskId) {
+//     select.dataset.taskId = liTask.dataset.taskId;
+//   }
+// }
+
+// // Événement pour tous les selects
+// document.querySelectorAll(".select-add-user").forEach(select => {
+//   select.addEventListener("change", async function() {
+//     const taskId = this.dataset.taskId; // Récupère l'id de la tâche
+//     const newUserId = this.value;       // Récupère l'id de l'utilisateur sélectionné
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       // Ajouter directement dans l'UI
+//       const liTask = document.querySelector(`li.item[data-task-id='${taskId}']`);
+//       if (liTask) {
+//         const p = document.createElement("p");
+//         p.textContent = `Ouvrier ajouté : ${newTask.qui}`;
+//         liTask.appendChild(p);
+//       }
+
+//       // Reset select
+//       this.value = "";
+//       this.style.display = "none";
+
+//     } catch (err) {
+//       console.error(err);
+//       alert("Erreur lors de l'ajout de l'ouvrier");
+//     }
+//   });
+// });
+// // Fonction pour toggle l'affichage du select pour chaque tâche
+// function addUsers(btn) {
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+//   if (!select) return;
+
+//   // Toggle affichage
+//   select.style.display = select.style.display === "none" ? "block" : "none";
+
+//   // Ajouter dataset si manquant
+//   if (!select.dataset.taskId) {
+//     select.dataset.taskId = liTask.dataset.taskId;
+//   }
+// }
+
+// // Événement pour tous les selects
+// document.querySelectorAll(".select-add-user").forEach(select => {
+//   select.addEventListener("change", async function() {
+//     const taskId = this.dataset.taskId; // Récupère l'id de la tâche
+//     const newUserId = this.value;       // Récupère l'id de l'utilisateur sélectionné
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       // Ajouter directement dans l'UI
+//       const liTask = document.querySelector(`li.item[data-task-id='${taskId}']`);
+//       if (liTask) {
+//         const p = document.createElement("p");
+//         p.textContent = `Ouvrier ajouté : ${newTask.qui}`;
+//         liTask.appendChild(p);
+//       }
+
+//       // Reset select
+//       this.value = "";
+//       this.style.display = "none";
+
+//     } catch (err) {
+//       console.error(err);
+//       alert("Erreur lors de l'ajout de l'ouvrier");
+//     }
+//   });
+// });
+
+// function addUsers(btn) {
+//   const taskId = btn.dataset.taskId; // ✅ récupère l'id directement du bouton
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+//   console.log("Task ID:", taskId);
+//   console.log("Select Element:", select);
+
+//   // toggle affichage
+//   select.style.display = (select.style.display === "none" ? "block" : "none");
+
+//   // quand on choisit un ouvrier
+//   select.onchange = async function () {
+//     const newUserId = this.value;
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+//       window.location.reload();
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+// }
+
+function addUsers(btn) {
+  const taskId = btn.dataset.taskId; // ✅ récupère l'id directement du bouton
+  const liTask = btn.closest("li.item");
+  const select = liTask.querySelector(".select-add-user");
+  console.log("Task ID:", taskId);
+  console.log("Select Element:", select);
+
+  // toggle affichage
+  select.style.display = (select.style.display === "none" ? "block" : "none");
+
+  // On supprime un éventuel ancien listener pour éviter les doublons
+  select.onchange = null;
+
+  // quand on choisit un ouvrier
+  select.addEventListener("change", async function handleChange() {
+    const newUserId = select.value;
+    if (!newUserId) return;
+
+    try {
+      const res = await fetch(`/add-user-to-task/${taskId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: newUserId })
+      });
+
+      if (!res.ok) throw new Error("Erreur serveur");
+
+      const newTask = await res.json();
+
+      alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+      window.location.reload();
+
+      // Optionnel : retirer le listener après usage
+      select.removeEventListener("change", handleChange);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
+// function addUsers(btn) {
+//   const taskId = btn.dataset.taskId; // ✅ récupère l'id directement du bouton
+//   const liTask = btn.closest("li.item");
+//   const select = liTask.querySelector(".select-add-user");
+//   console.log("Task ID:", taskId);
+//   console.log("Select Element:", select);
+
+//   // toggle affichage
+//   select.style.display = (select.style.display === "none" ? "block" : "none");
+
+//   // On supprime un éventuel ancien listener pour éviter les doublons
+//   select.onchange = null;
+
+//   // quand on choisit un ouvrier
+//   select.addEventListener("change", async function handleChange() {
+//     const newUserId = select.value;
+//     if (!newUserId) return;
+
+//     try {
+//       const res = await fetch(`/add-user-to-task/${taskId}`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ userId: newUserId })
+//       });
+
+//       if (!res.ok) throw new Error("Erreur serveur");
+
+//       const newTask = await res.json();
+
+//       alert(`Ouvrier ajouté au chantier : ${newTask.qui}`);
+//       window.location.reload();
+
+//       // Optionnel : retirer le listener après usage
+//       select.removeEventListener("change", handleChange);
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   });
+// }
+function addUsers(btn) {
+  const taskId = btn.dataset.taskId; // ✅ récupère l'id du bouton
+  const select = document.querySelector(`.select-add-user[data-task-id="${taskId}"]`);
+  console.log("Task ID:", taskId);
+  console.log("Select Element:", select);
+
+  if (!select) return;
+
+  // toggle affichage
+  select.style.display = (select.style.display === "none" ? "block" : "none");
+
+  // éviter les doublons d'écouteurs
+  select.onchange = null;
+
+  select.addEventListener("change", async function handleChange() {
+    const newUserId = select.value;
+    if (!newUserId) return;
+
+    try {
+      const res = await fetch(`/add-user-to-task/${taskId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: newUserId })
+      });
+
+      if (!res.ok) throw new Error("Erreur serveur");
+
+      const newTask = await res.json();
+
+      // alert(`Ouvrier ${newTask.qui} ajouté au chantier ${newTask.task}`);
+      window.location.reload();
+
+      select.removeEventListener("change", handleChange);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
+
+
 // function recalculerTotal() {
 //   let total = 0;
 //   document.querySelectorAll('.montant .item-text').forEach(el => {

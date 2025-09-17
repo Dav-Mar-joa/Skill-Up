@@ -86,6 +86,28 @@ html(lang="en")
       .button-delete-task:hover {
         background-color: #c0392b;
       }
+       .button-add-ouvriers {
+        padding: 5px;
+        margin-left:10px;
+        border: 2px solid black;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-size: 0.9rem
+      }
+
+      .button-add-ouvriers {
+        background-color: var(--fond);
+        color: white;
+        box-shadow: var(--ombre);
+        float:right;
+        margin-top: 2px;
+      }
+
+      .button-add-ouvriers:hover {
+        background-color: var(--fond);
+      }
 
       .button-modify-task {
         padding: 5px;
@@ -337,6 +359,20 @@ html(lang="en")
         width:40%
       }
 
+      .select-add-user {
+        background-color: #444;
+        color: #f0f0f0;
+        border: 2px solid var(--accent2);
+        border-radius: 6px;
+        padding: 0.5rem;
+        margin-top:15px;
+        margin-left: 0px; /* a changer*/
+        margin-right: 10px;
+        font-size: 0.9rem;
+        font-family: 'Press Start 2P', monospace;
+        width:60%
+      }
+
       .small-br {
         border-radius:20px;
         border: 1px solid var(--accent2);
@@ -547,11 +583,12 @@ html(lang="en")
           //- input(type="text" name="username" placeholder="Nom utilisateur")
           //- .boutonFiltre-reinitialise
 
-          .dateInput
-            select(name="username" id="username")
-              option(value="" disabled selected) Nom de l'ouvrier
-              each user in usersAdmin
-                option(value=user.username)= user.username
+          //- .dateInput
+          //-   select(name="username" id="username")
+          //-     option(value="" disabled selected) Nom de l'ouvrier
+          //-     each user in usersAdmin
+          //-       if user.isAdmin != "y"
+          //-         option(value=user.username)= user.username
   
           .dateInput
             input(type="month" name="mois" id="mois" placeholder="Mois")      
@@ -627,7 +664,8 @@ html(lang="en")
               select(name="username" id="username")
                 option(value="" disabled selected) Nom de l'ouvrier
                 each user in usersAdmin
-                  option(value=user.username)= user.username
+                  if user.isAdmin !="y"
+                    option(value=user.username)= user.username
     
             .dateInput
               input(type="month" name="mois" id="mois" placeholder="Mois")      
@@ -712,9 +750,23 @@ html(lang="en")
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
                             else  
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
-                            
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
                               i(class="fas fa-trash-alt")
+                            
+                            // Bouton Ajouter ouvrier
+                            button.button-add-ouvriers(
+                              type="button" 
+                              data-task-id=t._id
+                              onclick="addUsers(this)"
+                            )
+                              i.fas.fa-users
+
+                            // Select pour choisir l’ouvrier, avec data-task-id
+                            select.select-add-user(style="display:none" data-task-id=t._id)
+                              option(value="") Ouvrier
+                              each ouvrier in allUsers
+                                if ouvrier.isAdmin != "y"
+                                  option(value=ouvrier._id)= ouvrier.username
                             button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
                               i(class="fas fa-pencil-alt") 
                             select.select-hours(style="display:none")
@@ -788,9 +840,22 @@ html(lang="en")
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
                             else  
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h)
-                          
                             button(type="button" onclick="deleteTask(this)" class="button-delete-task")
-                              i(class="fas fa-trash-alt")  
+                              i(class="fas fa-trash-alt")
+                            // Bouton Ajouter ouvrier
+                            button.button-add-ouvriers(
+                              type="button" 
+                              data-task-id=t._id
+                              onclick="addUsers(this)"
+                            )
+                              i.fas.fa-users
+
+                            // Select pour choisir l’ouvrier, avec data-task-id
+                            select.select-add-user(style="display:none" data-task-id=t._id)
+                              option(value="") -- Ajouter un ouvrier --
+                              each ouvrier in allUsers
+                                if ouvrier.isAdmin != "y"
+                                  option(value=ouvrier._id)= ouvrier.username 
                             button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
                               i(class="fas fa-pencil-alt") 
                             select.select-hours(style="display:none")

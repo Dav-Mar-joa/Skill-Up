@@ -442,9 +442,14 @@ app.get('/historiqueOuvrierAll', async (req, res) => {
           user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
       });
+    const allUsers = await db
+      .collection('UsersAdmin')
+      .find({})
+      .sort({username: 1}) // Tri par nom d'utilisateur
+      .toArray();  
     // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
-    res.render('historiqueOuvrier', { usersAdmin });
+    res.render('historiqueOuvrier', { usersAdmin,allUsers });
   } catch (err) {
     console.error('Erreur récupération historique ouvriers :', err);
     res.status(500).send('Erreur serveur');
@@ -483,7 +488,11 @@ app.get('/historiqueOuvrier', async (req, res) => {
       },
       { $sort: { username: 1 } }
     ];
-
+    const allUsers = await db
+      .collection('UsersAdmin')
+      .find({})
+      .sort({username: 1}) // Tri par nom d'utilisateur
+      .toArray();
     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
 
     // Tri final
@@ -493,23 +502,42 @@ app.get('/historiqueOuvrier', async (req, res) => {
       }
     });
 
-    res.render('historiqueOuvrier', { usersAdmin });
+    res.render('historiqueOuvrier', { usersAdmin,allUsers });
   } catch (err) {
     console.error('Erreur récupération historique ouvriers :', err);
     res.status(500).send('Erreur serveur');
   }
 });
 
-// app.get('/payementOuvrier', async (req, res) => {
+// app.post('/historiqueOuvrier', async (req, res) => {
 //   try {
-//     // Calculer le mois en cours
-//     const now = new Date();
-//     const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-//     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+//     const { username, mois, jour } = req.body;
 
-//     // Pipeline aggregation pour le mois en cours
+//     // Construire le filtre utilisateur de base (username)
+//     const userFilter = {};
+//     if (username && username.trim() !== '') {
+//       userFilter.username = username.trim();
+//     }
+
+//     // Construire la plage de date en ISODate pour filtrer tasks
+//     let startDate, endDate;
+//     if (mois && mois.trim() !== '') {
+//       const [year, month] = mois.split('-');
+//       startDate = new Date(year, month - 1, 1);
+//       endDate = new Date(year, month, 1);
+//     } else if (jour && jour.trim() !== '') {
+//       startDate = new Date(jour);
+//       endDate = new Date(jour);
+//       endDate.setDate(endDate.getDate() + 1);
+//     }
+
+//     // Pipeline aggregation
 //     const pipeline = [
-//       {
+//       { $match: userFilter }
+//     ];
+
+//     if (startDate && endDate) {
+//       pipeline.push({
 //         $addFields: {
 //           tasks: {
 //             $filter: {
@@ -524,25 +552,34 @@ app.get('/historiqueOuvrier', async (req, res) => {
 //             }
 //           }
 //         }
-//       },
-//       {
+//       });
+//       // Ne garder que les utilisateurs qui ont au moins une tâche dans cette période
+//       pipeline.push({
 //         $match: {
 //           "tasks.0": { $exists: true }
 //         }
-//       },
-//       { $sort: { username: 1 } }
-//     ];
+//       });
+//     }
 
+//     // Trier par username
+//     pipeline.push({ $sort: { username: 1 } });
+
+//     // Exécuter aggregation
 //     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
 
-//     // Tri final
+//     // Trier les tâches au cas où (pas forcément utile)
 //     usersAdmin.forEach(user => {
 //       if (user.tasks && Array.isArray(user.tasks)) {
 //         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
 //       }
 //     });
+//     const allUsers = await db
+//       .collection('UsersAdmin')
+//       .find({})
+//       .sort({username: 1}) // Tri par nom d'utilisateur
+//       .toArray(); 
 
-//     res.render('payementOuvrier', { usersAdmin });
+//     res.render('historiqueOuvrier', { usersAdmin, allUsers });
 //   } catch (err) {
 //     console.error('Erreur récupération historique ouvriers :', err);
 //     res.status(500).send('Erreur serveur');
@@ -551,29 +588,25 @@ app.get('/historiqueOuvrier', async (req, res) => {
 
 app.post('/historiqueOuvrier', async (req, res) => {
   try {
-    const { username, mois, jour } = req.body;
+    const { username, mois } = req.body;
 
-    // Construire le filtre utilisateur de base (username)
+    // Filtre de base
     const userFilter = {};
     if (username && username.trim() !== '') {
       userFilter.username = username.trim();
     }
 
-    // Construire la plage de date en ISODate pour filtrer tasks
+    // Filtre sur les tâches
     let startDate, endDate;
     if (mois && mois.trim() !== '') {
       const [year, month] = mois.split('-');
       startDate = new Date(year, month - 1, 1);
       endDate = new Date(year, month, 1);
-    } else if (jour && jour.trim() !== '') {
-      startDate = new Date(jour);
-      endDate = new Date(jour);
-      endDate.setDate(endDate.getDate() + 1);
     }
 
-    // Pipeline aggregation
+    // Pipeline
     const pipeline = [
-      { $match: userFilter }
+      { $match: userFilter } // filtre sur le username si fourni
     ];
 
     if (startDate && endDate) {
@@ -583,7 +616,7 @@ app.post('/historiqueOuvrier', async (req, res) => {
             $filter: {
               input: "$tasks",
               as: "task",
-              cond: {
+              cond: { 
                 $and: [
                   { $gte: ["$$task.date", startDate] },
                   { $lt: ["$$task.date", endDate] }
@@ -595,32 +628,23 @@ app.post('/historiqueOuvrier', async (req, res) => {
       });
       // Ne garder que les utilisateurs qui ont au moins une tâche dans cette période
       pipeline.push({
-        $match: {
-          "tasks.0": { $exists: true }
-        }
+        $match: { "tasks.0": { $exists: true } }
       });
     }
 
-    // Trier par username
+    // Tri
     pipeline.push({ $sort: { username: 1 } });
 
-    // Exécuter aggregation
     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
+    const allUsers = await db.collection('UsersAdmin').find({}).sort({ username: 1 }).toArray();
 
-    // Trier les tâches au cas où (pas forcément utile)
-    usersAdmin.forEach(user => {
-      if (user.tasks && Array.isArray(user.tasks)) {
-        user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
-      }
-    });
+    res.render('historiqueOuvrier', { usersAdmin, allUsers });
 
-    res.render('historiqueOuvrier', { usersAdmin });
   } catch (err) {
-    console.error('Erreur récupération historique ouvriers :', err);
+    console.error(err);
     res.status(500).send('Erreur serveur');
   }
 });
-
 
 
 // POST : filtrer selon le mois choisi
@@ -877,7 +901,8 @@ app.get('/adminOuvriers', async (req, res) => {
    
 
 app.post('/createOuvrier', async (req, res) => {
-  const { username, taux } = req.body;
+  let { username, taux } = req.body;
+  username = username.trim()
     // console.log("Username:", username); 
     // console.log("taux", taux); 
   const isAdmin = "n"
@@ -1097,6 +1122,220 @@ app.post('/createChantier', async (req, res) => {
     res.status(500).send('Erreur serveur');
   }
 });
+
+// app.post("/chantier/:id/addOuvrier", async (req, res) => {
+//   try {
+//     const chantierId = req.params.id;
+//     const { username } = req.body; // ouvrier à assigner
+
+//     // récupérer le chantier (bloc mère)
+//     const chantier = await db.collection("Chantiers").findOne({ _id: new ObjectId(chantierId) });
+//     if (!chantier) return res.status(404).send("Chantier non trouvé");
+
+//     // récupérer l’ouvrier
+//     const user = await db.collection("UsersAdmin").findOne({ username });
+//     if (!user) return res.status(404).send("Ouvrier non trouvé");
+
+//     // construire la nouvelle task
+//     const newTask = {
+//       _id: new ObjectId(),
+//       id_Chantier: chantier._id,
+//       task: chantier.nom, // ou "Hermés" etc.
+//       date: chantier.dateDebut || new Date(),
+//       datef: chantier.dateFin || null,
+//       heure: chantier.heureDebut || null,
+//       heuref: chantier.heureFin || null,
+//       pause: 0,
+//       heureTravail: 0,
+//       montant: 0,
+//       taux: user.taux,
+//       qui: chantier.chef || null,
+//       repas: null,
+//       atelier20Point12: null,
+//       skilUp: null,
+//       taxiRefund: 0
+//     };
+
+//     // pousser la tâche dans le user
+//     await db.collection("UsersAdmin").updateOne(
+//       { username },
+//       { $push: { tasks: newTask } }
+//     );
+
+//     res.redirect(`/chantier/${chantierId}`);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Erreur lors de l’assignation de l’ouvrier");
+//   }
+// });
+
+// app.post('/add-user-to-task', async (req, res) => {
+//   const { taskId, userId } = req.body;
+
+//   if (!taskId || !userId) return res.status(400).json({ success: false, message: "Paramètres manquants" });
+
+//   try {
+//     const task = await Task.findById(taskId);
+//     if (!task) return res.status(404).json({ success: false, message: "Tâche non trouvée" });
+
+//     if (!task.ouvriers) task.ouvriers = [];
+//     if (!task.ouvriers.includes(userId)) task.ouvriers.push(userId);
+
+//     await task.save();
+
+//     const user = await User.findById(userId);
+
+//     res.json({ success: true, message: "Utilisateur ajouté", user, task });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: "Erreur serveur" });
+//   }
+// });app.post('/add-user-to-task', async (req, res) => {
+//   const { taskId, userId } = req.body;
+
+//   if (!taskId || !userId) return res.status(400).json({ success: false, message: "Paramètres manquants" });
+
+//   try {
+//     const task = await Task.findById(taskId);
+//     if (!task) return res.status(404).json({ success: false, message: "Tâche non trouvée" });
+
+//     if (!task.ouvriers) task.ouvriers = [];
+//     if (!task.ouvriers.includes(userId)) task.ouvriers.push(userId);
+
+//     await task.save();
+
+//     const user = await User.findById(userId);
+
+//     res.json({ success: true, message: "Utilisateur ajouté", user, task });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: "Erreur serveur" });
+//   }
+// });
+// app.get("/historiqueOuvrier", async (req, res) => {
+//   try {
+//     const usersAdmin = await usersCollection.find().toArray();
+//     const allUsers = await usersCollection.find().toArray(); // 👈 pareil mais clair
+//     console.log("allUsers:", allUsers);
+//     console.log("useersAdmon:", usersAdmin);    
+
+//     res.render("historiqueOuvrier", { usersAdmin, allUsers });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Erreur serveur");
+//   }
+// });
+
+app.get("/tasks/:taskId", async (req, res) => {
+  const { taskId } = req.params;
+  const userWithTask = await db.collection('UsersAdmin').findOne(
+    { "tasks._id": new ObjectId(taskId) },
+    { "tasks.$": 1 }
+  );
+  const allUsers = await db.collection('UsersAdmin').find().toArray();
+
+  res.render("taskDetails", { task: userWithTask.tasks[0], allUsers });
+});
+
+// app.post("/add-user-to-task/:taskId", async (req, res) => {
+//   try {
+//     const { taskId } = req.params;
+//     const { userId } = req.body;
+
+//     console.log("taskId:", taskId);
+//     console.log("userId:", userId);
+
+//     // récupérer la task existante
+//     const userWithTask = await db.collection('UsersAdmin').findOne({ "tasks._id": new ObjectId(taskId) }, { "tasks.$": 1 });
+//     if (!userWithTask || !userWithTask.tasks || !userWithTask.tasks[0]) {
+//       return res.status(404).json({ error: "Task introuvable" });
+//     }
+
+//     const task = userWithTask.tasks[0];
+//     console.log("task:", task);
+
+//     // créer une copie pour le nouvel ouvrier
+//     const newTask = {
+//       ...task,
+//       _id: new ObjectId(),   // nouveau _id
+//       qui: await getUserNameById(userId) // nom du nouvel ouvrier
+//     };
+
+//     // insérer la task dans le bon user
+//     await db.collection('UsersAdmin').updateOne(
+//       { _id: new ObjectId(userId) },
+//       { $push: { tasks: newTask } }
+//     );
+
+//     res.json(newTask);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Erreur serveur" });
+//   }
+// });
+
+app.post("/add-user-to-task/:taskId", async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { userId } = req.body;
+    
+    const dataUserAjout = await db.collection('UsersAdmin').findOne({ _id: new ObjectId(userId) });
+
+    // Récupérer la tâche exacte via son _id
+    const userWithTask = await db.collection('UsersAdmin').findOne(
+      { "tasks._id": new ObjectId(taskId) },
+      { projection: { "tasks.$": 1 } }
+    );
+    console.log("userWithTask:", userWithTask);
+
+    if (!userWithTask || !userWithTask.tasks || !userWithTask.tasks[0]) {
+      return res.status(404).json({ error: "Tâche introuvable" });
+    }
+
+    const task = userWithTask.tasks[0];
+
+    const taux = parseFloat(dataUserAjout.taux) || 0;
+    console.log("taux:", taux);
+    const montant = task.heureTravail*taux || 0;
+    console.log("montant:", montant);
+
+    // Copier la tâche en changeant seulement l'ID et le nom de l'ouvrier
+    const newTask = {
+      ...task,
+      _id: new ObjectId(),         // nouveau _id
+      qui: task.qui, // nom du nouvel ouvrier
+      taux: taux,
+      montant: montant,
+      taxiRefund:0
+    };
+
+    // Ajouter la tâche au nouvel ouvrier
+    await db.collection('UsersAdmin').updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { tasks: newTask } }
+    );
+
+    res.json(newTask);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+
+async function getUserNameById(userId) {
+  try {
+    const user = await db
+      .collection("UsersAdmin")
+      .findOne({ _id: new ObjectId(userId) });
+
+    return user ? user.username : "Utilisateur inconnu";
+  } catch (err) {
+    console.error("Erreur getUserNameById:", err);
+    return "Erreur utilisateur";
+  }
+}
+
 
 app.post('/completeProfile', async (req, res) => {
   const { username, mdp: password,mdpConfirmed: passwordConfirmed, 'secret-question': secretQuestion } = req.body;
