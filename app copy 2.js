@@ -430,44 +430,19 @@ app.get('/completeProfile', async (req, res) => {
 // Affiche l'historique de TOUS les UsersAdmin
 app.get('/historiqueOuvrierAll', async (req, res) => {
   try {
-    const usersChantiers = await db.collection("UsersAdmin").find({}).toArray();
-
     // 1) Lire tous les UsersAdmin avec leurs tâches
     const usersAdmin = await db
       .collection('UsersAdmin')
       .find({})
       .sort({username: 1}) // Tri par nom d'utilisateur
       .toArray();
+      const usersChantiers = await db.collection("UsersAdmin").find({}).toArray();
        // Pour chaque user, trier son tableau tasks par date croissante
       usersAdmin.forEach(user => {
         if (user.tasks && Array.isArray(user.tasks)) {
           user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
       });
-
-      usersAdmin.forEach(user => {
-    if (user.tasks) {
-      user.tasks.forEach(task => {
-        // Tous les ouvriers du chantier sauf le user courant
-        const autres = usersChantiers
-          .filter(u => u.tasks?.length)
-          .filter(u => 
-            u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
-          )
-          .map(u => u.username);
-
-        // Évite les doublons
-        task.autresOuvriers = [...new Set(autres)];
-
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
-      });
-    }
-  });
     const allUsers = await db
       .collection('UsersAdmin')
       .find({})
@@ -483,7 +458,6 @@ app.get('/historiqueOuvrierAll', async (req, res) => {
 });
 
 app.get('/historiqueOuvrier', async (req, res) => {
-  console.log("sans filtre");
   try {
     // Calculer le mois en cours
     const now = new Date();
@@ -524,77 +498,27 @@ app.get('/historiqueOuvrier', async (req, res) => {
     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
 
     usersAdmin.forEach(user => {
-    if (user.tasks) {
-      user.tasks.forEach(task => {
-        // Tous les ouvriers du chantier sauf le user courant
-        const autres = usersChantiers
-          .filter(u => u.tasks?.length)
-          .filter(u => 
-            u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
-          )
-          .map(u => u.username);
+  if (user.tasks) {
+    user.tasks.forEach(task => {
+      const refUser = usersChantiers.find(u => u._id.toString() === user._id.toString());
+      if (refUser) {
+        const refTask = refUser.tasks.find(t => t._id.toString() === task._id.toString());
+        if (refTask) {
+          task.autresOuvriers = refTask.autresOuvriers || [];
 
-        // Évite les doublons
-        task.autresOuvriers = [...new Set(autres)];
-
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
-      });
-    }
-  });
-    // usersAdmin.forEach(user => {
-    //   if (user.tasks) {
-    //     user.tasks.forEach(task => {
-    //       const autres = usersChantiers
-    //         .filter(u => u._id.toString() !== user._id.toString() && u.tasks)
-    //         .flatMap(u =>
-    //           u.tasks
-    //             .filter(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
-    //             .map(() => u.username)
-    //         );
-
-    //       task.autresOuvriers = [...new Set(autres)];
-
-    //       console.log("Task enrichie :", {
-    //         username: user.username,
-    //         taskId: task._id.toString(),
-    //         chantierId: task.id_Chantier?.toString(),
-    //         autresOuvriers: task.autresOuvriers
-    //       });
-    //     });
-    //   }
-    // });
+          // 👉 ici on log la tâche avec ses autres ouvriers
+          console.log("Task enrichie :", {
+            username: user.username,
+            taskId: task._id.toString(),
+            autresOuvriers: task.autresOuvriers
+          });
+        }
+      }
+    });
+  }
+});
 
     // Tri final
-    usersAdmin.forEach(user => {
-    if (user.tasks) {
-      user.tasks.forEach(task => {
-        // Tous les ouvriers du chantier sauf le user courant
-        const autres = usersChantiers
-          .filter(u => u.tasks?.length)
-          .filter(u => 
-            u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
-          )
-          .map(u => u.username);
-
-        // Évite les doublons
-        task.autresOuvriers = [...new Set(autres)];
-
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
-      });
-    }
-  });
-
-    
     usersAdmin.forEach(user => {
       if (user.tasks && Array.isArray(user.tasks)) {
         user.tasks.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -612,7 +536,6 @@ app.post('/historiqueOuvrier', async (req, res) => {
   try {
     const { username, mois } = req.body;
     const usersChantiers = await db.collection("UsersAdmin").find({}).toArray();
-
 
     // Filtre de base
     const userFilter = {};
@@ -662,28 +585,21 @@ app.post('/historiqueOuvrier', async (req, res) => {
     const usersAdmin = await db.collection('UsersAdmin').aggregate(pipeline).toArray();
 
     usersAdmin.forEach(user => {
-    if (user.tasks) {
-      user.tasks.forEach(task => {
-        // Tous les ouvriers du chantier sauf le user courant
-        const autres = usersChantiers
-          .filter(u => u.tasks?.length)
-          .filter(u => 
-            u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
-          )
-          .map(u => u.username);
+  if (user.tasks) {
+    user.tasks.forEach(task => {
+      // Cherche les autres ouvriers sur le même chantier, sauf l'utilisateur courant
+      const autres = usersChantiers
+        .filter(u => u._id.toString() !== user._id.toString())
+        .flatMap(u => u.tasks || [])
+        .filter(t => t.id_Chantier.toString() === task.id_Chantier.toString())
+        .map(t => t.qui); // ou u.username si tu veux le nom d'utilisateur
 
-        // Évite les doublons
-        task.autresOuvriers = [...new Set(autres)];
+      // Supprime les doublons
+      task.autresOuvriers = [...new Set(autres)];
+    });
+  }
+});
 
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
-      });
-    }
-  });
     const allUsers = await db.collection('UsersAdmin').find({}).sort({ username: 1 }).toArray();
 
     res.render('historiqueOuvrier', { usersAdmin, allUsers });

@@ -406,13 +406,19 @@ html(lang="en")
         width: 90%; /* ou 300px, ou 20rem selon ce que tu préfères */
       }
 
-      .separation{
-        text-align:center;
-        margin:auto;
-        margin-top:0; 
-        margin-bottom:0;
-        padding-top:0;
-        padding-bottom:0;
+      //- .separation{
+      //-   text-align:center;
+      //-   margin:auto;
+      //-   margin-top:0; 
+      //-   margin-bottom:0;
+      //-   padding-top:0;
+      //-   padding-bottom:0;
+      //- }
+      .separation {
+          border: none;            /* retire le style par défaut */
+          height: 2px;             /* épaisseur du trait */
+          background-color: var(--carte); /* couleur du trait */
+          margin: 10px auto;       /* espace au-dessus et en-dessous, centré horizontalement */
       }
       li .item {
         background-color:rgb(116, 116, 119);
@@ -474,7 +480,7 @@ html(lang="en")
       p.item-text {
         font-size: 1rem;
         color: var(--texte);
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         margin-top: 5px;
         text-align:center;
       }
@@ -724,6 +730,11 @@ html(lang="en")
 
                               br.espaceHistorique
                               | - Chef : #{t.qui}
+                              p.separation
+                              //- br.espaceHistorique
+                              if t.autresOuvriers && t.autresOuvriers.length
+                                - const ouvriersSurChantier = [...new Set([...(t.autresOuvriers || [])])]
+                                | - Ouvriers présents: #{ouvriersSurChantier.join(', ')}
                               if t.atelier20Point12 === "on"
                                 div.atelier20Point12 
                                   img(src="./assets/icons/logo_20Point12.png"  alt="skilUp")
@@ -739,13 +750,18 @@ html(lang="en")
                               | - #{t.heure} à #{t.heuref} (off: #{t.pause}h)
                               br.espaceHistorique
                               | - Chef : #{t.qui} 
+                              p.separation
+                              //- br.espaceHistorique
+                              if t.autresOuvriers && t.autresOuvriers.length
+                                - const ouvriersSurChantier = [...new Set([...(t.autresOuvriers || [])])]
+                                | - Ouvriers présents : #{ouvriersSurChantier.join(', ')}
                               if t.atelier20Point12 === "on"
                                 div.atelier20Point12 
                                   img(src="./assets/icons/logo_20Point12.png" alt="20.12")
                               if t.skilUp === "on"
                                 div.atelier20Point12 
                                   img(src="./assets/icons/logo_arrondi_V1/icon192.png "  alt="skilUp")     
-                            p.separation .............
+                            p.separation
                             if t.taxiRefund && t.taxiRefund > 0
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
                             else  
@@ -763,10 +779,12 @@ html(lang="en")
 
                             // Select pour choisir l’ouvrier, avec data-task-id
                             select.select-add-user(style="display:none" data-task-id=t._id)
-                              option(value="") Ouvrier
+                              option(value="") Ouvriers
+                              - const ouvriersDejaSurChantier = [user.username, ...(t.autresOuvriers || [])]
                               each ouvrier in allUsers
-                                if ouvrier.isAdmin != "y"
+                                if ouvrier.isAdmin != "y" && !ouvriersDejaSurChantier.includes(ouvrier.username)
                                   option(value=ouvrier._id)= ouvrier.username
+
                             button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
                               i(class="fas fa-pencil-alt") 
                             select.select-hours(style="display:none")
@@ -835,7 +853,7 @@ html(lang="en")
                               if t.skilUp === "on"
                                 div.atelier20Point12 
                                   img(src="./assets/icons/logo_arrondi_V1/icon192.png "  alt="skilUp")     
-                            p.separation .............
+                            p.separation
                             if t.taxiRefund && t.taxiRefund > 0
                               p.item-text #{t.montant} €  ➭ : #{t.heureTravail} h  (#{t.taux} €/h) + taxi : #{t.taxiRefund} €
                             else  
@@ -852,10 +870,12 @@ html(lang="en")
 
                             // Select pour choisir l’ouvrier, avec data-task-id
                             select.select-add-user(style="display:none" data-task-id=t._id)
-                              option(value="") -- Ajouter un ouvrier --
+                              option(value="") Ouvriers
+                              - const ouvriersDejaSurChantier = [user.username, ...(t.autresOuvriers || [])]
                               each ouvrier in allUsers
-                                if ouvrier.isAdmin != "y"
-                                  option(value=ouvrier._id)= ouvrier.username 
+                                if ouvrier.isAdmin != "y" && !ouvriersDejaSurChantier.includes(ouvrier.username)
+                                  option(value=ouvrier._id)= ouvrier.username
+
                             button(type="button" onclick="modifyTaskHours(this)" class="button-modify-task")
                               i(class="fas fa-pencil-alt") 
                             select.select-hours(style="display:none")
