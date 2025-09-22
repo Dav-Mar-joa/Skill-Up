@@ -454,17 +454,18 @@ app.get('/historiqueOuvrierAll', async (req, res) => {
           .filter(u => 
             u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
           )
-          .map(u => u.username);
+          .map(u => u.username)
+          .sort((a, b) => a.localeCompare(b));
 
         // Évite les doublons
         task.autresOuvriers = [...new Set(autres)];
 
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
+        // console.log("Task enrichie :", {
+        //   username: user.username,
+        //   taskId: task._id.toString(),
+        //   chantierId: task.id_Chantier?.toString(),
+        //   autresOuvriers: task.autresOuvriers
+        // });
       });
     }
   });
@@ -483,7 +484,7 @@ app.get('/historiqueOuvrierAll', async (req, res) => {
 });
 
 app.get('/historiqueOuvrier', async (req, res) => {
-  console.log("sans filtre");
+  // console.log("sans filtre");
   try {
     // Calculer le mois en cours
     const now = new Date();
@@ -532,17 +533,18 @@ app.get('/historiqueOuvrier', async (req, res) => {
           .filter(u => 
             u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
           )
-          .map(u => u.username);
+          .map(u => u.username)
+          .sort((a, b) => a.localeCompare(b));
 
         // Évite les doublons
         task.autresOuvriers = [...new Set(autres)];
 
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
+        // console.log("Task enrichie :", {
+        //   username: user.username,
+        //   taskId: task._id.toString(),
+        //   chantierId: task.id_Chantier?.toString(),
+        //   autresOuvriers: task.autresOuvriers
+        // });
       });
     }
   });
@@ -584,12 +586,12 @@ app.get('/historiqueOuvrier', async (req, res) => {
         // Évite les doublons
         task.autresOuvriers = [...new Set(autres)];
 
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
+        // console.log("Task enrichie :", {
+        //   username: user.username,
+        //   taskId: task._id.toString(),
+        //   chantierId: task.id_Chantier?.toString(),
+        //   autresOuvriers: task.autresOuvriers
+        // });
       });
     }
   });
@@ -670,17 +672,18 @@ app.post('/historiqueOuvrier', async (req, res) => {
           .filter(u => 
             u.tasks.some(t2 => t2.id_Chantier?.toString() === task.id_Chantier?.toString())
           )
-          .map(u => u.username);
+          .map(u => u.username)
+          .sort((a, b) => a.localeCompare(b));
 
         // Évite les doublons
         task.autresOuvriers = [...new Set(autres)];
 
-        console.log("Task enrichie :", {
-          username: user.username,
-          taskId: task._id.toString(),
-          chantierId: task.id_Chantier?.toString(),
-          autresOuvriers: task.autresOuvriers
-        });
+        // console.log("Task enrichie :", {
+        //   username: user.username,
+        //   taskId: task._id.toString(),
+        //   chantierId: task.id_Chantier?.toString(),
+        //   autresOuvriers: task.autresOuvriers
+        // });
       });
     }
   });
