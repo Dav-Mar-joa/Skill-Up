@@ -321,7 +321,7 @@ app.get('/loginOublie', async (req, res) => {
     res.render('loginOublie');  } )
 
 app.post('/loginOublie', async (req, res) => {
-  const { secretQuestion, password } = req.body;
+  const { secretQuestion, password,'reponse-secret-question': reponseSecretQuestion } = req.body;
   // console.log("secretQuestion:", secretQuestion);
   // console.log("password:", password);   
 
@@ -338,7 +338,7 @@ app.post('/loginOublie', async (req, res) => {
     // Parcourir les utilisateurs pour comparer le mot de passe hashé
     for (const user of users) {
       const match = await bcrypt.compare(password, user.password);
-      if (match) {
+      if (match && user.reponseSecretQuestion === reponseSecretQuestion) {
         // Mot de passe correct, renvoyer le login
        return res.render('loginOublie', { message: `Votre login est : ${user.username}` });
       }
@@ -385,7 +385,7 @@ app.get('/mdpOublie', async (req, res) => {
 // });
     
 app.post('/mdpOublie', async (req, res) => {
-  const { secretQuestion, password, passwordConfirmed, username } = req.body;
+  const { secretQuestion, password, passwordConfirmed, username,'reponse-secret-question':reponseSecretQuestion } = req.body;
 
   if (password !== passwordConfirmed) {
     return res.render('mdpOublie', { message: `Les mots de passe ne sont pas identiques !` });
@@ -402,9 +402,14 @@ app.post('/mdpOublie', async (req, res) => {
     // Chercher l'utilisateur unique avec username + question secrète
     const user = await collection.findOne({ username, secretQuestion });
 
-    if (!user) {
-      return res.render('mdpOublie', { message: `Utilisateur ou question secrète incorrects !` });
-    }
+    // if (!user && reponseSecretQuestion!=user.reponeseSecretQuestion) {
+    //   return res.render('mdpOublie', { message: `Utilisateur ou question secrète incorrects !` });
+    // }
+
+    if (!user || reponseSecretQuestion !== user.reponseSecretQuestion) {
+  return res.render('mdpOublie', { message: `Utilisateur ou réponse à la question secrète incorrecte !` });
+}
+
 
     // Hasher le nouveau mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -1087,6 +1092,7 @@ app.get('/listeOuvrier', async (req, res) => {
     const usersAdmin = await db
       .collection('UsersAdmin')
       .find({ isAdmin: { $ne: "y" } })
+      .sort({ username: 1 })
       .toArray();
     // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
@@ -1468,7 +1474,7 @@ async function getUserNameById(userId) {
 
 
 app.post('/completeProfile', async (req, res) => {
-  const { username, mdp: password,mdpConfirmed: passwordConfirmed, 'secret-question': secretQuestion } = req.body;
+  const { username, mdp: password,mdpConfirmed: passwordConfirmed, 'secret-question': secretQuestion,'reponse-secret-question':reponseSecretQuestion } = req.body;
 
   if (password !== passwordConfirmed) {
     return res.render('completeProfile', { errorMessage: 'Les mots de passe ne correspondent pas.' });
@@ -1490,7 +1496,7 @@ app.post('/completeProfile', async (req, res) => {
 
     await col.updateOne(
       { username },
-      { $set: { password: hashedPassword, secretQuestion } }
+      { $set: { password: hashedPassword, secretQuestion,reponseSecretQuestion } }
     );
 
     res.redirect('/login');
@@ -1501,7 +1507,7 @@ app.post('/completeProfile', async (req, res) => {
 });
 
 app.post('/createUser', async (req, res) => {
-  const { username, mdp: password, 'secret-question': secretQuestion } = req.body;
+  const { username, mdp: password, 'secret-question': secretQuestion,'reponse-secret-question': reponseSecretQuestion } = req.body;
     // console.log("Username:", username);
     // console.log("Password:", password);  
     // console.log("secret-question", secretQuestion);                   
@@ -1520,8 +1526,9 @@ app.post('/createUser', async (req, res) => {
       username,
       password: hashedPassword,
       secretQuestion,
+      reponseSecretQuestion,
       isAdmin:'n'
-    };
+    };  
 
     await usersCollection.insertOne(user);
 
