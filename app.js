@@ -1140,6 +1140,7 @@ app.get('/deleteOuvrier', async (req, res) => {
     const usersAdmin = await db
       .collection('UsersAdmin')
       .find({ isAdmin: { $ne: "y" } })
+      .sort({ username: 1 })
       .toArray();
     // console.log('usersAdmin:', usersAdmin);
     // 2) Rendre la vue en passant la liste
@@ -1700,7 +1701,7 @@ app.post('/historiqueUser', async (req, res) => {
   try {
     const userId = new ObjectId(req.session.user._id);
     const collection = db.collection('UsersAdmin');
-    const user = await collection.findOne({ _id: userId });
+    const user = await collection.findOne({ _id: userId }).sort({ username: 1 });
 
     if (!user) {
       return res.redirect('/login');
