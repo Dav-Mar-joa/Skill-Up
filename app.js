@@ -83,6 +83,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware pour parser les données du formulaire
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.locals.companyName = process.env.COMPANY_NAME
+
 // app.use((req, res, next) => {
 //   const isAuth = !!req.session.user;
 //   const openPaths = ['/login', '/createUser'];
